@@ -20,8 +20,8 @@ public class Tracking
 	private Tracking()
 	{
     	pi = new UDP(Constants.PI_IP_ADDR, Constants.PI_PORT);
-    	GearTrackingPID = new PID(Constants.GEAR_TRACKING_KP, Constants.GEAR_TRACKING_KI);
-    	FuelTrackingPID = new PID(Constants.FUEL_TRACKING_KP, Constants.FUEL_TRACKING_KI);
+    	GearTrackingPID = new PID(Constants.GEAR_TRACKING_KP, Constants.GEAR_TRACKING_KI, Constants.GEAR_TRACKING_KD);
+    	FuelTrackingPID = new PID(Constants.FUEL_TRACKING_KP, Constants.FUEL_TRACKING_KI, Constants.FUEL_TRACKING_KD);
 	}
 	
 	public static int target(int mode)

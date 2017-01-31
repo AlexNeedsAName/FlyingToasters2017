@@ -5,14 +5,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot
 {
-	
 	public void robotInit()
 	{	
 		Constants.runningAleksBot = SmartDashboard.getBoolean("Running Alek's Bot?", true);
+		Dashboard.getInstance();
     	Teleop.getInstance();
     	DriveBase.getInstance();
     	Tracking.getInstance();
     	PDP.getInstance();
+    	Shooter.getInstance();
 	}
     
     public void autonomousInit()
