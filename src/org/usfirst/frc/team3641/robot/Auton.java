@@ -13,8 +13,8 @@ public class Auton
 	private static boolean endOfLine = false;
 	
 	
-	private static double initalEncoder;
-	private static double finalEncoder;
+	private static double initalDist;
+	private static double finalDist;
 	private static boolean runOnce;
 	
 	public static UDP udp;
@@ -242,12 +242,12 @@ public class Auton
 	{
 		if(!alreadyDriving)
 		{
-			initalEncoder = DriveBase.readEncoder();
-			finalEncoder = initalEncoder + distance * Constants.ENCODER_TO_CM;
+			initalDist = Sensors.getDriveDistance();
+			finalDist = initalDist + distance;
 			alreadyDriving = true;
 		}
 		
-		if(DriveBase.readEncoder() <= finalEncoder)
+		if(Sensors.getDriveDistance() <= finalDist)
 		{
 			DriveBase.driveArcade(speed, 0);
 			return false;

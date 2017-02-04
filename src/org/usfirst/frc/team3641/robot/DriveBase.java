@@ -1,20 +1,18 @@
 package org.usfirst.frc.team3641.robot;
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+
 import edu.wpi.first.wpilibj.Victor;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 public class DriveBase
 {
 	private static DriveBase instance;
-	private static CANTalon left, leftSlave, right, rightSlave;
+	public static CANTalon left, leftSlave, right, rightSlave;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
-	private static AHRS gyro;
-	private static ADXRS450_Gyro SPIgyro;
-	private static double angle;
 	private static boolean highGear = false;
 	private static boolean autoShift = false;
+	
+	private static PID rotationPID;
 	
 	private static boolean reverseMode;
 	
@@ -26,20 +24,20 @@ public class DriveBase
 	
 	private DriveBase()
 	{
-		gyro = new AHRS(SerialPort.Port.kMXP);
 		if(Constants.runningAleksBot)
 		{
 			PWMleft = new Victor(Constants.LEFT_VICTOR);
 			PWMleftSlave = new Victor(Constants.LEFT_SLAVE_VICTOR);
 			PWMright = new Victor(Constants.RIGHT_VICTOR);
 			PWMrightSlave = new Victor(Constants.RIGHT_SLAVE_VICTOR);
-			
-			SPIgyro = new ADXRS450_Gyro();
 		}
 		left = new CANTalon(Constants.DRIVEBASE_LEFT_TALON);
 		leftSlave = new CANTalon(Constants.DRIVEBASE_LEFT_SLAVE_TALON);
 		right = new CANTalon(Constants.DRIVEBASE_RIGHT_TALON);
 		rightSlave = new CANTalon(Constants.DRIVEBASE_RIGHT_SLAVE_TALON);
+		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		
+		rotationPID = new PID(Constants.DRIVEBASE_TRACKING_KP, Constants.DRIVEBASE_TRACKING_KI, Constants.DRIVEBASE_TRACKING_KD);
 	}
 	
 	public static void driveArcade(double power, double rotation)
@@ -48,18 +46,8 @@ public class DriveBase
 		
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
-		
-		double maxPower;
-		if(leftPower > rightPower) maxPower = leftPower;
-		else maxPower = rightPower;
-		
-		if(maxPower > 1)
-		{
-			leftPower/= maxPower;
-			rightPower/= maxPower;
-		}
-		
-		setMotors(leftPower, rightPower);
+				
+		driveTank(leftPower, rightPower);
 	}
 	
 	public static void driveTank(double leftPower, double rightPower)
@@ -75,12 +63,12 @@ public class DriveBase
 			rightPower/= maxPower;
 		}
 		
-		if(reverseMode) setMotors(-leftPower, -rightPower);
-		else setMotors(leftPower, rightPower);
-	}
-	
-	public static void setMotors(double leftPower, double rightPower)
-	{
+		if(reverseMode)
+		{
+			leftPower*= -1;
+			rightPower*= -1;
+		}
+		
 		if(Constants.runningAleksBot)
 		{
 			PWMleft.set(leftPower);
@@ -96,36 +84,7 @@ public class DriveBase
 			rightSlave.set(rightPower);
 		}
 	}
-	
-	public static void readGyro()
-	{
-		if(Constants.runningAleksBot)
-		{
-			angle = SPIgyro.getAngle();
-		}
-		else
-		{
-			angle = gyro.getAngle();
-		}
-	}
-	
-	public static double getAngle()
-	{
-		return angle;
-	}
-	
-	public static void resetGyro()
-	{
-		if(Constants.runningAleksBot)
-		{
-			SPIgyro.reset();
-		}
-		else
-		{
-			gyro.reset();
-		}
-	}
-	
+			
 	public static void setDriveMode(int mode)
 	{
 		if(mode == Constants.REVERSE_MODE) reverseMode = true;
@@ -142,18 +101,43 @@ public class DriveBase
 	{
 		autoShift = false;
 	}
-
-	public static double readEncoder()
+	
+	public static boolean turnTo(double targetAngle, double threshold)
 	{
-		//TODO: Add encoder
-		return 0;
+		double error = calcError(targetAngle, Sensors.getAngle());
+		driveArcade(0, rotationPID.pid(error));
+		return (Math.abs(error) <= threshold);
+	}
+
+	private static double calcError(double targetAngle, double currentAngle)
+	{
+		double counterClockwiseDistance, clockwiseDistance;
+		
+		if(targetAngle == currentAngle) return 0;
+		else
+		{
+			counterClockwiseDistance = fixDegrees(targetAngle - currentAngle);
+			clockwiseDistance = fixDegrees(360 - (targetAngle - currentAngle));
+			
+			if(counterClockwiseDistance > clockwiseDistance) return counterClockwiseDistance;
+			else return -clockwiseDistance;
+		}
+		
 	}
 	
+	private static double fixDegrees(double degrees)
+	{
+		while(degrees >= 360) degrees -= 360;
+		while(degrees < 0) degrees += 360;
+		return degrees;
+	}
+
+	//Please don't use this. It blocks drive output and all other functions due to the while loop. I'm going to remove it next commit.
 	public static void turnDegrees(double inputDegrees, double errorMargin) 
 	{
-		resetGyro();
-		readGyro();
-		double gyroAngle = getAngle();
+		Sensors.resetGyro();
+		Sensors.poll();
+		double gyroAngle = Sensors.getAngle();
         
         while (gyroAngle < inputDegrees-errorMargin || gyroAngle > inputDegrees+errorMargin) 
         {
@@ -167,8 +151,8 @@ public class DriveBase
         		//Turn left
         		driveArcade(0, -0.8);
         	}
-    		readGyro();
-    		gyroAngle = getAngle();
+        	Sensors.poll();
+    		gyroAngle = Sensors.getAngle();
         }
         driveArcade(0, 0);
 	}

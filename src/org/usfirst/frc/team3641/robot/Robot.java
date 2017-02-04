@@ -14,6 +14,7 @@ public class Robot extends IterativeRobot
     	Tracking.getInstance();
     	PDP.getInstance();
     	Shooter.getInstance();
+    	Sensors.getInstance();
 	}
     
     public void autonomousInit()

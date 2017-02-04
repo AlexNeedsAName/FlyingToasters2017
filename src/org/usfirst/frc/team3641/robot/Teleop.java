@@ -21,7 +21,7 @@ public class Teleop
 	public static void run()
 	{
 		dualshock.readValues();
-		DriveBase.readGyro();
+		Sensors.poll();
 		
 		if(dualshock.getLeftBumper()) DriveBase.setDriveMode(Constants.REVERSE_MODE);
 		else if (dualshock.getRightBumper()) DriveBase.setDriveMode(Constants.NORMAL_MODE);
