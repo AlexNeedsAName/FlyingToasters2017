@@ -19,7 +19,6 @@ public class Tracking
 	
 	private Tracking()
 	{
-    	pi = new UDP(Constants.PI_IP_ADDR, Constants.PI_PORT);
     	GearTrackingPID = new PID(Constants.GEAR_TRACKING_KP, Constants.GEAR_TRACKING_KI, Constants.GEAR_TRACKING_KD);
     	FuelTrackingPID = new PID(Constants.FUEL_TRACKING_KP, Constants.FUEL_TRACKING_KI, Constants.FUEL_TRACKING_KD);
 	}
@@ -29,12 +28,12 @@ public class Tracking
 		switch(visionState)
 		{
 			case Constants.SEND_REQUEST:
-				pi.sendData("Request");
+				Serial.sendData("Request");
 				visionState = Constants.GET_RESPONSE;
 				break;
 				
 			case Constants.GET_RESPONSE:
-				String response = pi.flush(null);
+				String response = Serial.getData();
 				if(response != null && response.contains(";"))
 				{
 					String data[] = response.split(";");

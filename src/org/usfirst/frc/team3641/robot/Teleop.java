@@ -43,6 +43,9 @@ public class Teleop
 		}
 		
 		//Put any functions that should not interfere with the drive base here:
+		if(dualshock.getOptionsButton()) Shooter.setRPM(4200);
+		if(dualshock.getShareButton()) Shooter.fire();
+		
 	}
 	
 }

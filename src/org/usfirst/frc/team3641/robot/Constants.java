@@ -13,20 +13,22 @@ public class Constants
 	public static final int PS4_PORT = 1;
 	public static final int OPERATOR_PORT = 0;
 	
-	public static final double SHOOTER_KP = 0.00006;
-	public static final double SHOOTER_KI = 0.000005;
-	public static final double SHOOTER_KD = 0.0000005;
-	public static final double SHOOTER_FF = 5800;
-	
+	public static final int ULTRASONIC_PORT = 0;
+		
 	public static final double ENCODER_RATE_MULTIPLIER = -7.5; // ticks/s * 60s/min * 1rev/8ticks = 7.5 RPM 
+	public static final double VOLTAGE_TO_METERS = 1;
+	
+	public static final int SERIAL_BAUDRATE  = 115200;
 
 	//Talons
-	public static final int LEFT_TALON = 1;
-	public static final int LEFT_SLAVE_TALON = 2;
-	public static final int RIGHT_TALON = 3;
-	public static final int RIGHT_SLAVE_TALON = 4;
-	public static final int SHOOTER_LEFT = 5;
-	public static final int SHOOTER_RIGHT = 6;
+	public static final int DRIVEBASE_LEFT_TALON = 1;
+	public static final int DRIVEBASE_LEFT_SLAVE_TALON = 2;
+	public static final int DRIVEBASE_RIGHT_TALON = 3;
+	public static final int DRIVEBASE_RIGHT_SLAVE_TALON = 4;
+	public static final int SHOOTER_LEFT_TALON = 5;
+	public static final int SHOOTER_RIGHT_TALON = 6;
+	public static final int CLIMBER_LEFT_TALON = 7;
+	public static final int CLIMBER_RIGHT_TALON = 8;
 	
 	
 	//Victors (for Alek)
@@ -35,20 +37,24 @@ public class Constants
 	public static final int RIGHT_VICTOR = 3;
 	public static final int RIGHT_SLAVE_VICTOR = 4;
 	
-	//UDP Constants
-	public static final int PI_PORT = 5800; //Only ports 5800-5810 are open this year :(
-	public static final String PI_IP_ADDR = "10.36.41.x"; //TODO: Get Real Address
-	
-	public static final int DRIVER_PORT = 5801;
+	//UDP Constants	
+	public static final int DRIVER_PORT = 5800;
 	public static final String DRIVER_IP_ADDR = "10.36.42.81";
 
-	//Vision Constants
+	//PID Constants
 	public static final double GEAR_TRACKING_KP = 0.0; //TODO: Build robot, then tune this value
 	public static final double GEAR_TRACKING_KI = 0.0; //TODO: Build robot, then tune this value
 	public static final double GEAR_TRACKING_KD = 0.0; //TODO: Build robot, then tune this value
+	
 	public static final double FUEL_TRACKING_KP = 0.0; //TODO: Build robot, then tune this value
 	public static final double FUEL_TRACKING_KI = 0.0; //TODO: Build robot, then tune this value
 	public static final double FUEL_TRACKING_KD = 0.0; //TODO: Build robot, then tune this value
+	
+	public static final double SHOOTER_KP = 0.00006;
+	public static final double SHOOTER_KI = 0.000005;
+	public static final double SHOOTER_KD = 0.00000025;
+	public static final double SHOOTER_FF = 5800;
+
 	
 	public static final int FUEL_MODE = 1;
 	public static final int GEAR_MODE = 2;

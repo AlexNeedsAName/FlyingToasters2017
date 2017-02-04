@@ -22,7 +22,7 @@ public class Extreme3DPro extends Joystick
 	}
 	public double getThrottle()
 	{
-		return getRawAxis(3);
+		return -(getRawAxis(3)/2)+.5;
 	}
 	public boolean getButton(int x)
 	{

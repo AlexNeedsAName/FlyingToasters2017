@@ -6,7 +6,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 public class Shooter
 {
 	private static Shooter instance;
-	private static CANTalon left, right;
+	public static CANTalon left, right;
 	private static PID pid;
 	
 	public static Shooter getInstance()
@@ -17,16 +17,20 @@ public class Shooter
 	
 	public Shooter()
 	{
-		left = new CANTalon(Constants.SHOOTER_LEFT);
-		right = new CANTalon(Constants.SHOOTER_RIGHT);
+		left = new CANTalon(Constants.SHOOTER_LEFT_TALON);
+		right = new CANTalon(Constants.SHOOTER_RIGHT_TALON);
 		right.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		right.configEncoderCodesPerRev(20);
 		pid = new PID(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, Constants.SHOOTER_FF);
 	}
 	
 	public static double getEncoderRate()
 	{
 		return right.getEncVelocity() * Constants.ENCODER_RATE_MULTIPLIER;
+	}
+	
+	public static void autoSetSpeed()
+	{
+		double distance = Sensors.getDistance();
 	}
 	
 	public static void setRPM(double target)
@@ -42,6 +46,11 @@ public class Shooter
 	{
 		right.set(power);
 		left.set(-power);
+	}
+	
+	public static void fire()
+	{
+		
 	}
 	
 	public static void resetPID()

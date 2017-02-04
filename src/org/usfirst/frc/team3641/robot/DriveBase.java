@@ -14,7 +14,7 @@ public class DriveBase
 	private static ADXRS450_Gyro SPIgyro;
 	private static double angle;
 	private static boolean highGear = false;
-	private static boolean autoShift = true;
+	private static boolean autoShift = false;
 	
 	private static boolean reverseMode;
 	
@@ -36,10 +36,10 @@ public class DriveBase
 			
 			SPIgyro = new ADXRS450_Gyro();
 		}
-		left = new CANTalon(Constants.LEFT_TALON);
-		leftSlave = new CANTalon(Constants.LEFT_SLAVE_TALON);
-		right = new CANTalon(Constants.RIGHT_TALON);
-		rightSlave = new CANTalon(Constants.RIGHT_SLAVE_TALON);
+		left = new CANTalon(Constants.DRIVEBASE_LEFT_TALON);
+		leftSlave = new CANTalon(Constants.DRIVEBASE_LEFT_SLAVE_TALON);
+		right = new CANTalon(Constants.DRIVEBASE_RIGHT_TALON);
+		rightSlave = new CANTalon(Constants.DRIVEBASE_RIGHT_SLAVE_TALON);
 	}
 	
 	public static void driveArcade(double power, double rotation)
