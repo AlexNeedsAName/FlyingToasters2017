@@ -3,11 +3,9 @@ package org.usfirst.frc.team3641.robot;
 public class Tracking
 {
 	private static Tracking instance;
-	private static UDP pi;
-	private static PID GearTrackingPID;
 	
 	private static int center;
-	private static double distance, error, targetAngle;
+	private static double distance, targetAngle;
 	
 	private static int visionState;
 	
@@ -19,7 +17,7 @@ public class Tracking
 	
 	private Tracking()
 	{
-    	GearTrackingPID = new PID(Constants.GEAR_TRACKING_KP, Constants.GEAR_TRACKING_KI, Constants.GEAR_TRACKING_KD);
+
 	}
 	
 	public static int target(int mode)
@@ -27,7 +25,10 @@ public class Tracking
 		switch(visionState)
 		{
 			case Constants.SEND_REQUEST:
-				Serial.sendData("Request");
+				String request = "R";
+				if(mode == Constants.FUEL_MODE) request += "R";
+				else request += "G";
+				Serial.sendData(request);
 				visionState = Constants.GET_RESPONSE;
 				break;
 				

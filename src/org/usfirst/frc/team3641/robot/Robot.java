@@ -15,11 +15,12 @@ public class Robot extends IterativeRobot
     	PDP.getInstance();
     	Shooter.getInstance();
     	Sensors.getInstance();
+    	Gearbox.getInstance();
 	}
     
     public void autonomousInit()
     {
-
+    	Gearbox.shiftLow();
     }
 
     public void autonomousPeriodic()
@@ -27,6 +28,11 @@ public class Robot extends IterativeRobot
     	Auton.run(4);
     }
 
+    public void teleopInit()
+    {
+    	Gearbox.shiftHigh();
+    }
+    
     public void teleopPeriodic()
     {
         Teleop.run();

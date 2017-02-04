@@ -3,8 +3,8 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class PS4 extends Joystick
 {
-	private double leftX, leftY, rightX, rightY, leftTrigger, rightTrigger, touchpadX, touchpadY, touchpadPressed, touchpadTwoFingers;
-	private boolean X, circle, triangle, square, up, down, left, right, share, options, leftBumper, leftTriggerButton, rightBumper, rightTriggerButton, leftStickButton, rightStickButton, playstation, touchpadButton;
+	private double leftX, leftY, rightX, rightY, leftTrigger, rightTrigger;
+	private boolean X, circle, triangle, square, up, down, left, right, share, options, leftBumper, leftTriggerButton, rightBumper, rightTriggerButton, leftStickButton, rightStickButton, playstation;
 
 	public PS4(int port)
 	{
@@ -20,12 +20,6 @@ public class PS4 extends Joystick
 		rightTrigger = (getRawAxis(4) + .5) / 2;
 		rightY = getRawAxis(5);
 		
-		touchpadX = getRawAxis(53);
-		touchpadY = getRawAxis(54);
-		touchpadPressed = getRawAxis(47);
-		touchpadTwoFingers = getRawAxis(57);
-		touchpadButton = getRawButton(17);
-
 		square = getRawButton(1);
 		X = getRawButton(2);
 		circle = getRawButton(3);

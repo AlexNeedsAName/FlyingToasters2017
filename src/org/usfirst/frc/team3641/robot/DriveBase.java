@@ -9,8 +9,6 @@ public class DriveBase
 	private static DriveBase instance;
 	public static CANTalon left, leftSlave, right, rightSlave;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
-	private static boolean highGear = false;
-	private static boolean autoShift = false;
 	
 	private static PID rotationPID;
 	
@@ -91,15 +89,16 @@ public class DriveBase
 		else reverseMode = false;
 	}
 	
-	public static void setGear(int mode)
+	public static void shift(boolean high)
 	{
-		if(mode == Constants.HIGH) highGear = true;
-		else highGear = false;
-	}
-	
-	public static void setAutoShift(boolean setting)
-	{
-		autoShift = false;
+		if(high)
+		{
+			//shift high
+		}
+		else
+		{
+			//shift low
+		}
 	}
 	
 	public static boolean turnTo(double targetAngle, double threshold)

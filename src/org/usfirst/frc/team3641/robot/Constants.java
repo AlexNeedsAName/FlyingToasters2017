@@ -32,6 +32,12 @@ public class Constants
 	public static final int RIGHT_VICTOR = 3;
 	public static final int RIGHT_SLAVE_VICTOR = 4;
 	
+	//Pnumatics
+	public static final int LEFT_SHIFTER_CHANNEL_FORWARD = 1;
+	public static final int LEFT_SHIFTER_CHANNEL_BACKWARDS = 2;
+	public static final int RIGHT_SHIFTER_CHANNEL_FORWARD = 3;
+	public static final int RIGHT_SHIFTER_CHANNEL_BACKWARDS = 4;
+	
 	//UDP Constants	
 	public static final int DRIVER_PORT = 5800;
 	public static final String DRIVER_IP_ADDR = "10.36.42.81";
