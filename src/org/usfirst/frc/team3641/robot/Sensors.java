@@ -30,13 +30,13 @@ public class Sensors
 		shooterRPM = Shooter.right.getEncVelocity() * Constants.ENCODER_TO_METERS;
 		ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.VOLTAGE_TO_METERS;
 		driveDistance = DriveBase.left.getEncPosition() * Constants.DRIVE_ENCODER_TO_METERS;
-		if(Constants.runningAleksBot) SPIgyro = new ADXRS450_Gyro();
+		if(Constants.runningAleksBot) SPIgyro.getAngle();
 		else angle = gyro.getAngle();
 	}
 	
 	public static void resetGyro()
 	{
-		if(Constants.runningAleksBot) SPIgyro = new ADXRS450_Gyro();
+		if(Constants.runningAleksBot) SPIgyro.reset();
 		else gyro.reset();
 	}
 	
