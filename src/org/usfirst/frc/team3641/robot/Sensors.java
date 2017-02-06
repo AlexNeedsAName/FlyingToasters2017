@@ -8,7 +8,8 @@ import com.kauailabs.navx.frc.AHRS;
 public class Sensors
 {
 	private static Sensors instance;
-	private static double ultrasonicDistance, shooterRPM, driveDistance, angle;
+	private static double ultrasonicDistance, shooterRPM, driveDistance, angle, turretAngle;
+	private static boolean isStill;
 	
 	private static AnalogInput ultrasonic;
 	public static Ultrasonic ultra;
@@ -47,7 +48,9 @@ public class Sensors
 			shooterRPM = Shooter.right.getEncVelocity() * Constants.ENCODER_TO_METERS;
 			ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.VOLTAGE_TO_METERS;
 			driveDistance = DriveBase.left.getEncPosition() * Constants.DRIVE_ENCODER_TO_METERS;
+			turretAngle = Turret.turretTalon.getEncPosition() * Constants.TURRET_ENCODER_TO_ANGLE;
 			angle = gyro.getAngle();
+			isStill = gyro.isMoving();
 		}
 	}
 	
@@ -80,6 +83,16 @@ public class Sensors
 	public static double getAngle()
 	{
 		return angle;
+	}
+	
+	public static double getTurretAngle()
+	{
+		return turretAngle;
+	}
+	
+	public static boolean areWeStillMoving()
+	{
+		return isStill;
 	}
 	
 }

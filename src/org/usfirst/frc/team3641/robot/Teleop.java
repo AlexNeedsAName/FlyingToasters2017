@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3641.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Teleop
 {
 	private static Teleop instance;
@@ -20,8 +22,9 @@ public class Teleop
 	
 	public static void run()
 	{
+		SmartDashboard.putBoolean("Is still", Sensors.areWeStillMoving());
+
 		dualshock.readValues();
-		Sensors.poll();
 		
 		if(dualshock.getLeftBumper()) DriveBase.setDriveMode(Constants.REVERSE_MODE);
 		else if (dualshock.getRightBumper()) DriveBase.setDriveMode(Constants.NORMAL_MODE);

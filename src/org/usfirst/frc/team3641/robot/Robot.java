@@ -29,6 +29,7 @@ public class Robot extends IterativeRobot
 
     public void autonomousPeriodic()
     {
+    	Sensors.poll();
     	Auton.run();
     }
 
@@ -39,6 +40,7 @@ public class Robot extends IterativeRobot
     
     public void teleopPeriodic()
     {
+    	Sensors.poll();
         Teleop.run();
     }
     

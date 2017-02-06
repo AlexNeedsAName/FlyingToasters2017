@@ -22,11 +22,17 @@ public class Constants
 	//Talons
 	public static final int DRIVEBASE_LEFT_TALON = 1;
 	public static final int DRIVEBASE_LEFT_SLAVE_TALON = 2;
-	public static final int DRIVEBASE_RIGHT_TALON = 3;
-	public static final int DRIVEBASE_RIGHT_SLAVE_TALON = 4;
-	public static final int SHOOTER_LEFT_TALON = 5;
-	public static final int SHOOTER_RIGHT_TALON = 6;
-	public static final int SHOOTER_ELEVATOR_TALON = 7;	
+	public static final int DRIVEBASE_LEFT_SLAVE2_TALON = 3;
+	public static final int DRIVEBASE_RIGHT_TALON = 4;
+	public static final int DRIVEBASE_RIGHT_SLAVE_TALON = 5;
+	public static final int DRIVEBASE_RIGHT_SLAVE2_TALON = 6;
+	public static final int SHOOTER_LEFT_TALON = 7;
+	public static final int SHOOTER_RIGHT_TALON = 8;
+	public static final int SHOOTER_ELEVATOR_TALON = 9;
+	public static final int TURRET_TALON = 10;
+	public static final int INTAKE_LEFT = 11;
+	public static final int INTAKE_RIGHT = 12;
+	public static final int HOPPER_ADJATATOR = 13;
 	
 	//Victors (for Alek)
 	public static final int LEFT_VICTOR = 1;
@@ -57,6 +63,10 @@ public class Constants
 	public static final double SHOOTER_KI = 0.000005;
 	public static final double SHOOTER_KD = 0.00000025;
 	public static final double SHOOTER_FF = 5800;
+	
+	public static final double TURRET_KP = 0;
+	public static final double TURRET_KI = 0;
+	public static final double TURRET_KD = 0;
 
 	
 	public static final int FUEL_MODE = 1;
@@ -81,6 +91,8 @@ public class Constants
 	public static final double VOLTAGE_TO_METERS = 1;
 	public static final double ENCODER_TO_METERS = 0; //TODO: Build Robot and find Value
 	public static final double DRIVE_ENCODER_TO_METERS = 1; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
+	public static final double TURRET_ENCODER_TO_ANGLE = 0;
+	
 	//Auton Modes
 	public static final int START = 0;
 	public static final int DRIVE_FORWARDS = 1;
