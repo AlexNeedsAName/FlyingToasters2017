@@ -18,7 +18,6 @@ public class Auton
 	private static boolean runOnce;
 	
 	public static UDP udp;
-	public static Ultrasonic ultra;
 	
 	public static Auton getInstance()
 	{
@@ -79,8 +78,7 @@ public class Auton
 				
 			case Constants.DEFAULT_AUTO:
 				if(udp == null) udp = new UDP("beaglebone.local", 3641);
-				if(ultra == null) ultra = new Ultrasonic(0, 1);
-				Auton.ultra.setAutomaticMode(true);
+				Sensors.poll();
 
 				//Find the line first!
 				if (lineFound == false) 
@@ -103,7 +101,7 @@ public class Auton
 				        {
 				        	lineFound = true;
 				        	DriveBase.driveArcade(-0.6, 0);
-				        	Timer.delay(1);
+				        	Timer.delay(1); //I just didn't have an encoder, it will be removed soon
 				        	DriveBase.driveArcade(0, 0);
 				        	DriveBase.turnDegrees(55, 2);
 				        }
@@ -143,10 +141,10 @@ public class Auton
 				        	DriveBase.driveArcade(0, 0);
 				        }
 				        
-				        double range = Auton.ultra.getRangeInches();
+				        double range = Sensors.getDistance();
 						System.out.println(range);
 				        
-						if (range < 20) 
+						if (range < 0.2) 
 						{
 							DriveBase.driveArcade(0, 0);
 							endOfLine = true;
@@ -155,66 +153,6 @@ public class Auton
 				}
 
 			break;
-			
-			
-			case Constants.MOUSE_CONTROL:
-				
-				if(udp == null) udp = new UDP("beaglebone.local", 3641);
-				
-				//Request info about line position
-				if (runOnce == false) 
-				{
-					udp.sendData("1");
-					runOnce = true;
-				}
-				
-				while (continueMouseControl == true) 
-				{
-					receivedData = udp.getData();
-					
-					if (receivedData != null) 
-			        {
-						//This code allows for the incoming data to split up into parts by spaces
-				        String[] parts = receivedData.split(" ");
-				        String xQue = parts[0];
-				        String yQue = parts[1];
-				        String wState = parts[2];
-				        String sState = parts[3];
-				        double xQue_double = Double.parseDouble(xQue);
-				        System.out.println("RECEIVED: " + xQue);
-				        
-				        if (wState == "0" && sState == "0")
-				        {
-				        	DriveBase.driveArcade(0, 0);
-				        }
-				        
-				        if (wState == "1")
-				        {
-				        	DriveBase.driveArcade(0.8, 0);
-				        }
-				        
-				        if (sState == "1")
-				        {
-				        	DriveBase.driveArcade(-0.8, 0);
-				        }
-						
-				        if (xQue_double < 0) 
-				        {
-				        	DriveBase.driveArcade(0.0, -0.8);
-				        }
-				        if (xQue_double > 0) 
-				        {
-				        	DriveBase.driveArcade(0.0, 0.8);
-				        }
-				        if (xQue_double == 0) {
-				        	DriveBase.driveArcade(0, 0);
-				        }
-				        //xQue_double = xQue_double*0.25;
-				        //DriveBase.turnDegrees(xQue_double, 2);
-					}
-				}
-				
-				break;
 
 		}
 	}

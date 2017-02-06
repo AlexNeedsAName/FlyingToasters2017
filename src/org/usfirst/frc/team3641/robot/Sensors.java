@@ -2,6 +2,7 @@ package org.usfirst.frc.team3641.robot;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 import com.kauailabs.navx.frc.AHRS;
 public class Sensors
@@ -10,6 +11,7 @@ public class Sensors
 	private static double ultrasonicDistance, shooterRPM, driveDistance, angle;
 	
 	private static AnalogInput ultrasonic;
+	public static Ultrasonic ultra;
 	private static AHRS gyro;
 	private static ADXRS450_Gyro SPIgyro;
 	
@@ -22,16 +24,31 @@ public class Sensors
 	
 	private Sensors()
 	{
-		ultrasonic = new AnalogInput(Constants.ULTRASONIC_PORT); 
+		if(Constants.runningAleksBot)
+		{
+			ultra = new Ultrasonic(Constants.ULTRASONIC_ECHO , Constants.ULTRASONIC_TRIGGER);
+			ultra.setAutomaticMode(true);
+		}
+		else
+		{
+			ultrasonic = new AnalogInput(Constants.ULTRASONIC_PORT); 
+		}
 	}
 	
 	public static void poll()
 	{
-		shooterRPM = Shooter.right.getEncVelocity() * Constants.ENCODER_TO_METERS;
-		ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.VOLTAGE_TO_METERS;
-		driveDistance = DriveBase.left.getEncPosition() * Constants.DRIVE_ENCODER_TO_METERS;
-		if(Constants.runningAleksBot) SPIgyro.getAngle();
-		else angle = gyro.getAngle();
+		if(Constants.runningAleksBot)
+		{
+			angle = SPIgyro.getAngle();
+			ultrasonicDistance = ultra.getRangeMM() * 1000;
+		}
+		else
+		{
+			shooterRPM = Shooter.right.getEncVelocity() * Constants.ENCODER_TO_METERS;
+			ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.VOLTAGE_TO_METERS;
+			driveDistance = DriveBase.left.getEncPosition() * Constants.DRIVE_ENCODER_TO_METERS;
+			angle = gyro.getAngle();
+		}
 	}
 	
 	public static void resetGyro()

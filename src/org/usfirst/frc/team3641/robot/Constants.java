@@ -14,6 +14,8 @@ public class Constants
 	public static final int OPERATOR_PORT = 0;
 	
 	public static final int ULTRASONIC_PORT = 0;
+	public static final int ULTRASONIC_ECHO = 0;
+	public static final int ULTRASONIC_TRIGGER = 1;
 			
 	public static final int SERIAL_BAUDRATE  = 115200;
 

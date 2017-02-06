@@ -14,20 +14,40 @@ public class Gearbox
 	
 	private Gearbox()
 	{
-		leftShifter = new DoubleSolenoid(Constants.LEFT_SHIFTER_CHANNEL_FORWARD, Constants.LEFT_SHIFTER_CHANNEL_BACKWARDS);
-		rightShifter = new DoubleSolenoid(Constants.RIGHT_SHIFTER_CHANNEL_FORWARD, Constants.RIGHT_SHIFTER_CHANNEL_BACKWARDS);
+		if(Constants.runningAleksBot)
+		{
+			
+		} else
+		{
+			leftShifter = new DoubleSolenoid(Constants.LEFT_SHIFTER_CHANNEL_FORWARD, Constants.LEFT_SHIFTER_CHANNEL_BACKWARDS);
+			rightShifter = new DoubleSolenoid(Constants.RIGHT_SHIFTER_CHANNEL_FORWARD, Constants.RIGHT_SHIFTER_CHANNEL_BACKWARDS);
+		}
 	}
 	
 	public static void shiftHigh()
 	{
-		leftShifter.set(DoubleSolenoid.Value.kForward);
-		rightShifter.set(DoubleSolenoid.Value.kForward);
+		if(Constants.runningAleksBot) 
+		{
+			
+		} 
+		else 
+		{
+			leftShifter.set(DoubleSolenoid.Value.kForward);
+			rightShifter.set(DoubleSolenoid.Value.kForward);
+		}
 	}
 	
 	public static void shiftLow()
 	{
-		leftShifter.set(DoubleSolenoid.Value.kReverse);
-		rightShifter.set(DoubleSolenoid.Value.kReverse);
+		if(Constants.runningAleksBot)
+		{
+			
+		} 
+		else 
+		{
+			leftShifter.set(DoubleSolenoid.Value.kReverse);
+			rightShifter.set(DoubleSolenoid.Value.kReverse);
+		}
 	}
 	
 }
