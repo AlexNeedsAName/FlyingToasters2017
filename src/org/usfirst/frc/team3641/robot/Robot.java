@@ -2,6 +2,7 @@ package org.usfirst.frc.team3641.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Preferences;
 
 public class Robot extends IterativeRobot
 {
@@ -21,11 +22,14 @@ public class Robot extends IterativeRobot
     public void autonomousInit()
     {
     	Gearbox.shiftLow();
+    	int mode = Preferences.getInstance().getInt("Auton Number", 4);
+    	boolean red = Preferences.getInstance().getBoolean("Red Alliance", true);
+    	Auton.getInstance(mode, red);
     }
 
     public void autonomousPeriodic()
     {
-    	Auton.run(4);
+    	Auton.run();
     }
 
     public void teleopInit()

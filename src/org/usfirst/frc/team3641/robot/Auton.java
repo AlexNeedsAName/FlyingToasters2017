@@ -7,6 +7,7 @@ public class Auton
 {
 	private static Auton instance;
 	private static int autonState;
+	private static int autonMode;
 	
 	private static boolean alreadyDriving = false;
 	private static boolean lineFound = false;
@@ -15,39 +16,46 @@ public class Auton
 	
 	private static double initalDist;
 	private static double finalDist;
+	private static double initalAngle;
+	private static double finalAngle;
+	
+	private static boolean onRedAlliance;
+	
 	private static boolean runOnce;
 	
 	public static UDP udp;
 	
-	public static Auton getInstance()
+	public static Auton getInstance(int mode, boolean redAlliance)
 	{
-		runOnce = false;
-		if(instance == null) instance = new Auton();
+		if(instance == null) instance = new Auton(mode, redAlliance);
 		return instance;
 	}
 	
-	private Auton()
+	private Auton(int mode, boolean redAlliance)
 	{
+		runOnce = false;
 		autonState = Constants.START;
+		onRedAlliance = redAlliance;
+		autonMode = mode;
+
 	}
 	
-	public static void run(int autonMode)
+	public static void run()
 	{
 		String receivedData;
 		Boolean continueMouseControl = true;
 		switch(autonMode)
 		{
-			case Constants.DO_NOTHING:
-				
+			case Constants.DO_NOTHING:				
 				break;
-				
 				
 			case Constants.CROSS_BASELINE:
-				
 				crossBaseline();
-				
 				break;
 				
+			case Constants.HOPPER_AUTON:
+				hopperAuton();
+				break;
 				
 			case Constants.LINE_ALIGN:
 				
@@ -161,19 +169,43 @@ public class Auton
 	{
 		if(autonState == Constants.START)
 		{
-			autonState = Constants.DRIVE_FORWARDS;
-			alreadyDriving = false;
+			increment(Constants.DRIVE_FORWARDS);
 		}
 		
 		if(autonState == Constants.DRIVE_FORWARDS)
 		{
-			if(driveForwards(284, .5))
-			{
-				autonState = Constants.DONE;
-				alreadyDriving = false;
-			}
+			boolean done = driveForwards(3, .5);
+			if(done) increment(Constants.DONE);
+		}
+	}
+	
+	private static void hopperAuton()
+	{
+		if(autonState == Constants.START)
+		{
+			increment(Constants.DRIVE_TO_HOPPER_LINE);
 		}
 		
+		if(autonState == Constants.DRIVE_TO_HOPPER_LINE);
+		{
+			boolean done = driveForwards(3, .5);
+			if(done) increment(Constants.TURN_TO_HOPPER);
+		}
+		
+		if(autonState == Constants.TURN_TO_HOPPER)
+		{
+			double angle = (onRedAlliance) ? -90 : 90; //If on red alliance, turn right. If on blue, turn left.
+			boolean done = turnBy(angle);
+			if(done) increment(Constants.SCORE_RANKING_POINT);
+		}
+		
+		if(autonState == Constants.SCORE_RANKING_POINT)
+		{
+			double targetRPM = 4200;//TODO: Add distance calc based on kinematic equation
+			Shooter.setRPM(targetRPM);
+			double error = Math.abs(targetRPM - Sensors.getShooterRPM());
+			if(error < 50) Shooter.fire();
+		}
 	}
 	
 	private static boolean driveForwards(double distance, double speed)
@@ -193,5 +225,22 @@ public class Auton
 		else return true;
 		
 	}
+	
+	private static boolean turnBy(double angle)
+	{
+		if(!alreadyDriving)
+		{
+			initalAngle = Sensors.getAngle();
+			finalAngle = initalAngle + angle;
+			alreadyDriving = true;
+		}
+		boolean done = DriveBase.turnTo(finalAngle, 1);
+		return done;
+	}
 
+	private static void increment(int state)
+	{
+		autonState = state;
+		alreadyDriving = false;
+	}
 }
