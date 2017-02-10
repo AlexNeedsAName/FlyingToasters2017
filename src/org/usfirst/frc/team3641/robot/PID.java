@@ -26,7 +26,7 @@ public class PID
 	{
 		this(kp, ki, kd, 1.0, null);
 	}
-	
+
 	public double pid(double error, double target)
 	{
 		errorRefresh += error;
@@ -40,17 +40,17 @@ public class PID
 		}
 		return output;
 	}
-	
+
 	public double pid(double error)
 	{
 		return pid(error, 0);
 	}
-	
+
 	public double getI()
 	{
 		return errorRefresh;
 	}
-	
+
 	public void reset()
 	{
 		errorRefresh = 0;

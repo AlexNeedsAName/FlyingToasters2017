@@ -9,17 +9,17 @@ public class DriveBase
 	private static DriveBase instance;
 	public static CANTalon left, leftSlave, right, rightSlave;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
-	
+
 	private static PID rotationPID;
-	
+
 	private static boolean reverseMode;
-	
+
 	public static DriveBase getInstance()
 	{
 		if(instance == null) instance = new DriveBase();
 		return instance;
 	}
-	
+
 	private DriveBase()
 	{
 		if(Constants.runningAleksBot)
@@ -34,39 +34,39 @@ public class DriveBase
 		right = new CANTalon(Constants.DRIVEBASE_RIGHT_TALON);
 		rightSlave = new CANTalon(Constants.DRIVEBASE_RIGHT_SLAVE_TALON);
 		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
-		
+
 		rotationPID = new PID(Constants.DRIVEBASE_TRACKING_KP, Constants.DRIVEBASE_TRACKING_KI, Constants.DRIVEBASE_TRACKING_KD);
 	}
-	
+
 	public static void driveArcade(double power, double rotation)
 	{
 		if(reverseMode) power = -power;
-		
+
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
-				
+
 		driveTank(leftPower, rightPower);
 	}
-	
+
 	public static void driveTank(double leftPower, double rightPower)
 	{
 
 		double maxPower;
 		if(leftPower > rightPower) maxPower = leftPower;
 		else maxPower = rightPower;
-		
+
 		if(maxPower > 1)
 		{
 			leftPower/= maxPower;
 			rightPower/= maxPower;
 		}
-		
+
 		if(reverseMode)
 		{
 			leftPower*= -1;
 			rightPower*= -1;
 		}
-		
+
 		if(Constants.runningAleksBot)
 		{
 			PWMleft.set(leftPower);
@@ -82,13 +82,13 @@ public class DriveBase
 			rightSlave.set(rightPower);
 		}
 	}
-			
+
 	public static void setDriveMode(int mode)
 	{
 		if(mode == Constants.REVERSE_MODE) reverseMode = true;
 		else reverseMode = false;
 	}
-	
+
 	public static void shift(boolean high)
 	{
 		if(high)
@@ -100,7 +100,7 @@ public class DriveBase
 			//shift low
 		}
 	}
-	
+
 	public static boolean turnTo(double targetAngle, double threshold)
 	{
 		double error = calcError(targetAngle, Sensors.getAngle());
@@ -111,19 +111,19 @@ public class DriveBase
 	private static double calcError(double targetAngle, double currentAngle)
 	{
 		double counterClockwiseDistance, clockwiseDistance;
-		
+
 		if(targetAngle == currentAngle) return 0;
 		else
 		{
 			counterClockwiseDistance = fixDegrees(targetAngle - currentAngle);
 			clockwiseDistance = fixDegrees(360 - (targetAngle - currentAngle));
-			
+
 			if(counterClockwiseDistance > clockwiseDistance) return counterClockwiseDistance;
 			else return -clockwiseDistance;
 		}
-		
+
 	}
-	
+
 	private static double fixDegrees(double degrees)
 	{
 		while(degrees >= 360) degrees -= 360;
@@ -137,23 +137,23 @@ public class DriveBase
 		Sensors.resetGyro();
 		Sensors.poll();
 		double gyroAngle = Sensors.getAngle();
-        
-        while (gyroAngle < inputDegrees-errorMargin || gyroAngle > inputDegrees+errorMargin) 
-        {
-        	if (gyroAngle < inputDegrees-errorMargin) 
-        	{
-        		//Turn right
-        		driveArcade(0, 0.8);
-        	}
-        	if (gyroAngle > inputDegrees+errorMargin) 
-        	{
-        		//Turn left
-        		driveArcade(0, -0.8);
-        	}
-        	Sensors.poll();
-    		gyroAngle = Sensors.getAngle();
-        }
-        driveArcade(0, 0);
+
+		while (gyroAngle < inputDegrees-errorMargin || gyroAngle > inputDegrees+errorMargin) 
+		{
+			if (gyroAngle < inputDegrees-errorMargin) 
+			{
+				//Turn right
+				driveArcade(0, 0.8);
+			}
+			if (gyroAngle > inputDegrees+errorMargin) 
+			{
+				//Turn left
+				driveArcade(0, -0.8);
+			}
+			Sensors.poll();
+			gyroAngle = Sensors.getAngle();
+		}
+		driveArcade(0, 0);
 	}
-	
+
 }

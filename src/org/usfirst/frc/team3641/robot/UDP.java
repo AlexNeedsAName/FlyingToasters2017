@@ -41,7 +41,7 @@ public class UDP
 	{
 		try
 		{
-			
+
 			buf = data.getBytes();	//Converts the String to a byte array
 			packet = new DatagramPacket(buf, buf.length, address, port); //Makes a packet from the byte array, address, and port
 			socket.send(packet);	//Send the packet :D

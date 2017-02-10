@@ -5,30 +5,31 @@ public class Gearbox
 {
 	private static Gearbox instance;
 	private static DoubleSolenoid leftShifter, rightShifter;
-	
+
 	public static Gearbox getInstance()
 	{
 		if(instance == null) instance = new Gearbox();
 		return instance;
 	}
-	
+
 	private Gearbox()
 	{
 		if(Constants.runningAleksBot)
 		{
-			
-		} else
+
+		}
+		else
 		{
 			leftShifter = new DoubleSolenoid(Constants.LEFT_SHIFTER_CHANNEL_FORWARD, Constants.LEFT_SHIFTER_CHANNEL_BACKWARDS);
 			rightShifter = new DoubleSolenoid(Constants.RIGHT_SHIFTER_CHANNEL_FORWARD, Constants.RIGHT_SHIFTER_CHANNEL_BACKWARDS);
 		}
 	}
-	
+
 	public static void shiftHigh()
 	{
 		if(Constants.runningAleksBot) 
 		{
-			
+
 		} 
 		else 
 		{
@@ -36,12 +37,12 @@ public class Gearbox
 			rightShifter.set(DoubleSolenoid.Value.kForward);
 		}
 	}
-	
+
 	public static void shiftLow()
 	{
 		if(Constants.runningAleksBot)
 		{
-			
+
 		} 
 		else 
 		{
@@ -49,5 +50,5 @@ public class Gearbox
 			rightShifter.set(DoubleSolenoid.Value.kReverse);
 		}
 	}
-	
+
 }

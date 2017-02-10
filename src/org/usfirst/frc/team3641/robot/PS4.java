@@ -10,7 +10,7 @@ public class PS4 extends Joystick
 	{
 		super(port);
 	}
-	
+
 	public void readValues()
 	{
 		leftX = getRawAxis(0);
@@ -19,7 +19,7 @@ public class PS4 extends Joystick
 		leftTrigger = (getRawAxis(3) + .5) / 2;
 		rightTrigger = (getRawAxis(4) + .5) / 2;
 		rightY = getRawAxis(5);
-		
+
 		square = getRawButton(1);
 		X = getRawButton(2);
 		circle = getRawButton(3);
@@ -33,13 +33,13 @@ public class PS4 extends Joystick
 		leftStickButton = getRawButton(11);
 		rightStickButton = getRawButton(12);
 		playstation = getRawButton(13);
-		
+
 		left = (getPOV(0) == 270);
 		right = (getPOV(0) == 90);
 		up = (getPOV(0) == 0);
 		down = (getPOV(0) == 180);
 	}
-	
+
 	public double getLeftX()
 	{
 		return leftX;

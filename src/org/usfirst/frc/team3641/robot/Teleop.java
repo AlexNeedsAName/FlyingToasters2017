@@ -7,28 +7,26 @@ public class Teleop
 	private static Teleop instance;
 	private static PS4 dualshock;
 	private static Extreme3DPro operator;
-	
+
 	public static Teleop getInstance()
 	{
 		if(instance == null) instance = new Teleop();
 		return instance;
 	}
-	
+
 	private Teleop()
 	{
 		dualshock = new PS4(Constants.PS4_PORT);
 		operator = new Extreme3DPro(Constants.OPERATOR_PORT);
 	}
-	
+
 	public static void run()
 	{
-		SmartDashboard.putBoolean("Is still", Sensors.areWeStillMoving());
-
 		dualshock.readValues();
-		
+
 		if(dualshock.getLeftBumper()) DriveBase.setDriveMode(Constants.REVERSE_MODE);
 		else if (dualshock.getRightBumper()) DriveBase.setDriveMode(Constants.NORMAL_MODE);
-		
+
 		//Put any functions that should block normal drive base input here:
 		if(dualshock.getCircleButton()) Tracking.target(Constants.GEAR_MODE);
 		else if(dualshock.getTriangleButton()) Tracking.target(Constants.FUEL_MODE);
@@ -44,11 +42,9 @@ public class Teleop
 				DriveBase.driveArcade(dualshock.getLeftY(), dualshock.getRightX());
 			}
 		}
-		
+
 		//Put any functions that should not interfere with the drive base here:
-		if(dualshock.getOptionsButton()) Shooter.setRPM(4200);
+		if(dualshock.getOptionsButton()) Shooter.setRPM(1750);
 		if(dualshock.getShareButton()) Shooter.fire();
-		
 	}
-	
 }

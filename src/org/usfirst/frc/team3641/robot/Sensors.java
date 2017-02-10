@@ -3,6 +3,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.kauailabs.navx.frc.AHRS;
 public class Sensors
@@ -10,7 +11,7 @@ public class Sensors
 	private static Sensors instance;
 	private static double ultrasonicDistance, shooterRPM, driveDistance, angle, turretAngle;
 	private static boolean isStill;
-	
+
 	private static AnalogInput ultrasonic;
 	public static Ultrasonic ultra;
 	private static AHRS gyro;
@@ -22,7 +23,7 @@ public class Sensors
 		if(instance == null) instance = new Sensors();
 		return instance;
 	}
-	
+
 	private Sensors()
 	{
 		if(Constants.runningAleksBot)
@@ -35,7 +36,7 @@ public class Sensors
 			ultrasonic = new AnalogInput(Constants.ULTRASONIC_PORT); 
 		}
 	}
-	
+
 	public static void poll()
 	{
 		if(Constants.runningAleksBot)
@@ -53,46 +54,49 @@ public class Sensors
 			isStill = gyro.isMoving();
 		}
 	}
-	
+
 	public static void resetGyro()
 	{
 		if(Constants.runningAleksBot) SPIgyro.reset();
 		else gyro.reset();
 	}
-	
+
 	public static void resetDriveDistance()
 	{
 		DriveBase.left.setEncPosition(0);
 	}
-	
+
 	public static double getDistance()
 	{
 		return ultrasonicDistance;
 	}
-	
+
 	public static double getShooterRPM()
 	{
 		return shooterRPM;
 	}
-	
+
 	public static double getDriveDistance()
 	{
 		return driveDistance;
 	}
-	
+
 	public static double getAngle()
 	{
 		return angle;
 	}
-	
+
 	public static double getTurretAngle()
 	{
 		return turretAngle;
 	}
-	
-	public static boolean areWeStillMoving()
+
+	public static void readGyroThings()
 	{
-		return isStill;
+		SmartDashboard.putNumber("X Accel", gyro.getRawAccelX());
+		SmartDashboard.putNumber("Y Accel", gyro.getRawAccelY());
+		SmartDashboard.putNumber("Z Accel", gyro.getRawAccelZ());
+		SmartDashboard.putNumber("Gyro", gyro.getAngle());
 	}
 	
 }
