@@ -16,6 +16,8 @@ public class Robot extends IterativeRobot
 		Shooter.getInstance();
 		Turret.getInstance();
 		Gearbox.getInstance();
+		Hopper.getInstance();
+		Serial.getInstance();
 		Sensors.getInstance(); //Must be last, it uses things initalized in other classes
 	}
 

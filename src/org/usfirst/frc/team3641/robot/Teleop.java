@@ -23,28 +23,30 @@ public class Teleop
 	public static void run()
 	{
 		dualshock.readValues();
-
+		
 		if(dualshock.getLeftBumper()) DriveBase.setDriveMode(Constants.REVERSE_MODE);
 		else if (dualshock.getRightBumper()) DriveBase.setDriveMode(Constants.NORMAL_MODE);
 
-		//Put any functions that should block normal drive base input here:
-		if(dualshock.getCircleButton()) Tracking.target(Constants.GEAR_MODE);
-		else if(dualshock.getTriangleButton()) Tracking.target(Constants.FUEL_MODE);
+		//Put any functions that should block normal drive base input in front of this:
+		if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getYAxis(), operator.getZAxis());
+		else DriveBase.driveArcade(dualshock.getLeftY(), dualshock.getRightX());
+		
+	
+		//Put any functions that should not interfere with the drive base here:
+		
+		//Manual Mode
+		if(operator.getButton(2)) 
+		{
+			Turret.set(operator.getTwist());
+			//Shooter.setRPM(1750);
+			if(operator.getTrigger()) Shooter.forceFire();
+			else Shooter.stopFiring();
+		}		
 		else
 		{
-			Tracking.resetState();
-			if(Constants.runningAleksBot)
-			{
-				DriveBase.driveArcade(operator.getYAxis(), operator.getZAxis());
-			} 
-			else
-			{
-				DriveBase.driveArcade(dualshock.getLeftY(), dualshock.getRightX());
-			}
+			if(operator.getTrigger()) Tracking.target(Constants.FUEL_MODE);
+			else Tracking.resetState();
+			SmartDashboard.putNumber("Vision State", Tracking.getState());
 		}
-
-		//Put any functions that should not interfere with the drive base here:
-		if(dualshock.getOptionsButton()) Shooter.setRPM(1750);
-		if(dualshock.getShareButton()) Shooter.fire();
 	}
 }

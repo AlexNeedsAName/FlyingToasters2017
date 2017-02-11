@@ -19,7 +19,7 @@ public class Serial
 
 	public static void sendData(String data)
 	{
-		serial.writeString(data);
+		serial.writeString(data + "\n");
 	}
 
 	public static String getData()

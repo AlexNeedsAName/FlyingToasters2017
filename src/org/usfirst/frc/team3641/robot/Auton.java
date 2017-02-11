@@ -203,10 +203,13 @@ public class Auton
 
 			if(autonState == Constants.SCORE_RANKING_POINT)
 			{
-				double targetRPM = 4200;//TODO: Add distance calc based on kinematic equation
-				Shooter.setRPM(targetRPM);
-				double error = Math.abs(targetRPM - Sensors.getShooterRPM());
-				if(error < 50) Shooter.fire();
+				int trackingState = Tracking.target(Constants.FUEL_MODE);
+				if(trackingState == Constants.TRACKED_FUEL)
+				{
+					double targetRPM = 1750;//TODO: Add distance calc based on kinematic equation
+					double error = Shooter.setRPM(targetRPM);
+					if(error < 50) Shooter.fire();
+				}
 			}
 	}
 

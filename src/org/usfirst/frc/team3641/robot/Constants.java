@@ -20,7 +20,7 @@ public class Constants
 	public static final int SERIAL_BAUDRATE  = 115200;
 
 	//Talons
-	public static final int DRIVEBASE_LEFT_TALON = 14;
+	public static final int DRIVEBASE_LEFT_TALON = 1;
 	public static final int DRIVEBASE_LEFT_SLAVE_TALON = 2;
 	public static final int DRIVEBASE_LEFT_SLAVE2_TALON = 3;
 	public static final int DRIVEBASE_RIGHT_TALON = 4;
@@ -28,11 +28,13 @@ public class Constants
 	public static final int DRIVEBASE_RIGHT_SLAVE2_TALON = 6;
 	public static final int SHOOTER_LEFT_TALON = 7;
 	public static final int SHOOTER_RIGHT_TALON = 8;
-	public static final int SHOOTER_ELEVATOR_TALON = 9;
-	public static final int TURRET_TALON = 10;
-	public static final int INTAKE_LEFT = 11;
-	public static final int INTAKE_RIGHT = 12;
-	public static final int HOPPER_ADJATATOR = 13;
+	public static final int TURRET_TALON = 9;
+	
+	//Sparks
+	public static final int INTAKE_LEFT_SPARK = 1;
+	public static final int INTAKE_RIGHT_SPARK = 2;
+	public static final int HOPPER_ADJATATOR_SPARK = 3;
+	public static final int SHOOTER_ELEVATOR_SPARK = 4;
 
 	//Victors (for Alek)
 	public static final int LEFT_VICTOR = 1;
@@ -65,8 +67,10 @@ public class Constants
 	public static final double SHOOTER_FF = 5800;
 
 	public static final double TURRET_KP = 0.005;
-	public static final double TURRET_KI = 0;
+	public static final double TURRET_KI = 0.0005;
 	public static final double TURRET_KD = 0;
+	public static final double TURRET_DEADBAND = 10;
+	public static final double ACCEPTABLE_TURRET_ERROR = 2;
 
 
 	public static final int FUEL_MODE = 1;
@@ -78,8 +82,11 @@ public class Constants
 	public static final int SLIDE_GEAR_MECHANISM = 4;	
 	public static final int TRACKED_GEAR = 5;
 	public static final int TRACKED_FUEL = 6;
+	public static final int VERIFY_REQUEST = 7;
+	public static final int VERIFY = 8;
 
-	public static final double ACCEPTABLE_FUEL_ERROR = 1; //Degrees
+
+	public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 	public static final double ACCEPTABLE_GEAR_ERROR = 5; //Pixels
 
 	public static final int CAMERA_CENTER = 160;

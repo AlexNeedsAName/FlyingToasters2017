@@ -3,7 +3,6 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Ultrasonic;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.kauailabs.navx.frc.AHRS;
 public class Sensors
@@ -51,7 +50,7 @@ public class Sensors
 			driveDistance = DriveBase.left.getEncPosition() * Constants.DRIVE_ENCODER_TO_METERS;
 			turretAngle = Turret.turretTalon.getEncPosition() * Constants.TURRET_ENCODER_TO_ANGLE;
 			angle = gyro.getAngle();
-			isStill = gyro.isMoving();
+			isStill = !gyro.isMoving();
 		}
 	}
 
@@ -90,13 +89,9 @@ public class Sensors
 	{
 		return turretAngle;
 	}
-
-	public static void readGyroThings()
-	{
-		SmartDashboard.putNumber("X Accel", gyro.getRawAccelX());
-		SmartDashboard.putNumber("Y Accel", gyro.getRawAccelY());
-		SmartDashboard.putNumber("Z Accel", gyro.getRawAccelZ());
-		SmartDashboard.putNumber("Gyro", gyro.getAngle());
-	}
 	
+	public static boolean getStill()
+	{
+		return isStill;
+	}
 }

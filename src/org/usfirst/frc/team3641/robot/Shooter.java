@@ -3,12 +3,15 @@ package org.usfirst.frc.team3641.robot;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Spark;
 
 public class Shooter
 {
 	private static Shooter instance;
-	public static CANTalon left, right, elevator;
+	public static CANTalon left, right;
+	private static Spark elevator;
 	private static PID pid;
+	private static double error;
 
 	public static Shooter getInstance()
 	{
@@ -21,7 +24,7 @@ public class Shooter
 		left = new CANTalon(Constants.SHOOTER_LEFT_TALON);
 		right = new CANTalon(Constants.SHOOTER_RIGHT_TALON);
 		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
-		elevator = new CANTalon(Constants.SHOOTER_ELEVATOR_TALON);
+		elevator = new Spark(Constants.SHOOTER_ELEVATOR_SPARK);
 		pid = new PID(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, Constants.SHOOTER_FF, "Shooter");
 	}
 
@@ -30,13 +33,14 @@ public class Shooter
 		setRPM(distance * Constants.DISTANCE_TO_RPM); //TODO: Use kinematic equations instead of a proportion
 	}
 
-	public static void setRPM(double target)
+	public static double setRPM(double target)
 	{
 		SmartDashboard.putNumber("Target RPM", target);
 		double current = Sensors.getShooterRPM();
-		double error = target - current;
+		error = target - current;
 		double output = pid.pid(error, target);
 		set(output);
+		return error;
 	}
 
 	public static void set(double power)
@@ -53,11 +57,25 @@ public class Shooter
 	{
 		SmartDashboard.putNumber("Target RPM", 0);
 		set(0);
+		error = 0;
 		pid.reset();
 	}
 
 	public static void fire()
 	{
+		if(Math.abs(error) < 50) forceFire();
+		else stopFiring();
 
+	}
+	public static void forceFire()
+	{
+		elevator.set(1);
+		Hopper.adjatate();
+	}
+	
+	public static void stopFiring()
+	{
+		elevator.set(0);
+		Hopper.stopAdjatating();
 	}
 }

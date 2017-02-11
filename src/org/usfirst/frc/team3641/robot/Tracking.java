@@ -1,10 +1,12 @@
 package org.usfirst.frc.team3641.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Tracking
 {
 	private static Tracking instance;
 
-	private static int center;
+	private static double angle;
 	private static double distance, targetAngle;
 
 	private static int visionState;
@@ -25,10 +27,9 @@ public class Tracking
 		switch(visionState)
 		{
 		case Constants.SEND_REQUEST:
-			String request = "R";
-			if(mode == Constants.FUEL_MODE) request += "R";
-			else request += "G";
-			Serial.sendData(request);
+			Turret.reset();
+			if(mode == Constants.FUEL_MODE) Serial.sendData("1");
+			else Serial.sendData("0");
 			visionState = Constants.GET_RESPONSE;
 			break;
 
@@ -36,23 +37,44 @@ public class Tracking
 			String response = Serial.getData();
 			if(response != null && response.contains(";"))
 			{
+				SmartDashboard.putString("Response", response);
 				String data[] = response.split(";");
-				center = Integer.parseInt(data[0]); //Pi should give us "xcord,distance" for now. We can change this though
-				distance = Integer.parseInt(data[1]);
-				if(mode == Constants.FUEL_MODE)
-				{
-					double angleOff = (center - Constants.CAMERA_CENTER) * Constants.DEGREES_PER_PIXEL;
-					targetAngle = Sensors.getAngle() + angleOff;
-					visionState = Constants.TURN_TO_TARGET;
-				}
+				angle = -Double.parseDouble(data[0]); //Pi should give us "Angle;Distance" for now. We can change this though
+				distance = Double.parseDouble(data[1]);
+				SmartDashboard.putNumber("Angle", angle);
+				if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TO_TARGET;
 			}
 			break;
 
 		case Constants.TURN_TO_TARGET:
-
-			boolean tracked = DriveBase.turnTo(targetAngle, Constants.ACCEPTABLE_FUEL_ERROR);
-			Shooter.setDistance(distance);
-			if(tracked) Shooter.fire();
+			boolean tracked = Turret.turnBy(angle, Constants.ACCEPTABLE_TURRET_ERROR);
+			SmartDashboard.putBoolean("Turret Tracked", tracked);
+			if(tracked)
+			{
+				Turret.reset();
+				visionState = Constants.VERIFY_REQUEST;
+			}
+			break;
+			
+		case Constants.VERIFY_REQUEST:
+			if(mode == Constants.FUEL_MODE) Serial.sendData("1");
+			else Serial.sendData("0");
+			visionState = Constants.VERIFY;
+			break;
+			
+		case Constants.VERIFY:
+			String response2 = Serial.getData();
+			if(response2 != null && response2.contains(";"))
+			{
+				String data[] = response2.split(";");
+				angle = -Double.parseDouble(data[0]); //Pi should give us "Angle;Distance" for now. We can change this though
+				distance = Double.parseDouble(data[1]);
+				if(mode == Constants.FUEL_MODE)
+				{
+					if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR) visionState = Constants.TRACKED_FUEL;
+					else resetState();
+				}
+			}
 			break;
 		}
 
@@ -63,6 +85,12 @@ public class Tracking
 	public static void resetState()
 	{
 		visionState = Constants.SEND_REQUEST;
+		Turret.reset();
+		Shooter.stopFiring();
+	}
+	public static int getState()
+	{
+		return visionState;
 	}
 
 }

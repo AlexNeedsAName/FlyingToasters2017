@@ -21,9 +21,10 @@ public class Turret
 
 	private Turret()
 	{
-		turretTalon = new CANTalon(1);
+		turretTalon = new CANTalon(Constants.TURRET_TALON);
 		turretTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		turretPID = new PID(Constants.TURRET_KP, Constants.TURRET_KI, Constants.TURRET_KD, 1, "Turret");
+		turretPID = new PID(Constants.TURRET_KP, Constants.TURRET_KI, Constants.TURRET_KD, 3, "Turret");
+		turretPID.setIDeadband(Constants.TURRET_DEADBAND);
 	}
 
 	public static boolean turnBy(double angle, double threshold)
@@ -36,19 +37,27 @@ public class Turret
 		}
 
 		SmartDashboard.putNumber("Target", finalAngle);
+		SmartDashboard.putNumber("Raw Encoder", turretTalon.getPosition());
 		
 		double error = finalAngle - Sensors.getTurretAngle();
 		double output = turretPID.pid(error);
 
-		turretTalon.set(output);
+		set(output);
 		SmartDashboard.putNumber("Turret Output", output);
 
-		return (error < threshold);
+		return (Math.abs(error) < threshold);
+	}
+	
+	public static void set(double power)
+	{
+		turretTalon.set(power);
+		SmartDashboard.putNumber("Turret Encoder", Sensors.getTurretAngle());
 	}
 
 	public static void reset()
 	{
 		alreadyRotating = false;
 		turretTalon.setEncPosition(0);
+		turretTalon.set(0);
 	}
 }
