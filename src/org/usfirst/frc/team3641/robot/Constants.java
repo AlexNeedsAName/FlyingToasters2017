@@ -99,6 +99,8 @@ public class Constants
 	public static final double ENCODER_TO_METERS = 0; //TODO: Build Robot and find Value
 	public static final double DRIVE_ENCODER_TO_METERS = 1; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
 	public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
+	
+	public static final double AUTON_RPM = 60; //TODO: build robot, tune value (you get the drill)
 
 	//Auton Modes
 	public static final int START = 0;
@@ -113,7 +115,7 @@ public class Constants
 	public static final int CROSS_BASELINE = 1;
 	public static final int LINE_ALIGN = 2;
 	public static final int MOUSE_CONTROL = 3;
-	public static final int DEFAULT_AUTO = 4;
+	public static final int LINE_FOLLOW = 4;
 	public static final int HOPPER_AUTON = 5;
 
 

@@ -24,7 +24,7 @@ public class Robot extends IterativeRobot
 	public void autonomousInit()
 	{
 		//Gearbox.shiftLow();
-		int mode = Preferences.getInstance().getInt("Auton Number", 4);
+		int mode = Preferences.getInstance().getInt("Auton Number", Constants.DO_NOTHING);
 		boolean red = Preferences.getInstance().getBoolean("Red Alliance", true);
 		Auton.getInstance(mode, red);
 	}

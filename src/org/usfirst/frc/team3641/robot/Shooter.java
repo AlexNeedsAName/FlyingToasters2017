@@ -28,11 +28,11 @@ public class Shooter
 		pid = new PID(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, Constants.SHOOTER_FF, "Shooter");
 	}
 
-	public static void setDistance(double distance)
+	public static double calcSpeed(double distance)
 	{
-		setRPM(distance * Constants.DISTANCE_TO_RPM); //TODO: Use kinematic equations instead of a proportion
+		return Constants.AUTON_RPM; //TODO: Add kinematic equation based on distance
 	}
-
+	
 	public static double setRPM(double target)
 	{
 		SmartDashboard.putNumber("Target RPM", target);

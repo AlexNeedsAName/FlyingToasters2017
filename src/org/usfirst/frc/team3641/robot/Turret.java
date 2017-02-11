@@ -11,7 +11,7 @@ public class Turret
 	private static Turret instance;
 	private static PID turretPID;
 	public static boolean alreadyRotating = false;
-	private static double initalAngle, finalAngle;
+	private static double finalAngle;
 
 	public static Turret getInstance()
 	{

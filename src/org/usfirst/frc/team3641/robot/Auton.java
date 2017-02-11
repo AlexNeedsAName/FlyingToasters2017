@@ -1,7 +1,6 @@
 package org.usfirst.frc.team3641.robot;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class Auton
 {
@@ -42,8 +41,6 @@ public class Auton
 
 	public static void run()
 	{
-		String receivedData;
-		Boolean continueMouseControl = true;
 		switch(autonMode)
 		{
 		case Constants.DO_NOTHING:				
@@ -58,110 +55,12 @@ public class Auton
 			break;
 
 		case Constants.LINE_ALIGN:
-
-			if(udp == null) udp = new UDP("beaglebone.local", 3641);
-
-			//Request info about line position
-			if (runOnce == false) 
-			{
-				udp.sendData("1");
-				runOnce = true;
-			}
-
-			receivedData = udp.getData();
-
-			if (receivedData != null) 
-			{
-				//This code allows for the incoming data to split up into parts by spaces
-				String[] parts = receivedData.split(" ");
-				String part1 = parts[0];
-				double part1_double = Double.parseDouble(part1);
-				System.out.println("RECEIVED: " + part1);
-
-				DriveBase.turnDegrees(part1_double, 2);
-			}
-
+			lineAlign();
 			break;
 
-
-		case Constants.DEFAULT_AUTO:
-			if(udp == null) udp = new UDP("beaglebone.local", 3641);
-			Sensors.poll();
-
-			//Find the line first!
-			if (lineFound == false) 
-			{
-				udp.sendData("2");
-				receivedData = udp.getData();
-				if (receivedData != null) 
-				{
-					//This code allows for the incoming data to split up into parts by spaces
-					String[] parts = receivedData.split(" ");
-					String part1 = parts[0];
-					double part1_double = Double.parseDouble(part1);
-					System.out.println("RECEIVED: " + part1);
-
-					if (part1_double == 999) 
-					{
-						DriveBase.driveArcade(-0.6, 0);
-					}
-					else
-					{
-						lineFound = true;
-						DriveBase.driveArcade(-0.6, 0);
-						Timer.delay(1); //I just didn't have an encoder, it will be removed soon
-						DriveBase.driveArcade(0, 0);
-						DriveBase.turnDegrees(55, 2);
-					}
-				}
-			}
-
-			//Follow the line until you loose it
-			if (lineFound == true && endOfLine == false) 
-			{
-				udp.sendData("2");
-				receivedData = udp.getData();
-				if (receivedData != null) 
-				{
-					//This code allows for the incoming data to split up into parts by spaces
-					String[] parts = receivedData.split(" ");
-					String part1 = parts[0];
-					double part1_double = Double.parseDouble(part1);
-					System.out.println("RECEIVED: " + part1);
-
-					if (part1_double != 999)
-					{
-						if (part1_double > -30 && part1_double < 30)
-						{
-							DriveBase.driveArcade(-0.4, 0);
-						}
-						if (part1_double <= -30)
-						{
-							DriveBase.driveArcade(-0.4, -0.3);
-						}
-						if (part1_double >= 30)
-						{
-							DriveBase.driveArcade(-0.4, 0.3);
-						}
-					}
-					else
-					{
-						DriveBase.driveArcade(0, 0);
-					}
-
-					double range = Sensors.getDistance();
-					System.out.println(range);
-
-					if (range < 0.2) 
-					{
-						DriveBase.driveArcade(0, 0);
-						endOfLine = true;
-					}
-				}
-			}
-
+		case Constants.LINE_FOLLOW:
+			lineFollow();
 			break;
-
 		}
 	}
 
@@ -200,19 +99,122 @@ public class Auton
 		}
 
 		if(autonState == Constants.DRIVE_TO_HOPPER)
+		{
+			
+		}
 
-			if(autonState == Constants.SCORE_RANKING_POINT)
-			{
-				int trackingState = Tracking.target(Constants.FUEL_MODE);
-				if(trackingState == Constants.TRACKED_FUEL)
-				{
-					double targetRPM = 1750;//TODO: Add distance calc based on kinematic equation
-					double error = Shooter.setRPM(targetRPM);
-					if(error < 50) Shooter.fire();
-				}
-			}
+		if(autonState == Constants.SCORE_RANKING_POINT)
+		{
+			Tracking.target(Constants.FUEL_MODE, true);
+		}
+	}
+	
+	private static void lineAlign()
+	{
+		String receivedData;
+		if(udp == null) udp = new UDP("beaglebone.local", 3641);
+
+		//Request info about line position
+		if (runOnce == false) 
+		{
+			udp.sendData("1");
+			runOnce = true;
+		}
+
+		receivedData = udp.getData();
+
+		if (receivedData != null) 
+		{
+			//This code allows for the incoming data to split up into parts by spaces
+			String[] parts = receivedData.split(" ");
+			String part1 = parts[0];
+			double part1_double = Double.parseDouble(part1);
+			System.out.println("RECEIVED: " + part1);
+
+			DriveBase.turnDegrees(part1_double, 2);
+		}
+
 	}
 
+	private static void lineFollow()
+	{
+		String receivedData;
+		if(udp == null) udp = new UDP("beaglebone.local", 3641);
+		Sensors.poll();
+
+		//Find the line first!
+		if (lineFound == false) 
+		{
+			udp.sendData("2");
+			receivedData = udp.getData();
+			if (receivedData != null) 
+			{
+				//This code allows for the incoming data to split up into parts by spaces
+				String[] parts = receivedData.split(" ");
+				String part1 = parts[0];
+				double part1_double = Double.parseDouble(part1);
+				System.out.println("RECEIVED: " + part1);
+
+				if (part1_double == 999) 
+				{
+					DriveBase.driveArcade(-0.6, 0);
+				}
+				else
+				{
+					lineFound = true;
+					DriveBase.driveArcade(-0.6, 0);
+					Timer.delay(1); //I just didn't have an encoder, it will be removed soon
+					DriveBase.driveArcade(0, 0);
+					DriveBase.turnDegrees(55, 2);
+				}
+			}
+		}
+
+		//Follow the line until you loose it
+		if (lineFound == true && endOfLine == false) 
+		{
+			udp.sendData("2");
+			receivedData = udp.getData();
+			if (receivedData != null) 
+			{
+				//This code allows for the incoming data to split up into parts by spaces
+				String[] parts = receivedData.split(" ");
+				String part1 = parts[0];
+				double part1_double = Double.parseDouble(part1);
+				System.out.println("RECEIVED: " + part1);
+
+				if (part1_double != 999)
+				{
+					if (part1_double > -30 && part1_double < 30)
+					{
+						DriveBase.driveArcade(-0.4, 0);
+					}
+					if (part1_double <= -30)
+					{
+						DriveBase.driveArcade(-0.4, -0.3);
+					}
+					if (part1_double >= 30)
+					{
+						DriveBase.driveArcade(-0.4, 0.3);
+					}
+				}
+				else
+				{
+					DriveBase.driveArcade(0, 0);
+				}
+
+				double range = Sensors.getDistance();
+				System.out.println(range);
+
+				if (range < 0.2) 
+				{
+					DriveBase.driveArcade(0, 0);
+					endOfLine = true;
+				}
+			}
+		}
+	}
+	
 	private static boolean driveForwards(double distance, double speed)
 	{
 		if(!alreadyDriving)

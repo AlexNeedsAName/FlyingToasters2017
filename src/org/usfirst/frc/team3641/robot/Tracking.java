@@ -6,8 +6,7 @@ public class Tracking
 {
 	private static Tracking instance;
 
-	private static double angle;
-	private static double distance, targetAngle;
+	private static double angle, distance;
 
 	private static int visionState;
 
@@ -22,7 +21,7 @@ public class Tracking
 
 	}
 
-	public static int target(int mode)
+	public static int target(int mode, boolean autoFire)
 	{
 		switch(visionState)
 		{
@@ -76,11 +75,26 @@ public class Tracking
 				}
 			}
 			break;
+			
+		case Constants.TRACKED_FUEL:
+			if(autoFire)
+			{
+				double targetRPM = Shooter.calcSpeed(distance);
+				double error = Shooter.setRPM(targetRPM);
+				if(error < 50) Shooter.fire();
+			}
+			break;
 		}
 
 		return visionState;
 
 	}
+	
+	public static int target(int mode)
+	{
+		return target(mode, false);
+	}
+	
 
 	public static void resetState()
 	{
