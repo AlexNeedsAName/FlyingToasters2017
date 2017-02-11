@@ -12,49 +12,43 @@ public class PS4
 	public PS4(int port)
 	{
 		rawJoystick= new Joystick(port);
-		current = new HashMap<Button, Boolean>(Button.values().length);
-		last = new HashMap<Button, Boolean>(Button.values().length);
-		axes = new HashMap<Axis, Double>(Axis.values().length);
+		current = new HashMap<Button, Boolean>(Button.getLength());
+		last = new HashMap<Button, Boolean>(Button.getLength());
+		axes = new HashMap<Axis, Double>(Axis.getLength());
 	}
 	
-	public enum Button
+	public static enum Button
 	{
 		X, CIRCLE, TRIANGLE, SQUARE,
 		LEFT_BUMPER, RIGHT_BUMPER,
 		LEFT_TRIGGER_BUTTON, RIGHT_TRIGGER_BUTTON,
 		SHARE, OPTIONS, PLAYSTATION_BUTTON,
 		LEFT_STICK_BUTTON, RIGHT_STICK_BUTTON,
-		DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN
+		DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN;
+		
+		private static final int length = Button.values().length;
+		public static final int getLength() { return length; }
 	}
 	
 	public enum Axis
 	{
 		LEFT_X, LEFT_Y, LEFT_TRIGGER,
-		RIGHT_X, RIGHT_Y, RIGHT_TRIGGER
+		RIGHT_X, RIGHT_Y, RIGHT_TRIGGER;
+		
+		private static final int length = Axis.values().length;
+		public static final int getLength() { return length; }
 	}
 
-	public double getAxis(Axis axis)
-	{
-		return axes.get(axis);
-	}
+	public double getAxis(Axis axis) { return axes.get(axis); }
 	
 	//Is it down at all
-	public boolean isDown(Button button)
-	{
-		return current.get(button);
-	}
+	public boolean isDown(Button button) { return current.get(button); }
 	
 	//Rising Edge only
-	public boolean isPressed(Button button)
-	{
-		return (current.get(button) && !last.get(button));
-	}
+	public boolean isPressed(Button button) { return (current.get(button) && !last.get(button)); }
 	
 	//Falling Edge only
-	public boolean isReleased(Button button)
-	{
-		return (!current.get(button) && last.get(button));
-	}
+	public boolean isReleased(Button button) { return (!current.get(button) && last.get(button)); }
 	
 	public void poll()
 	{
