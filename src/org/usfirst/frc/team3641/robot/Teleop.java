@@ -7,7 +7,6 @@ public class Teleop
 	private static Teleop instance;
 	private static PS4 dualshock;
 	private static Extreme3DPro operator;
-	private static boolean pressedLastLoop = false;
 
 	public static Teleop getInstance()
 	{
@@ -23,31 +22,26 @@ public class Teleop
 
 	public static void run()
 	{
-		dualshock.readValues();
+		dualshock.poll();
 		
 		//Change Drive Direction
-		if(dualshock.getDPadUp()) DriveBase.setDriveMode(Constants.NORMAL_MODE);
-		else if(dualshock.getDPadDown()) DriveBase.setDriveMode(Constants.REVERSE_MODE);
+		if(dualshock.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(Constants.NORMAL_MODE);
+		else if(dualshock.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(Constants.REVERSE_MODE);
 		
 		//Drive Robot
 		if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getYAxis(), operator.getZAxis());
-		else DriveBase.driveArcade(dualshock.getLeftY(), dualshock.getRightX());
+		else DriveBase.driveArcade(dualshock.getAxis(PS4.Axis.LEFT_Y), dualshock.getAxis(PS4.Axis.RIGHT_X));
 		
 		//Gearbox Things
-		if(dualshock.getPlayStationButton() && !pressedLastLoop)
-		{
-			Gearbox.togglePTO();
-			pressedLastLoop = true;
-		}
-		else if(!dualshock.getPlayStationButton()) pressedLastLoop = false;
+		if(dualshock.isPressed(PS4.Button.PLAYSTATION_BUTTON)) Gearbox.togglePTO();
 		
-		if(dualshock.getOptionsButton()) Gearbox.shiftLow();
-		else if(dualshock.getOptionsButton()) Gearbox.shiftHigh();
+		if(dualshock.isPressed(PS4.Button.SHARE)) Gearbox.shiftLow();
+		else if(dualshock.isPressed(PS4.Button.OPTIONS)) Gearbox.shiftHigh();
 		
 		//Intake Stuff
-		if(dualshock.getLeftBumper()) Intake.intakeDown();
-		else if (dualshock.getRightBumper()) Intake.intakeUp();
-		Intake.set(dualshock.getRightTrigger());
+		if(dualshock.isPressed(PS4.Button.LEFT_BUMPER)) Intake.intakeDown();
+		else if (dualshock.isPressed(PS4.Button.RIGHT_BUMPER)) Intake.intakeUp();
+		Intake.set(dualshock.getAxis(PS4.Axis.RIGHT_TRIGGER));
 
 		//Shooter Stuff
 		if(!operator.getButton(2)) //Autonomous Subsystem Mode

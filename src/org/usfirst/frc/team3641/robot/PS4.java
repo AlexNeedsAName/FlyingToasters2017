@@ -1,135 +1,89 @@
 package org.usfirst.frc.team3641.robot;
+import java.util.HashMap;
+
 import edu.wpi.first.wpilibj.Joystick;
 
-public class PS4 extends Joystick
+public class PS4
 {
-	private double leftX, leftY, rightX, rightY, leftTrigger, rightTrigger;
-	private boolean X, circle, triangle, square, up, down, left, right, share, options, leftBumper, leftTriggerButton, rightBumper, rightTriggerButton, leftStickButton, rightStickButton, playstation;
+	private HashMap<Button, Boolean> current, last;
+	private HashMap<Axis, Double> axes;
+	private Joystick rawJoystick;
 
 	public PS4(int port)
 	{
-		super(port);
+		rawJoystick= new Joystick(port);
+		current = new HashMap<Button, Boolean>(Button.values().length);
+		last = new HashMap<Button, Boolean>(Button.values().length);
+		axes = new HashMap<Axis, Double>(Axis.values().length);
+	}
+	
+	public enum Button
+	{
+		X, CIRCLE, TRIANGLE, SQUARE,
+		LEFT_BUMPER, RIGHT_BUMPER,
+		LEFT_TRIGGER_BUTTON, RIGHT_TRIGGER_BUTTON,
+		SHARE, OPTIONS, PLAYSTATION_BUTTON,
+		LEFT_STICK_BUTTON, RIGHT_STICK_BUTTON,
+		DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN
+	}
+	
+	public enum Axis
+	{
+		LEFT_X, LEFT_Y, LEFT_TRIGGER,
+		RIGHT_X, RIGHT_Y, RIGHT_TRIGGER
 	}
 
-	public void readValues()
+	public double getAxis(Axis axis)
 	{
-		leftX = getRawAxis(0);
-		leftY = getRawAxis(1);
-		rightX = getRawAxis(2);
-		leftTrigger = (getRawAxis(3) + .5) / 2;
-		rightTrigger = (getRawAxis(4) + .5) / 2;
-		rightY = getRawAxis(5);
+		return axes.get(axis);
+	}
+	
+	//Is it down at all
+	public boolean isDown(Button button)
+	{
+		return current.get(button);
+	}
+	
+	//Rising Edge only
+	public boolean isPressed(Button button)
+	{
+		return (current.get(button) && !last.get(button));
+	}
+	
+	//Falling Edge only
+	public boolean isReleased(Button button)
+	{
+		return (!current.get(button) && last.get(button));
+	}
+	
+	public void poll()
+	{
+		last = current;
 
-		square = getRawButton(1);
-		X = getRawButton(2);
-		circle = getRawButton(3);
-		triangle = getRawButton(4);
-		leftBumper = getRawButton(5);
-		rightBumper = getRawButton(6);
-		leftTriggerButton = getRawButton(7);
-		rightTriggerButton = getRawButton(8);
-		share = getRawButton(9);
-		options = getRawButton(10);
-		leftStickButton = getRawButton(11);
-		rightStickButton = getRawButton(12);
-		playstation = getRawButton(13);
+		axes.put(Axis.LEFT_X, rawJoystick.getRawAxis(0));
+		axes.put(Axis.LEFT_Y, rawJoystick.getRawAxis(1));
+		axes.put(Axis.RIGHT_X, rawJoystick.getRawAxis(2));
+		axes.put(Axis.LEFT_TRIGGER, (rawJoystick.getRawAxis(3) + .5) / 2);
+		axes.put(Axis.RIGHT_TRIGGER, (rawJoystick.getRawAxis(4) + .5) / 2);
+		axes.put(Axis.RIGHT_Y, rawJoystick.getRawAxis(5));
 
-		left = (getPOV(0) == 270);
-		right = (getPOV(0) == 90);
-		up = (getPOV(0) == 0);
-		down = (getPOV(0) == 180);
-	}
+		current.put(Button.SQUARE, rawJoystick.getRawButton(1));
+		current.put(Button.X, rawJoystick.getRawButton(2));
+		current.put(Button.CIRCLE, rawJoystick.getRawButton(3));
+		current.put(Button.TRIANGLE, rawJoystick.getRawButton(4));
+		current.put(Button.LEFT_BUMPER, rawJoystick.getRawButton(5));
+		current.put(Button.RIGHT_BUMPER, rawJoystick.getRawButton(6));
+		current.put(Button.LEFT_TRIGGER_BUTTON, rawJoystick.getRawButton(7));
+		current.put(Button.RIGHT_TRIGGER_BUTTON, rawJoystick.getRawButton(8));
+		current.put(Button.SHARE, rawJoystick.getRawButton(9));
+		current.put(Button.OPTIONS, rawJoystick.getRawButton(10));
+		current.put(Button.LEFT_STICK_BUTTON, rawJoystick.getRawButton(11));
+		current.put(Button.RIGHT_STICK_BUTTON, rawJoystick.getRawButton(12));
+		current.put(Button.PLAYSTATION_BUTTON, rawJoystick.getRawButton(13));
 
-	public double getLeftX()
-	{
-		return leftX;
-	}
-	public double getLeftY()
-	{
-		return leftY;
-	}
-	public double getRightX()
-	{
-		return rightY;
-	}
-	public double getRightY()
-	{
-		return rightX;
-	}
-	public double getLeftTrigger()
-	{
-		return leftTrigger;
-	}
-	public double getRightTrigger()
-	{
-		return rightTrigger;
-	}
-	public boolean getSquareButton()
-	{
-		return square;
-	}
-	public boolean getXButton()
-	{
-		return X;
-	}
-	public boolean getTriangleButton()
-	{
-		return triangle;
-	}
-	public boolean getCircleButton()
-	{
-		return circle;
-	}
-	public boolean getShareButton()
-	{
-		return share;
-	}
-	public boolean getOptionsButton()
-	{
-		return options;
-	}
-	public boolean getPlayStationButton()
-	{
-		return playstation;
-	}
-	public boolean getLeftTriggerButton()
-	{
-		return leftTriggerButton;
-	}
-	public boolean getRightTriggerButton()
-	{
-		return rightTriggerButton;
-	}
-	public boolean getLeftBumper()
-	{
-		return leftBumper;
-	}
-	public boolean getRightBumper()
-	{
-		return rightBumper;
-	}
-	public boolean getDPadUp()
-	{
-		return up;
-	}
-	public boolean getDPadDown()
-	{
-		return down;
-	}
-	public boolean getDPadLeft()
-	{
-		return left;
-	}
-	public boolean getDPadRight()
-	{
-		return right;
-	}
-	public boolean getLeftStickButton()
-	{
-		return leftStickButton;
-	}
-	public boolean getRightStickButton()
-	{
-		return rightStickButton;
+		current.put(Button.DPAD_LEFT, (rawJoystick.getPOV(0) == 270));
+		current.put(Button.DPAD_RIGHT, (rawJoystick.getPOV(0) == 90));
+		current.put(Button.DPAD_UP, (rawJoystick.getPOV(0) == 0));
+		current.put(Button.DPAD_DOWN, (rawJoystick.getPOV(0) == 180));
 	}
 }
