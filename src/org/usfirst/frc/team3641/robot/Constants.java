@@ -6,6 +6,8 @@ public class Constants
 
 	public static final int HIGH = 1;
 	public static final int LOW = 0;
+	
+	public static final double ADJATATOR_SPEED = .5;
 
 	public static final int REVERSE_MODE = 1;
 	public static final int NORMAL_MODE = 2;
@@ -47,6 +49,8 @@ public class Constants
 	public static final int LEFT_SHIFTER_CHANNEL_BACKWARDS = 2;
 	public static final int RIGHT_SHIFTER_CHANNEL_FORWARD = 3;
 	public static final int RIGHT_SHIFTER_CHANNEL_BACKWARDS = 4;
+	public static final int INTAKE_CHANNEL_FORWARD = 5;
+	public static final int INTAKE_CHANNEL_BACKWARDS = 6;
 
 	//UDP Constants	
 	public static final int DRIVER_PORT = 5800;
@@ -72,7 +76,7 @@ public class Constants
 	public static final double TURRET_DEADBAND = 10;
 	public static final double ACCEPTABLE_TURRET_ERROR = 2;
 
-
+	//Tracking Constants
 	public static final int FUEL_MODE = 1;
 	public static final int GEAR_MODE = 2;
 
@@ -88,9 +92,6 @@ public class Constants
 
 	public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 	public static final double ACCEPTABLE_GEAR_ERROR = 5; //Pixels
-
-	public static final int CAMERA_CENTER = 160;
-	public static final double DEGREES_PER_PIXEL = 0.2140625;
 
 	//Conversions
 	public static final double ENCODER_TO_RPM = -7.5; // ticks/s * 60s/min * 1rev/8ticks = 7.5 RPM 

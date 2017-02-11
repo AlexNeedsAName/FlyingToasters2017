@@ -9,15 +9,16 @@ public class Robot extends IterativeRobot
 	public void robotInit()
 	{	
 		Constants.runningAleksBot = SmartDashboard.getBoolean("Running Alek's Bot?", false);
-		Teleop.getInstance();
 		DriveBase.getInstance();
-		Tracking.getInstance();
-		PDP.getInstance();
 		Shooter.getInstance();
 		Turret.getInstance();
-		Gearbox.getInstance();
 		Hopper.getInstance();
+		Intake.getInstance();
+		Gearbox.getInstance();
+		PDP.getInstance();
 		Serial.getInstance();
+		Tracking.getInstance();
+		Teleop.getInstance();
 		Sensors.getInstance(); //Must be last, it uses things initalized in other classes
 	}
 

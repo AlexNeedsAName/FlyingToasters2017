@@ -20,7 +20,7 @@ public class Hopper
 
 	public static void adjatate()
 	{
-		adjatator.set(1);
+		adjatator.set(Constants.ADJATATOR_SPEED);
 	}
 	public static void stopAdjatating()
 	{

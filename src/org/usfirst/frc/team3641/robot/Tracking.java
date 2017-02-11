@@ -92,7 +92,7 @@ public class Tracking
 	
 	public static int target(int mode)
 	{
-		return target(mode, false);
+		return target(mode, true);
 	}
 	
 
