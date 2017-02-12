@@ -24,19 +24,22 @@ public class Auton
 
 	public static UDP udp;
 
-	public static Auton getInstance(int mode, boolean redAlliance)
+	public static Auton getInstance()
 	{
-		if(instance == null) instance = new Auton(mode, redAlliance);
+		if(instance == null) instance = new Auton();
 		return instance;
 	}
 
-	private Auton(int mode, boolean redAlliance)
+	private Auton()
 	{
 		runOnce = false;
 		autonState = Constants.START;
-		onRedAlliance = redAlliance;
+	}
+	
+	public static void setup(int mode, boolean redAlliance)
+	{
 		autonMode = mode;
-
+		onRedAlliance = redAlliance;
 	}
 
 	public static void run()

@@ -1,6 +1,8 @@
 package org.usfirst.frc.team3641.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.hal.AllianceStationID;
+import edu.wpi.first.wpilibj.hal.HAL;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Preferences;
 
@@ -19,15 +21,18 @@ public class Robot extends IterativeRobot
 		Serial.getInstance();
 		Tracking.getInstance();
 		Teleop.getInstance();
+		Auton.getInstance();
 		Sensors.getInstance(); //Must be last, it uses things initalized in other classes
 	}
 
 	public void autonomousInit()
 	{
 		//Gearbox.shiftLow();
+		AllianceStationID AlianceStation = HAL.getAllianceStation();
+		boolean redAlliance = false;
+		if(AlianceStation == AllianceStationID.Red1 || AlianceStation == AllianceStationID.Red2 || AlianceStation == AllianceStationID.Red3) redAlliance = true;
 		int mode = Preferences.getInstance().getInt("Auton Number", Constants.DO_NOTHING);
-		boolean red = Preferences.getInstance().getBoolean("Red Alliance", true);
-		Auton.getInstance(mode, red);
+		Auton.setup(mode, redAlliance);
 	}
 
 	public void autonomousPeriodic()
