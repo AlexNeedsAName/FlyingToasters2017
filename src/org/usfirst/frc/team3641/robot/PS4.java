@@ -1,20 +1,20 @@
 package org.usfirst.frc.team3641.robot;
-import java.util.HashMap;
+import java.util.EnumMap;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class PS4
 {
-	private HashMap<Button, Boolean> current, last;
-	private HashMap<Axis, Double> axes;
+	private EnumMap<Button, Boolean> current, last;
+	private EnumMap<Axis, Double> axes;
 	private Joystick rawJoystick;
 
 	public PS4(int port)
 	{
 		rawJoystick= new Joystick(port);
-		current = new HashMap<Button, Boolean>(Button.getLength());
-		last = new HashMap<Button, Boolean>(Button.getLength());
-		axes = new HashMap<Axis, Double>(Axis.getLength());
+		current = new EnumMap<Button, Boolean>(Button.class);
+		last = new EnumMap<Button, Boolean>(Button.class);
+		axes = new EnumMap<Axis, Double>(Axis.class);
 	}
 	
 	public static enum Button
@@ -25,18 +25,12 @@ public class PS4
 		SHARE, OPTIONS, PLAYSTATION_BUTTON,
 		LEFT_STICK_BUTTON, RIGHT_STICK_BUTTON,
 		DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN;
-		
-		private static final int length = Button.values().length;
-		public static final int getLength() { return length; }
 	}
 	
 	public enum Axis
 	{
 		LEFT_X, LEFT_Y, LEFT_TRIGGER,
 		RIGHT_X, RIGHT_Y, RIGHT_TRIGGER;
-		
-		private static final int length = Axis.values().length;
-		public static final int getLength() { return length; }
 	}
 
 	public void setRumble(Double rumble, Double balance) //Balance goes from -1 (left) to 1 (right), with 0 being centered

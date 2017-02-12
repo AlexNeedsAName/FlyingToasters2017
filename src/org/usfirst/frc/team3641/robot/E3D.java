@@ -1,19 +1,20 @@
 package org.usfirst.frc.team3641.robot;
-import java.util.HashMap;
+import java.util.EnumMap;
+
 import edu.wpi.first.wpilibj.Joystick;
 
 public class E3D
 {
-	private HashMap<Button, Boolean> current, last;
-	private HashMap<Axis, Double> axes;
+	private EnumMap<Button, Boolean> current, last;
+	private EnumMap<Axis, Double> axes;
 	private Joystick rawJoystick;
 
 	public E3D (int port)
 	{
 		rawJoystick= new Joystick(port);
-		current = new HashMap<Button, Boolean>(Button.getLength());
-		last = new HashMap<Button, Boolean>(Button.getLength());
-		axes = new HashMap<Axis, Double>(Axis.getLength());
+		current = new EnumMap<Button, Boolean>(Button.class);
+		last = new EnumMap<Button, Boolean>(Button.class);
+		axes = new EnumMap<Axis, Double>(Axis.class);
 	}
 	
 	public static enum Button
@@ -21,19 +22,13 @@ public class E3D
 		TRIGGER, THUMB,
 		THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, ELEVEN, TWELVE,
 		THUMB_POV_LEFT, THUMB_POV_RIGHT, THUMB_POV_UP, THUMB_POV_DOWN;
-		
-		private static final int length = Button.values().length;
 		private static final Button[] values = Button.values(); //We cache the value array because otherwise it would create a new array everytime we cast from an int (so 9 times every code loop). That adds up.
-		public static final int getLength() { return length; }
 		public static Button fromInt(int i) { return values[i]; }
 	}
 	
 	public enum Axis
 	{
 		X, Y, Z;
-		
-		private static final int length = Axis.values().length;
-		public static final int getLength() { return length; }
 	}
 	
 	public double getAxis(Axis axis)
