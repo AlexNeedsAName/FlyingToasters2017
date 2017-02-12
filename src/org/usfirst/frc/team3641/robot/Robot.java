@@ -1,13 +1,14 @@
 package org.usfirst.frc.team3641.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.hal.AllianceStationID;
-import edu.wpi.first.wpilibj.hal.HAL;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Preferences;
 
 public class Robot extends IterativeRobot
 {
+	DriverStation DS = DriverStation.getInstance();
+	
 	public void robotInit()
 	{	
 		Constants.runningAleksBot = SmartDashboard.getBoolean("Running Alek's Bot?", false);
@@ -28,9 +29,8 @@ public class Robot extends IterativeRobot
 	public void autonomousInit()
 	{
 		//Gearbox.shiftLow();
-		AllianceStationID AlianceStation = HAL.getAllianceStation();
-		boolean redAlliance = false;
-		if(AlianceStation == AllianceStationID.Red1 || AlianceStation == AllianceStationID.Red2 || AlianceStation == AllianceStationID.Red3) redAlliance = true;
+		boolean redAlliance = false; //Defaults to blue if invalid because our field is set up like the blue side
+		if(DS.getAlliance() == DriverStation.Alliance.Red) redAlliance = true;
 		int mode = Preferences.getInstance().getInt("Auton Number", Constants.DO_NOTHING);
 		Auton.setup(mode, redAlliance);
 	}

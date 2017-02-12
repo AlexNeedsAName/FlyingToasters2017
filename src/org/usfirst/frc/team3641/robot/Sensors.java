@@ -90,7 +90,7 @@ public class Sensors
 		return turretAngle;
 	}
 	
-	public static boolean getStill()
+	public static boolean isStill()
 	{
 		return isStill;
 	}

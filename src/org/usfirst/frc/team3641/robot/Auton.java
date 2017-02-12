@@ -5,22 +5,18 @@ import edu.wpi.first.wpilibj.Timer;
 public class Auton
 {
 	private static Auton instance;
-	private static int autonState;
+	private static int autonState = Constants.START;
 	private static int autonMode;
+	private static boolean onRedAlliance;
 
-	private static boolean alreadyDriving = false;
 	private static boolean lineFound = false;
 	private static boolean endOfLine = false;
 
-
-	private static double initalDist;
+	private static boolean alreadyRunning = false;
 	private static double finalDist;
-	private static double initalAngle;
 	private static double finalAngle;
-
-	private static boolean onRedAlliance;
-
-	private static boolean runOnce;
+	private static Timer timeoutTimer;
+	private static double timeout;
 
 	public static UDP udp;
 
@@ -32,8 +28,7 @@ public class Auton
 
 	private Auton()
 	{
-		runOnce = false;
-		autonState = Constants.START;
+		timeoutTimer = new Timer();
 	}
 	
 	public static void setup(int mode, boolean redAlliance)
@@ -69,46 +64,48 @@ public class Auton
 
 	private static void crossBaseline()
 	{
-		if(autonState == Constants.START)
+		boolean done;
+		switch(autonState)
 		{
+		case Constants.START:
 			increment(Constants.DRIVE_FORWARDS);
-		}
+			break;
 
-		if(autonState == Constants.DRIVE_FORWARDS)
-		{
-			boolean done = driveForwards(3, .5);
+		case Constants.DRIVE_FORWARDS:
+			done = driveForwards(3, .5);
 			if(done) increment(Constants.DONE);
+			break;
 		}
 	}
 
 	private static void hopperAuton()
 	{
-		if(autonState == Constants.START)
+		boolean done;
+		switch(autonState)
 		{
+		case Constants.START:
 			increment(Constants.DRIVE_TO_HOPPER_LINE);
-		}
-
-		if(autonState == Constants.DRIVE_TO_HOPPER_LINE);
-		{
-			boolean done = driveForwards(3, .5);
-			if(done) increment(Constants.TURN_TO_HOPPER);
-		}
-
-		if(autonState == Constants.TURN_TO_HOPPER)
-		{
-			double angle = (onRedAlliance) ? -90 : 90; //If on red alliance, turn right. If on blue, turn left.
-			boolean done = turnBy(angle);
-			if(done) increment(Constants.DRIVE_TO_HOPPER);
-		}
-
-		if(autonState == Constants.DRIVE_TO_HOPPER)
-		{
+			break;
 			
-		}
+		case Constants.DRIVE_TO_HOPPER_LINE:
+			done = driveForwards(3, .5);
+			if(done) increment(Constants.TURN_TO_HOPPER);
+			break;
 
-		if(autonState == Constants.SCORE_RANKING_POINT)
-		{
-			Tracking.target(Constants.FUEL_MODE, true);
+		case Constants.TURN_TO_HOPPER:
+			double angle = (onRedAlliance) ? -90 : 90; //If on red alliance, turn right. If on blue, turn left.
+			done = turnBy(angle);
+			if(done) increment(Constants.DRIVE_TO_HOPPER);
+			break;
+			
+		case Constants.DRIVE_TO_HOPPER:
+			done = driveForwards(3, .5);
+			if(done || Sensors.isStill()) increment(Constants.SCORE_RANKING_POINT);
+			break;
+
+		case Constants.SCORE_RANKING_POINT:
+			Tracking.target(Constants.FUEL_MODE);
+			break;
 		}
 	}
 	
@@ -118,10 +115,10 @@ public class Auton
 		if(udp == null) udp = new UDP("beaglebone.local", 3641);
 
 		//Request info about line position
-		if (runOnce == false) 
+		if (alreadyRunning == false) 
 		{
 			udp.sendData("1");
-			runOnce = true;
+			alreadyRunning = true;
 		}
 
 		receivedData = udp.getData();
@@ -217,40 +214,58 @@ public class Auton
 			}
 		}
 	}
-	
+	private static boolean driveForwards(double distance, double speed, double timeout)
+	{
+		if(!alreadyRunning)
+		{
+			initTimeout(timeout);
+			timeoutTimer.start();
+			finalDist = Sensors.getDriveDistance() + distance;
+			alreadyRunning = true;
+		}
+		DriveBase.driveArcade(speed, 0);
+		boolean done = (Sensors.getDriveDistance() <= finalDist);
+		return (done || timeoutUp());
+	}
+
 	private static boolean driveForwards(double distance, double speed)
 	{
-		if(!alreadyDriving)
-		{
-			initalDist = Sensors.getDriveDistance();
-			finalDist = initalDist + distance;
-			alreadyDriving = true;
-		}
-
-		if(Sensors.getDriveDistance() <= finalDist)
-		{
-			DriveBase.driveArcade(speed, 0);
-			return false;
-		}
-		else return true;
-
+		return driveForwards(distance, speed, 0);
 	}
 
-	private static boolean turnBy(double angle)
+	private static boolean turnBy(double angle, double timeout)
 	{
-		if(!alreadyDriving)
+		if(!alreadyRunning)
 		{
-			initalAngle = Sensors.getAngle();
-			finalAngle = initalAngle + angle;
-			alreadyDriving = true;
+			initTimeout(timeout);
+			finalAngle = Sensors.getAngle() + angle;
+			alreadyRunning = true;
 		}
 		boolean done = DriveBase.turnTo(finalAngle, 1);
-		return done;
+		
+		return (done || timeoutUp());
+	}
+	
+	private static boolean turnBy(double angle)
+	{
+		return turnBy(angle, 0);
 	}
 
+	private static void initTimeout(double Timeout)
+	{
+		timeoutTimer.reset();
+		timeoutTimer.start();
+		timeout = Timeout;
+	}
+	
+	private static boolean timeoutUp()
+	{
+		return (timeout > 0 && timeoutTimer.get() >= timeout);
+	}
+	
 	private static void increment(int state)
 	{
 		autonState = state;
-		alreadyDriving = false;
+		alreadyRunning = false;
 	}
 }
