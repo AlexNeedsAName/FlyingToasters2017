@@ -1,6 +1,5 @@
 package org.usfirst.frc.team3641.robot;
 import java.util.EnumMap;
-
 import edu.wpi.first.wpilibj.Joystick;
 
 public class E3D
@@ -8,6 +7,7 @@ public class E3D
 	private EnumMap<Button, Boolean> current, last;
 	private EnumMap<Axis, Double> axes;
 	private Joystick rawJoystick;
+	private double angle, magnitude;
 
 	public E3D (int port)
 	{
@@ -40,12 +40,12 @@ public class E3D
 	
 	public double getAngle()
 	{
-		return rectToPolarAngle(getAxis(Axis.X), getAxis(Axis.Y));
+		return angle;
 	}
 	
 	public double getMagnitude()
 	{
-		return rectToPolarRadius(getAxis(Axis.X), getAxis(Axis.Y));
+		return magnitude;
 	}
 	
 	//Is it down at all
@@ -94,28 +94,8 @@ public class E3D
 		current.put(Button.THUMB_POV_RIGHT, (rawJoystick.getPOV(0) == 90));
 		current.put(Button.THUMB_POV_UP, (rawJoystick.getPOV(0) == 0));
 		current.put(Button.THUMB_POV_DOWN, (rawJoystick.getPOV(0) == 180));
-	}
-	
-	private static double rectToPolarAngle(double x, double y)
-	{
-		if(x == 0 && y == 0) return 0;
-		if(x >  0 && y == 0) return 0;
-		if(x == 0 && y >  0) return 90;
-		if(x <  0 && y == 0) return 180;
-		if(x == 0 && y <  0) return 270;
 		
-		double angle = Math.toDegrees(Math.atan(y/x));
-		
-		if(x < 0) angle += 180;
-		else if (y < 0) angle += 360;
-		
-		return angle;
+		magnitude = Coords.rectToPolarRadius(getAxis(Axis.X), getAxis(Axis.Y));
+		angle = Coords.rectToPolarAngle(getAxis(Axis.X), getAxis(Axis.Y));
 	}
-	
-	private double rectToPolarRadius(double x, double y)
-	{
-		return Math.sqrt(x*x + y*y);
-	}
-
-
 }

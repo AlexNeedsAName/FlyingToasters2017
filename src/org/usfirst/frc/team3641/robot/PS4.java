@@ -8,6 +8,7 @@ public class PS4
 	private EnumMap<Button, Boolean> current, last;
 	private EnumMap<Axis, Double> axes;
 	private Joystick rawJoystick;
+	private double leftAngle, leftMagnitude, rightAngle, rightMagnitude;
 
 	public PS4(int port)
 	{
@@ -62,23 +63,23 @@ public class PS4
 	//Left Stick Stuff
 	public double getLeftAngle()
 	{
-		return rectToPolarAngle(getAxis(Axis.LEFT_X), getAxis(Axis.LEFT_Y));
+		return leftAngle;
 	}
 	
 	public double getLeftMagnitude()
 	{
-		return rectToPolarRadius(getAxis(Axis.LEFT_X), getAxis(Axis.LEFT_Y));
+		return leftMagnitude;
 	}
 	
 	//Right Stick Stuff
 	public double getRightAngle()
 	{
-		return rectToPolarAngle(getAxis(Axis.RIGHT_X), getAxis(Axis.RIGHT_Y));
+		return rightAngle;
 	}
 	
 	public double getRightMagnitude()
 	{
-		return rectToPolarAngle(getAxis(Axis.RIGHT_X), getAxis(Axis.RIGHT_Y));
+		return rightMagnitude;
 	}
 	
 	//Is it down at all
@@ -129,26 +130,11 @@ public class PS4
 		current.put(Button.DPAD_RIGHT, (rawJoystick.getPOV(0) == 90));
 		current.put(Button.DPAD_UP, (rawJoystick.getPOV(0) == 0));
 		current.put(Button.DPAD_DOWN, (rawJoystick.getPOV(0) == 180));
-	}
-	
-	private static double rectToPolarAngle(double x, double y)
-	{
-		if(x == 0 && y == 0) return 0;
-		if(x >  0 && y == 0) return 0;
-		if(x == 0 && y >  0) return 90;
-		if(x <  0 && y == 0) return 180;
-		if(x == 0 && y <  0) return 270;
 		
-		double angle = Math.toDegrees(Math.atan(y/x));
-		
-		if(x < 0) angle += 180;
-		else if (y < 0) angle += 360;
-		
-		return angle;
-	}
-	
-	private double rectToPolarRadius(double x, double y)
-	{
-		return Math.sqrt(x*x + y*y);
+		leftMagnitude = Coords.rectToPolarRadius(getAxis(Axis.LEFT_X), getAxis(Axis.LEFT_Y));
+		leftAngle = Coords.rectToPolarAngle(getAxis(Axis.LEFT_X), getAxis(Axis.LEFT_Y));
+		rightMagnitude = Coords.rectToPolarRadius(getAxis(Axis.RIGHT_X), getAxis(Axis.RIGHT_Y));
+		rightAngle = Coords.rectToPolarAngle(getAxis(Axis.RIGHT_X), getAxis(Axis.RIGHT_Y));
+
 	}
 }

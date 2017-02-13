@@ -103,32 +103,9 @@ public class DriveBase
 
 	public static boolean turnTo(double targetAngle, double threshold)
 	{
-		double error = calcError(targetAngle, Sensors.getAngle());
+		double error = Coords.calcAngleError(targetAngle, Sensors.getAngle());
 		driveArcade(0, rotationPID.pid(error));
 		return (Math.abs(error) <= threshold);
-	}
-
-	private static double calcError(double targetAngle, double currentAngle)
-	{
-		double counterClockwiseDistance, clockwiseDistance;
-
-		if(targetAngle == currentAngle) return 0;
-		else
-		{
-			counterClockwiseDistance = fixDegrees(targetAngle - currentAngle);
-			clockwiseDistance = fixDegrees(360 - (targetAngle - currentAngle));
-
-			if(counterClockwiseDistance > clockwiseDistance) return counterClockwiseDistance;
-			else return -clockwiseDistance;
-		}
-
-	}
-
-	private static double fixDegrees(double degrees)
-	{
-		while(degrees >= 360) degrees -= 360;
-		while(degrees < 0) degrees += 360;
-		return degrees;
 	}
 
 	//Please don't use this. It blocks drive output and all other functions due to the while loop. I'm going to remove it next commit.
