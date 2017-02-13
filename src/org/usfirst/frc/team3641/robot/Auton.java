@@ -214,7 +214,7 @@ public class Auton
 			}
 		}
 	}
-	private static boolean driveForwards(double distance, double speed, double timeout)
+	private static boolean driveBy(double distance, double speed, double timeout)
 	{
 		if(!alreadyRunning)
 		{
@@ -230,7 +230,7 @@ public class Auton
 
 	private static boolean driveForwards(double distance, double speed)
 	{
-		return driveForwards(distance, speed, 0);
+		return driveBy(distance, speed, 0);
 	}
 
 	private static boolean turnBy(double angle, double timeout)

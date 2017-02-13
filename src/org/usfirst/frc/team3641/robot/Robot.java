@@ -28,6 +28,7 @@ public class Robot extends IterativeRobot
 
 	public void autonomousInit()
 	{
+		System.out.println("Running autonomousInit()");
 		//Gearbox.shiftLow();
 		boolean redAlliance = false; //Defaults to blue if invalid because our field is set up like the blue side
 		if(DS.getAlliance() == DriverStation.Alliance.Red) redAlliance = true;
@@ -43,9 +44,10 @@ public class Robot extends IterativeRobot
 
 	public void teleopInit()
 	{
+		System.out.println("Running teleopInit()");
 		//Gearbox.shiftHigh();
 	}
-
+	
 	public void teleopPeriodic()
 	{
 		Sensors.poll();

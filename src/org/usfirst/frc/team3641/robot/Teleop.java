@@ -60,4 +60,13 @@ public class Teleop
 			else if(operator.isReleased(E3D.Button.TRIGGER)) Shooter.stopFiring();
 		}
 	}
+	
+	public static void joystickTest()
+	{
+		driver.poll();
+		SmartDashboard.putBoolean("Circle Down", (driver.isDown(PS4.Button.CIRCLE)));
+		if(driver.isReleased(PS4.Button.CIRCLE)) System.out.println("Circle Button Released");
+		if(driver.isPressed(PS4.Button.CIRCLE)) System.out.println("Circle Button Pressed");
+		driver.setRumble(1.0, 0.0);
+	}
 }

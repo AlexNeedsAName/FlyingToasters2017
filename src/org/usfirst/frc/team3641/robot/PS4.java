@@ -15,6 +15,7 @@ public class PS4
 		current = new EnumMap<Button, Boolean>(Button.class);
 		last = new EnumMap<Button, Boolean>(Button.class);
 		axes = new EnumMap<Axis, Double>(Axis.class);
+		poll(); //Populate the current EnumMap so the last EnumMap won't be null when the user polls for the first time.
 	}
 	
 	public static enum Button
@@ -99,7 +100,7 @@ public class PS4
 	
 	public void poll()
 	{
-		last = current;
+		last = current.clone();
 
 		axes.put(Axis.LEFT_X, rawJoystick.getRawAxis(0));
 		axes.put(Axis.LEFT_Y, rawJoystick.getRawAxis(1));

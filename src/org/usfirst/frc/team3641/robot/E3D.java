@@ -15,6 +15,7 @@ public class E3D
 		current = new EnumMap<Button, Boolean>(Button.class);
 		last = new EnumMap<Button, Boolean>(Button.class);
 		axes = new EnumMap<Axis, Double>(Axis.class);
+		poll();
 	}
 	
 	public static enum Button
