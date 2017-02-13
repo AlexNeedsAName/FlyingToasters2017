@@ -104,11 +104,11 @@ public class PS4
 		last = current.clone();
 
 		axes.put(Axis.LEFT_X, rawJoystick.getRawAxis(0));
-		axes.put(Axis.LEFT_Y, rawJoystick.getRawAxis(1));
+		axes.put(Axis.LEFT_Y, -rawJoystick.getRawAxis(1));
 		axes.put(Axis.RIGHT_X, rawJoystick.getRawAxis(2));
 		axes.put(Axis.LEFT_TRIGGER, (rawJoystick.getRawAxis(3) + .5) / 2);
 		axes.put(Axis.RIGHT_TRIGGER, (rawJoystick.getRawAxis(4) + .5) / 2);
-		axes.put(Axis.RIGHT_Y, rawJoystick.getRawAxis(5));
+		axes.put(Axis.RIGHT_Y, -rawJoystick.getRawAxis(5));
 
 		current.put(Button.SQUARE, rawJoystick.getRawButton(1));
 		current.put(Button.X, rawJoystick.getRawButton(2));
@@ -139,7 +139,7 @@ public class PS4
 		if(x <  0 && y == 0) return 180;
 		if(x == 0 && y <  0) return 270;
 		
-		double angle = Math.tan(y/x);
+		double angle = Math.toDegrees(Math.atan(y/x));
 		
 		if(x < 0) angle += 180;
 		else if (y < 0) angle += 360;

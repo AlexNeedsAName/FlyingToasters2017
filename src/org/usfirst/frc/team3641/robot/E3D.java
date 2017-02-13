@@ -23,6 +23,7 @@ public class E3D
 		TRIGGER, THUMB,
 		THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, ELEVEN, TWELVE,
 		THUMB_POV_LEFT, THUMB_POV_RIGHT, THUMB_POV_UP, THUMB_POV_DOWN;
+		
 		private static final Button[] values = Button.values(); //We cache the value array because otherwise it would create a new array everytime we cast from an int (so 9 times every code loop). That adds up.
 		public static Button fromInt(int i) { return values[i]; }
 	}
@@ -79,14 +80,14 @@ public class E3D
 
 	public void poll()
 	{
-		last = current;
+		last = current.clone();
 
 		axes.put(Axis.X, rawJoystick.getRawAxis(0));
-		axes.put(Axis.Y, rawJoystick.getRawAxis(1));
+		axes.put(Axis.Y, -rawJoystick.getRawAxis(1));
 		axes.put(Axis.Z, rawJoystick.getRawAxis(2));
 		
 		current.put(Button.THUMB, rawJoystick.getRawButton(1));
-		current.put(Button.THUMB, rawJoystick.getRawButton(2));
+		current.put(Button.TRIGGER, rawJoystick.getRawButton(2));
 		for(int i = 3; i<=12; i++) current.put(Button.fromInt(i), rawJoystick.getRawButton(i)); //The rest of the buttons are just labeled by their number
 		
 		current.put(Button.THUMB_POV_LEFT, (rawJoystick.getPOV(0) == 270));
@@ -103,7 +104,7 @@ public class E3D
 		if(x <  0 && y == 0) return 180;
 		if(x == 0 && y <  0) return 270;
 		
-		double angle = Math.tan(y/x);
+		double angle = Math.toDegrees(Math.atan(y/x));
 		
 		if(x < 0) angle += 180;
 		else if (y < 0) angle += 360;
