@@ -25,7 +25,8 @@ public class PS4
 		LEFT_TRIGGER_BUTTON, RIGHT_TRIGGER_BUTTON,
 		SHARE, OPTIONS, PLAYSTATION_BUTTON,
 		LEFT_STICK_BUTTON, RIGHT_STICK_BUTTON,
-		DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN;
+		DPAD_LEFT, DPAD_RIGHT, DPAD_UP, DPAD_DOWN,
+		TOUCHPAD_BUTTON;
 	}
 	
 	public enum Axis
@@ -122,6 +123,7 @@ public class PS4
 		current.put(Button.LEFT_STICK_BUTTON, rawJoystick.getRawButton(11));
 		current.put(Button.RIGHT_STICK_BUTTON, rawJoystick.getRawButton(12));
 		current.put(Button.PLAYSTATION_BUTTON, rawJoystick.getRawButton(13));
+		current.put(Button.TOUCHPAD_BUTTON, rawJoystick.getRawButton(14));
 
 		current.put(Button.DPAD_LEFT, (rawJoystick.getPOV(0) == 270));
 		current.put(Button.DPAD_RIGHT, (rawJoystick.getPOV(0) == 90));
