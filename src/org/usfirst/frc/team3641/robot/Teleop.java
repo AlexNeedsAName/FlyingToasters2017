@@ -25,6 +25,8 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 		
+		if(driver.isDown(PS4.Button.LEFT_STICK_BUTTON)) Hash.checkJOAATHash(driver.getLeftAngle() + ";" + driver.getLeftAngle(), 0);
+		
 		//Change Drive Direction
 		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(Constants.NORMAL_MODE);
 		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(Constants.REVERSE_MODE);

@@ -45,12 +45,12 @@ public class Constants
 	public static final int RIGHT_SLAVE_VICTOR = 4;
 
 	//Pnumatics
-	public static final int LEFT_SHIFTER_CHANNEL_FORWARD = 1;
-	public static final int LEFT_SHIFTER_CHANNEL_BACKWARDS = 2;
-	public static final int RIGHT_SHIFTER_CHANNEL_FORWARD = 3;
-	public static final int RIGHT_SHIFTER_CHANNEL_BACKWARDS = 4;
-	public static final int INTAKE_CHANNEL_FORWARD = 5;
-	public static final int INTAKE_CHANNEL_BACKWARDS = 6;
+	public static final int SHIFTER_CHANNEL_FORWARD = 0;
+	public static final int SHIFTER_CHANNEL_REVERSE = 1;
+	public static final int PTO_CHANNEL_FORWARD = 2;
+	public static final int PTO_CHANNEL_REVERSE = 3;
+	public static final int INTAKE_CHANNEL_FORWARD = 4;
+	public static final int INTAKE_CHANNEL_REVERSE = 5;
 
 	//UDP Constants	
 	public static final int DRIVER_PORT = 5800;

@@ -86,8 +86,8 @@ public class E3D
 		axes.put(Axis.Y, -rawJoystick.getRawAxis(1));
 		axes.put(Axis.Z, rawJoystick.getRawAxis(2));
 		
-		current.put(Button.THUMB, rawJoystick.getRawButton(1));
-		current.put(Button.TRIGGER, rawJoystick.getRawButton(2));
+		current.put(Button.TRIGGER, rawJoystick.getRawButton(1));
+		current.put(Button.THUMB, rawJoystick.getRawButton(2));
 		for(int i = 3; i<=12; i++) current.put(Button.fromInt(i), rawJoystick.getRawButton(i)); //The rest of the buttons are just labeled by their number
 		
 		current.put(Button.THUMB_POV_LEFT, (rawJoystick.getPOV(0) == 270));

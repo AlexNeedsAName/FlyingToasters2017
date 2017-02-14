@@ -17,7 +17,7 @@ public class Intake
 	
 	private Intake()
 	{
-		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_CHANNEL_FORWARD, Constants.INTAKE_CHANNEL_BACKWARDS);
+		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_CHANNEL_FORWARD, Constants.INTAKE_CHANNEL_REVERSE);
 		left = new Spark(Constants.INTAKE_LEFT_SPARK);
 		right = new Spark(Constants.INTAKE_RIGHT_SPARK);
 	}
