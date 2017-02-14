@@ -25,7 +25,16 @@ public class E3D
 		THUMB_POV_LEFT, THUMB_POV_RIGHT, THUMB_POV_UP, THUMB_POV_DOWN;
 		
 		private static final Button[] values = Button.values(); //We cache the value array because otherwise it would create a new array everytime we cast from an int (so 9 times every code loop). That adds up.
-		public static Button fromInt(int i) { return values[i]; }
+		public static Button fromInt(int i)
+		{
+			i-=1; //Start at 0, not 1
+			if(i >= values.length || i<0)
+			{
+				System.err.println("WARNING: Button " + i + " out of range. Defaulting to " + values[0].toString());
+				i = 0;
+			}
+			return values[i];
+		}
 	}
 	
 	public enum Axis

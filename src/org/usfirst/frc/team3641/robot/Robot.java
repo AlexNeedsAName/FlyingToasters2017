@@ -28,18 +28,18 @@ public class Robot extends IterativeRobot
 
 	public void autonomousInit()
 	{
-		System.out.println("Running autonomousInit()");
 		//Gearbox.shiftLow();
 		boolean redAlliance = false; //Defaults to blue if invalid because our field is set up like the blue side
 		if(DS.getAlliance() == DriverStation.Alliance.Red) redAlliance = true;
-		int mode = Preferences.getInstance().getInt("Auton Number", Constants.DO_NOTHING);
-		Auton.setup(mode, redAlliance);
+		Auton.modes mode = Auton.modes.fromInt(Preferences.getInstance().getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
+		Auton.setup(mode, redAlliance, true);
+		System.out.println("Starting Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance");
 	}
 
 	public void autonomousPeriodic()
 	{
 		Sensors.poll();
-		Auton.run();
+		Auton.test();
 	}
 
 	public void teleopInit()

@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Teleop
 {
 	private static Teleop instance;
-	private static PS4 driver;
-	private static E3D operator;
+	public static PS4 driver;
+	public static E3D operator;
 
 	public static Teleop getInstance()
 	{

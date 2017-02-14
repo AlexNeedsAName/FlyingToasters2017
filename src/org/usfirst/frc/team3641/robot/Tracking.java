@@ -115,5 +115,4 @@ public class Tracking
 	{
 		return visionState;
 	}
-
 }

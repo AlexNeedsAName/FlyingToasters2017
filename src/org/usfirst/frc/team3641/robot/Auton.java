@@ -5,21 +5,50 @@ import edu.wpi.first.wpilibj.Timer;
 public class Auton
 {
 	private static Auton instance;
-	private static int autonState = Constants.START;
-	private static int autonMode;
+	private static states autonState;
+	private static modes autonMode;
 	private static boolean onRedAlliance;
 
 	private static boolean lineFound = false;
 	private static boolean endOfLine = false;
 
-	private static boolean alreadyRunning = false;
-	private static double finalDist;
-	private static double finalAngle;
+	private static boolean alreadyRunning;
 	private static Timer timeoutTimer;
-	private static double timeout;
+	private static boolean VERBOSE;
 
 	public static UDP udp;
 
+	private enum states
+	{
+		START,
+		DONE,
+		DRIVE_FORWARDS,
+		DRIVE_TO_HOPPER_LINE,
+		TURN_TO_HOPPER,
+		DRIVE_TO_HOPPER,
+		SCORE_RANKING_POINT;
+	}
+	
+	public enum modes
+	{
+		DO_NOTHING,
+		CROSS_LINE,
+		HOPPER_AUTON,
+		LINE_ALIGN,
+		LINE_FOLLOW;
+		
+		private static final modes[] values = modes.values(); //We cache the value array for preformance
+		public static modes fromInt(int i)
+		{
+			if(i >= values.length)
+			{
+				System.err.println("WARNING: Auton " + i + " out of range. Defaulting to " + values[0].toString());
+				i = 0;
+			}
+			return values[i];
+		}
+	}
+	
 	public static Auton getInstance()
 	{
 		if(instance == null) instance = new Auton();
@@ -31,79 +60,90 @@ public class Auton
 		timeoutTimer = new Timer();
 	}
 	
-	public static void setup(int mode, boolean redAlliance)
+	public static void setup(modes mode, boolean redAlliance, boolean verboseMode)
 	{
+		autonState = states.START;
+		alreadyRunning = false;
 		autonMode = mode;
 		onRedAlliance = redAlliance;
+		VERBOSE = verboseMode;
+	}
+	
+	public static void test()
+	{
+		Sensors.resetDriveDistance(Sensors.getDriveDistance() + Teleop.driver.getAxis(PS4.Axis.LEFT_Y) / 10);
+		run();
 	}
 
 	public static void run()
 	{
 		switch(autonMode)
 		{
-		case Constants.DO_NOTHING:				
+		case DO_NOTHING:				
 			break;
 
-		case Constants.CROSS_BASELINE:
+		case CROSS_LINE:
 			crossBaseline();
 			break;
 
-		case Constants.HOPPER_AUTON:
+		case HOPPER_AUTON:
 			hopperAuton();
 			break;
 
-		case Constants.LINE_ALIGN:
+		case LINE_ALIGN:
 			lineAlign();
 			break;
 
-		case Constants.LINE_FOLLOW:
+		case LINE_FOLLOW:
 			lineFollow();
 			break;
 		}
 	}
-
+	
+	@SuppressWarnings("incomplete-switch")
 	private static void crossBaseline()
 	{
 		boolean done;
 		switch(autonState)
 		{
-		case Constants.START:
-			increment(Constants.DRIVE_FORWARDS);
+		case START:
+			increment(states.DRIVE_FORWARDS);
 			break;
 
-		case Constants.DRIVE_FORWARDS:
-			done = driveForwards(3, .5);
-			if(done) increment(Constants.DONE);
+		case DRIVE_FORWARDS:
+			done = driveBy(3, .5);
+			if(done) increment(states.DONE);
 			break;
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private static void hopperAuton()
 	{
 		boolean done;
 		switch(autonState)
 		{
-		case Constants.START:
-			increment(Constants.DRIVE_TO_HOPPER_LINE);
+		case START:
+			increment(states.DRIVE_TO_HOPPER_LINE);
 			break;
 			
-		case Constants.DRIVE_TO_HOPPER_LINE:
-			done = driveForwards(3, .5);
-			if(done) increment(Constants.TURN_TO_HOPPER);
+		case DRIVE_TO_HOPPER_LINE:
+			done = driveBy(3, .5);
+			if(done) increment(states.TURN_TO_HOPPER);
 			break;
 
-		case Constants.TURN_TO_HOPPER:
-			double angle = (onRedAlliance) ? -90 : 90; //If on red alliance, turn right. If on blue, turn left.
-			done = turnBy(angle);
-			if(done) increment(Constants.DRIVE_TO_HOPPER);
+		case TURN_TO_HOPPER:
+			double angle = (onRedAlliance) ? 90 : -90; //If on red alliance, turn right. If on blue, turn left.
+			done = turnBy(angle, 5);
+			if(done) increment(states.DRIVE_TO_HOPPER);
 			break;
 			
-		case Constants.DRIVE_TO_HOPPER:
-			done = driveForwards(3, .5);
-			if(done || Sensors.isStill()) increment(Constants.SCORE_RANKING_POINT);
+		case DRIVE_TO_HOPPER:
+			done = driveBy(3, .5);
+			if(done || (Sensors.isStill() && timeoutTimer.get() > 1)) increment(states.SCORE_RANKING_POINT);
 			break;
 
-		case Constants.SCORE_RANKING_POINT:
+		case SCORE_RANKING_POINT:
 			Tracking.target(Constants.FUEL_MODE);
 			break;
 		}
@@ -219,16 +259,16 @@ public class Auton
 		if(!alreadyRunning)
 		{
 			initTimeout(timeout);
-			timeoutTimer.start();
-			finalDist = Sensors.getDriveDistance() + distance;
+			if(VERBOSE) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
 			alreadyRunning = true;
 		}
+		if(VERBOSE) System.out.print(Sensors.getDriveDistance() + "m out of " + distance + "m\r");
 		DriveBase.driveArcade(speed, 0);
-		boolean done = (Sensors.getDriveDistance() <= finalDist);
-		return (done || timeoutUp());
+		boolean done = (Sensors.getDriveDistance() <= distance);
+		return (done || timeoutUp(timeout));
 	}
 
-	private static boolean driveForwards(double distance, double speed)
+	private static boolean driveBy(double distance, double speed)
 	{
 		return driveBy(distance, speed, 0);
 	}
@@ -237,15 +277,18 @@ public class Auton
 	{
 		if(!alreadyRunning)
 		{
+			if(VERBOSE) System.out.println("Starting to turn by " + angle + "° in state " + autonState);
 			initTimeout(timeout);
-			finalAngle = Sensors.getAngle() + angle;
+			Sensors.resetGyro();
 			alreadyRunning = true;
 		}
-		boolean done = DriveBase.turnTo(finalAngle, 1);
+		if(VERBOSE) System.out.print(Sensors.getAngle() + "° out of " + angle + "°\r");
+		boolean done = DriveBase.turnTo(angle, 1);
 		
-		return (done || timeoutUp());
+		return (done || timeoutUp(timeout));
 	}
 	
+	@SuppressWarnings("unused")
 	private static boolean turnBy(double angle)
 	{
 		return turnBy(angle, 0);
@@ -253,18 +296,27 @@ public class Auton
 
 	private static void initTimeout(double Timeout)
 	{
+		if(VERBOSE) System.out.println("Starting a " + Timeout + "s Timer");
 		timeoutTimer.reset();
 		timeoutTimer.start();
-		timeout = Timeout;
 	}
 	
-	private static boolean timeoutUp()
+	private static boolean timeoutUp(double timeout)
 	{
-		return (timeout > 0 && timeoutTimer.get() >= timeout);
+		if(timeout == 0)
+		{
+			return false;
+		}
+		double time = timeoutTimer.get();
+//		if(VERBOSE) System.out.println(time + "s out of " + timeout + "s");
+		boolean done = (time >= timeout);
+		if(done && VERBOSE) System.out.println("\nScrew it, it's close enough. We're out of time\r");
+		return done;
 	}
 	
-	private static void increment(int state)
+	private static void increment(states state)
 	{
+		if(VERBOSE) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
 		autonState = state;
 		alreadyRunning = false;
 	}

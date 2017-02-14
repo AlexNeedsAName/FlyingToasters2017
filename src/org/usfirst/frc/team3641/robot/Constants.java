@@ -102,23 +102,4 @@ public class Constants
 	public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
 	
 	public static final double AUTON_RPM = 60; //TODO: build robot, tune value (you get the drill)
-
-	//Auton Modes
-	public static final int START = 0;
-	public static final int DRIVE_FORWARDS = 1;
-	public static final int DONE = 2;
-	public static final int DRIVE_TO_HOPPER_LINE = 3;
-	public static final int TURN_TO_HOPPER = 4;
-	public static final int DRIVE_TO_HOPPER = 5;
-	public static final int SCORE_RANKING_POINT = 6;
-
-	public static final int DO_NOTHING = 0;
-	public static final int CROSS_BASELINE = 1;
-	public static final int LINE_ALIGN = 2;
-	public static final int MOUSE_CONTROL = 3;
-	public static final int LINE_FOLLOW = 4;
-	public static final int HOPPER_AUTON = 5;
-
-
-
 }

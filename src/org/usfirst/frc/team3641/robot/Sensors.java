@@ -60,9 +60,13 @@ public class Sensors
 		else gyro.reset();
 	}
 
+	public static void resetDriveDistance(double distance)
+	{
+		DriveBase.left.setEncPosition((int) (distance / Constants.DRIVE_ENCODER_TO_METERS));
+	}
 	public static void resetDriveDistance()
 	{
-		DriveBase.left.setEncPosition(0);
+		resetDriveDistance(0);
 	}
 
 	public static double getDistance()
