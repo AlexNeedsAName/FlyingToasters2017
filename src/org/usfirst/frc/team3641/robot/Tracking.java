@@ -36,12 +36,21 @@ public class Tracking
 			String response = Serial.getData();
 			if(response != null && response.contains(";"))
 			{
-				SmartDashboard.putString("Response", response);
 				String data[] = response.split(";");
 				angle = -Double.parseDouble(data[0]); //Pi should give us "Angle;Distance" for now. We can change this though
 				distance = Double.parseDouble(data[1]);
-				SmartDashboard.putNumber("Angle", angle);
-				if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TO_TARGET;
+				
+				if(Hash.verifyOneAtATime(data[0] + ";" + data[1], Long.parseLong(data[2])))
+				{
+					SmartDashboard.putNumber("Angle", angle);
+					if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TO_TARGET;
+				}
+				else
+				{
+					SmartDashboard.putString("Response", response);
+					System.out.println("Failed hash check.");
+					visionState = Constants.SEND_REQUEST;
+				}
 			}
 			break;
 
