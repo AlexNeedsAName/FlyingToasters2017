@@ -64,6 +64,10 @@ public class Constants
 	public static final double DRIVEBASE_TRACKING_KP = 0.0; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_TRACKING_KI = 0.0; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_TRACKING_KD = 0.0; //TODO: Build robot, then tune this value
+	
+	public static final double DRIVEBASE_KP = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_KI = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_KD = 0.0; //TODO: Build robot, then tune this value
 
 	public static final double SHOOTER_KP = 0.00006;
 	public static final double SHOOTER_KI = 0.000005;
@@ -102,4 +106,5 @@ public class Constants
 	public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
 	
 	public static final double AUTON_RPM = 60; //TODO: build robot, tune value (you get the drill)
+	public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .5; //Get within 5cm of the target.
 }

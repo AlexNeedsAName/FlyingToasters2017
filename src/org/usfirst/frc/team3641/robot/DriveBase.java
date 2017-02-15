@@ -9,8 +9,7 @@ public class DriveBase
 	private static DriveBase instance;
 	public static CANTalon left, leftSlave, right, rightSlave;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
-
-	private static PID rotationPID;
+	private static PID rotationPID, drivePID;
 
 	private static boolean reverseMode;
 
@@ -36,6 +35,7 @@ public class DriveBase
 		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 
 		rotationPID = new PID(Constants.DRIVEBASE_TRACKING_KP, Constants.DRIVEBASE_TRACKING_KI, Constants.DRIVEBASE_TRACKING_KD);
+		drivePID = new PID(Constants.DRIVEBASE_KP, Constants.DRIVEBASE_KI, Constants.DRIVEBASE_KD);
 	}
 
 	public static void driveArcade(double power, double rotation)
@@ -133,4 +133,11 @@ public class DriveBase
 		driveArcade(0, 0);
 	}
 
+	public static double driveTo(double distance)
+	{
+		double error = distance - Sensors.getDriveDistance();
+		driveArcade(drivePID.pid(error), 0);
+		return error;
+	}
+	
 }

@@ -2,6 +2,7 @@ package org.usfirst.frc.team3641.robot;
 
 import edu.wpi.first.wpilibj.Timer;
 
+@SuppressWarnings("unused") //I might not be using those functions now, but they're there to be building blocks for future routines.
 public class Auton
 {
 	private static Auton instance;
@@ -9,9 +10,10 @@ public class Auton
 	private static modes autonMode;
 	private static boolean onRedAlliance;
 	
-	@SuppressWarnings("unused")
 	private static final int LOW = 1, MID = 2, HIGH = 3;
 
+	static boolean negativeErrorWhenDone;
+	
 	private static boolean lineFound = false;
 	private static boolean endOfLine = false;
 	
@@ -100,7 +102,6 @@ public class Auton
 	@SuppressWarnings("incomplete-switch") //I don't care about the other values, I know they won't be used :P
 	private static void crossBaseline()
 	{
-		boolean done;
 		switch(autonState)
 		{
 		case START:
@@ -108,8 +109,8 @@ public class Auton
 			break;
 
 		case DRIVE_FORWARDS:
-			done = driveBy(3, .5);
-			if(done) increment(states.DONE);
+			boolean reachedLine = driveBy(3);
+			if(reachedLine) increment(states.DONE);
 			break;
 		}
 	}
@@ -117,7 +118,6 @@ public class Auton
 	@SuppressWarnings("incomplete-switch")
 	private static void hopperAuton()
 	{
-		boolean done;
 		switch(autonState)
 		{
 		case START:
@@ -125,19 +125,20 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER_LINE:
-			done = driveBy(3, .5);
-			if(done) increment(states.TURN_TO_HOPPER);
+			boolean reachedLine = driveBy(3);
+			if(reachedLine) increment(states.TURN_TO_HOPPER);
 			break;
 
 		case TURN_TO_HOPPER:
 			double angle = (onRedAlliance) ? 90 : -90; //If on red alliance, turn right. If on blue, turn left.
-			done = turnBy(angle, 5);
-			if(done) increment(states.DRIVE_TO_HOPPER);
+			boolean doneTurning = turnBy(angle, 1);
+			if(doneTurning) increment(states.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			done = driveBy(3, .5);
-			if(done || (Sensors.isStill() && timeoutTimer.get() > 1)) increment(states.SCORE_RANKING_POINT);
+			boolean reachedHopper = driveBy(3, .5);
+			boolean hitTheWall = (Sensors.isStill() && timeoutTimer.get() > .5); //We don't want it to check if it's still too soon, otherwise it just doesn't go 
+			if(reachedHopper || hitTheWall) increment(states.SCORE_RANKING_POINT);
 			break;
 
 		case SCORE_RANKING_POINT:
@@ -251,24 +252,27 @@ public class Auton
 			}
 		}
 	}
-	private static boolean driveBy(double distance, double speed, double timeout)
+	public static boolean driveBy(double distance, double timeout)
 	{
 		if(!alreadyRunning)
 		{
 			initTimeout(timeout);
 			Sensors.resetDriveDistance();
+			negativeErrorWhenDone = (distance < Sensors.getDriveDistance());
 			if(VERBOSE >= LOW) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
 			alreadyRunning = true;
 		}
 		if(VERBOSE >= HIGH) System.out.println(Sensors.getDriveDistance() + "m out of " + distance + "m");
-		DriveBase.driveArcade(speed, 0);
-		boolean done = (Sensors.getDriveDistance() >= distance);
-		return (done || timeoutUp(timeout));
+		double error = DriveBase.driveTo(distance);
+		boolean crossedLine = (negativeErrorWhenDone) ? (error < 0) : (error > 0);
+		boolean  withinThreshold = (Math.abs(error) <= Constants.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
+		
+		return (crossedLine || withinThreshold || timeoutUp(timeout));
 	}
-
-	private static boolean driveBy(double distance, double speed)
+	
+	public static boolean driveBy(double distance)
 	{
-		return driveBy(distance, speed, 0);
+		return driveBy(distance, 0);
 	}
 
 	private static boolean turnBy(double angle, double timeout)
@@ -286,7 +290,6 @@ public class Auton
 		return (done || timeoutUp(timeout));
 	}
 	
-	@SuppressWarnings("unused")
 	private static boolean turnBy(double angle)
 	{
 		return turnBy(angle, 0);
@@ -317,6 +320,7 @@ public class Auton
 		if(VERBOSE >= LOW) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
 		autonState = state;
 		DriveBase.driveArcade(0, 0); //Stop Driving!
+		initTimeout(0);
 		alreadyRunning = false;
 	}
 }
