@@ -98,7 +98,7 @@ public class Constants
 	public static final double DISTANCE_TO_RPM = 750; //TODO: Build Robot and find Value
 	public static final double VOLTAGE_TO_METERS = 1;
 	public static final double ENCODER_TO_METERS = 0; //TODO: Build Robot and find Value
-	public static final double DRIVE_ENCODER_TO_METERS = 1; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
+	public static final double DRIVE_ENCODER_TO_METERS = 100; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
 	public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
 	
 	public static final double AUTON_RPM = 60; //TODO: build robot, tune value (you get the drill)

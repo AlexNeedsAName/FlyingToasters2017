@@ -8,13 +8,16 @@ public class Auton
 	private static states autonState;
 	private static modes autonMode;
 	private static boolean onRedAlliance;
+	
+	@SuppressWarnings("unused")
+	private static final int LOW = 1, MID = 2, HIGH = 3;
 
 	private static boolean lineFound = false;
 	private static boolean endOfLine = false;
-
+	
 	private static boolean alreadyRunning;
 	private static Timer timeoutTimer;
-	private static boolean VERBOSE;
+	private static int VERBOSE;
 
 	public static UDP udp;
 
@@ -40,7 +43,7 @@ public class Auton
 		private static final modes[] values = modes.values(); //We cache the value array for preformance
 		public static modes fromInt(int i)
 		{
-			if(i >= values.length)
+			if(i >= values.length || i<0)
 			{
 				System.err.println("WARNING: Auton " + i + " out of range. Defaulting to " + values[0].toString());
 				i = 0;
@@ -60,26 +63,20 @@ public class Auton
 		timeoutTimer = new Timer();
 	}
 	
-	public static void setup(modes mode, boolean redAlliance, boolean verboseMode)
+	public static void setup(modes mode, boolean redAlliance, int verbosity)
 	{
 		autonState = states.START;
 		alreadyRunning = false;
 		autonMode = mode;
 		onRedAlliance = redAlliance;
-		VERBOSE = verboseMode;
+		VERBOSE = verbosity;
 	}
 	
-	public static void test()
-	{
-		Sensors.resetDriveDistance(Sensors.getDriveDistance() + Teleop.driver.getAxis(PS4.Axis.LEFT_Y) / 10);
-		run();
-	}
-
 	public static void run()
 	{
 		switch(autonMode)
 		{
-		case DO_NOTHING:				
+		case DO_NOTHING:
 			break;
 
 		case CROSS_LINE:
@@ -100,7 +97,7 @@ public class Auton
 		}
 	}
 	
-	@SuppressWarnings("incomplete-switch")
+	@SuppressWarnings("incomplete-switch") //I don't care about the other values, I know they won't be used :P
 	private static void crossBaseline()
 	{
 		boolean done;
@@ -259,12 +256,13 @@ public class Auton
 		if(!alreadyRunning)
 		{
 			initTimeout(timeout);
-			if(VERBOSE) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
+			Sensors.resetDriveDistance();
+			if(VERBOSE >= LOW) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
 			alreadyRunning = true;
 		}
-		if(VERBOSE) System.out.print(Sensors.getDriveDistance() + "m out of " + distance + "m\r");
+		if(VERBOSE >= HIGH) System.out.println(Sensors.getDriveDistance() + "m out of " + distance + "m");
 		DriveBase.driveArcade(speed, 0);
-		boolean done = (Sensors.getDriveDistance() <= distance);
+		boolean done = (Sensors.getDriveDistance() >= distance);
 		return (done || timeoutUp(timeout));
 	}
 
@@ -277,12 +275,12 @@ public class Auton
 	{
 		if(!alreadyRunning)
 		{
-			if(VERBOSE) System.out.println("Starting to turn by " + angle + "° in state " + autonState);
+			if(VERBOSE >= LOW) System.out.println("Starting to turn by " + angle + "° in state " + autonState);
 			initTimeout(timeout);
 			Sensors.resetGyro();
 			alreadyRunning = true;
 		}
-		if(VERBOSE) System.out.print(Sensors.getAngle() + "° out of " + angle + "°\r");
+		if(VERBOSE >= HIGH) System.out.println(Sensors.getAngle() + "° out of " + angle + "°");
 		boolean done = DriveBase.turnTo(angle, 1);
 		
 		return (done || timeoutUp(timeout));
@@ -296,7 +294,7 @@ public class Auton
 
 	private static void initTimeout(double Timeout)
 	{
-		if(VERBOSE) System.out.println("Starting a " + Timeout + "s Timer");
+		if(VERBOSE >= LOW && Timeout != 0) System.out.println("Starting a " + Timeout + "s Timer");
 		timeoutTimer.reset();
 		timeoutTimer.start();
 	}
@@ -310,14 +308,15 @@ public class Auton
 		double time = timeoutTimer.get();
 //		if(VERBOSE) System.out.println(time + "s out of " + timeout + "s");
 		boolean done = (time >= timeout);
-		if(done && VERBOSE) System.out.println("\nScrew it, it's close enough. We're out of time\r");
+		if(done && VERBOSE >= LOW) System.out.println("\nScrew it, it's close enough. We're out of time");
 		return done;
 	}
 	
 	private static void increment(states state)
 	{
-		if(VERBOSE) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
+		if(VERBOSE >= LOW) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
 		autonState = state;
+		DriveBase.driveArcade(0, 0); //Stop Driving!
 		alreadyRunning = false;
 	}
 }

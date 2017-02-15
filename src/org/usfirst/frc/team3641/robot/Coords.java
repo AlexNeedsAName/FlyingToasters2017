@@ -50,7 +50,7 @@ public class Coords
 			counterClockwiseDistance = fixDegrees(targetAngle - currentAngle);
 			clockwiseDistance = fixDegrees(360 - (targetAngle - currentAngle));
 
-			if(counterClockwiseDistance > clockwiseDistance) return counterClockwiseDistance;
+			if(Math.abs(counterClockwiseDistance) < Math.abs(clockwiseDistance)) return counterClockwiseDistance;
 			else return -clockwiseDistance;
 		}
 	}
