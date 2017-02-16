@@ -47,6 +47,10 @@ public class Constants
 	public static final int LEFT_SLAVE_VICTOR = 2;
 	public static final int RIGHT_VICTOR = 3;
 	public static final int RIGHT_SLAVE_VICTOR = 4;
+	
+	//Spikes
+	public static final int RED_SPIKE = 0;
+	public static final int BLUE_SPIKE = 1;
 
 	//Pnumatics
 	public static final int SHIFTER_CHANNEL_FORWARD = 0;

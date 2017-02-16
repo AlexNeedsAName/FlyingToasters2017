@@ -10,7 +10,7 @@ public class Robot extends IterativeRobot
 	DriverStation DS = DriverStation.getInstance();
 	Preferences Prefs = Preferences.getInstance();
 	Auton.modes lastMode;
-	boolean lastAlliance;
+	boolean lastAllianceIsRed;
 	boolean connectedYet;
 	
 	public void robotInit()
@@ -29,7 +29,7 @@ public class Robot extends IterativeRobot
 		Auton.getInstance();
 		Sensors.getInstance(); //Must be last, it uses things initalized in other classes
 		lastMode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
-		lastAlliance = (DS.getAlliance() == DriverStation.Alliance.Red);
+		lastAllianceIsRed = (DS.getAlliance() == DriverStation.Alliance.Red);
 		connectedYet = false;
 	}
 
@@ -67,13 +67,16 @@ public class Robot extends IterativeRobot
 	
 	public void disabledPeriodic()
 	{
-		boolean alliance = (DS.getAlliance() == DriverStation.Alliance.Red);
+		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red);
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
-		if(mode != lastMode || alliance != lastAlliance)
+		if(mode != lastMode || redAlliance != lastAllianceIsRed)
 		{
-			System.err.println("WARNING: Switched to Auton " + mode.toString() + " on the " + ((alliance) ? "Red" : "Blue") + " Alliance"); //Prints it as a warning so it is visible by default. We don't want to ever run the wrong auton.
+			System.err.println("WARNING: Switched to Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance"); //Prints it as a warning so it is visible by default. We don't want to ever run the wrong auton.
 			lastMode = mode;
-			lastAlliance = alliance;
+			lastAllianceIsRed = redAlliance;
+			
+			if(DS.getAlliance() == DriverStation.Alliance.Invalid) RGB.setColor(RGB.OFF);
+			else RGB.setColor((redAlliance) ? RGB.RED : RGB.BLUE);
 		}
 	}
 
