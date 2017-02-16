@@ -24,17 +24,20 @@ public class Gearbox
 
 	public static void shiftHigh()
 	{
+		if(Constants.VERBOSE >= Constants.MID) System.out.println("Shifting Down");
 		if(!Constants.runningAleksBot) shifter.set(DoubleSolenoid.Value.kForward);
 	}
 
 	public static void shiftLow()
 	{
+		if(Constants.VERBOSE >= Constants.MID) System.out.println("Shifting Down");
 		if(!Constants.runningAleksBot) shifter.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	public static void togglePTO()
 	{
 		if(!Constants.runningAleksBot) setPTO(!inPTOMode);
+		if(Constants.VERBOSE >= Constants.LOW) System.out.println(((inPTOMode) ? "Engaging" : "Disengaging") + " PTO");
 	}
 	
 	public static void setPTO(boolean on)

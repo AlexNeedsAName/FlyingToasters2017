@@ -1,5 +1,4 @@
 package org.usfirst.frc.team3641.robot;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Tracking
@@ -23,33 +22,33 @@ public class Tracking
 
 	public static int target(int mode, boolean autoFire)
 	{
+		String response;
 		switch(visionState)
 		{
 		case Constants.SEND_REQUEST:
 			Turret.reset();
 			if(mode == Constants.FUEL_MODE) Serial.sendData("1");
 			else Serial.sendData("0");
+			if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Sent Request");
 			visionState = Constants.GET_RESPONSE;
 			break;
 
 		case Constants.GET_RESPONSE:
-			String response = Serial.getData();
-			if(response != null && response.contains(";"))
+			response = Serial.getData();
+			if(response != null)
 			{
-				String data[] = response.split(";");
-				angle = -Double.parseDouble(data[0]); //Pi should give us "Angle;Distance" for now. We can change this though
-				distance = Double.parseDouble(data[1]);
-				
-				if(Hash.verifyOneAtATime(data[0] + ";" + data[1], Long.parseLong(data[2])))
+				double[] data = Serial.parseData(response, 2);
+				if(data == null)
 				{
-					SmartDashboard.putNumber("Angle", angle);
-					if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TO_TARGET;
+					if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Parse error. Invalid message");
+					visionState = Constants.SEND_REQUEST;
 				}
 				else
 				{
-					SmartDashboard.putString("Response", response);
-					System.out.println("Failed hash check.");
-					visionState = Constants.SEND_REQUEST;
+					angle = data[0];
+					SmartDashboard.putNumber("Angle", angle);
+					if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Angle is " + angle + "°");
+					if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TO_TARGET;
 				}
 			}
 			break;
@@ -59,6 +58,7 @@ public class Tracking
 			SmartDashboard.putBoolean("Turret Tracked", tracked);
 			if(tracked)
 			{
+				if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Done turning... Verifying angle.");
 				Turret.reset();
 				visionState = Constants.VERIFY_REQUEST;
 			}
@@ -71,16 +71,27 @@ public class Tracking
 			break;
 			
 		case Constants.VERIFY:
-			String response2 = Serial.getData();
-			if(response2 != null && response2.contains(";"))
+			response = Serial.getData();
+			if(response != null)
 			{
-				String data[] = response2.split(";");
-				angle = -Double.parseDouble(data[0]); //Pi should give us "Angle;Distance" for now. We can change this though
-				distance = Double.parseDouble(data[1]);
-				if(mode == Constants.FUEL_MODE)
+				double[] data = Serial.parseData(response, 2);
+				if(data == null)
 				{
-					if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR) visionState = Constants.TRACKED_FUEL;
-					else resetState();
+					if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Parse error. Invalid message");
+					visionState = Constants.VERIFY_REQUEST;
+				}
+				else
+				{
+					if(mode == Constants.FUEL_MODE)
+					{
+						angle = data[0];
+						if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR)
+						{
+							if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked. FIRE!");
+							visionState = Constants.TRACKED_FUEL;
+						}
+						else resetState();
+					}
 				}
 			}
 			break;

@@ -36,10 +36,10 @@ public class Robot extends IterativeRobot
 	public void autonomousInit()
 	{
 		//Gearbox.shiftLow();
-		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //Default to because our half field is setup like the blue alliance
+		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
-		Auton.setup(mode, redAlliance, 1);
-		System.out.println("Starting Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance");
+		Auton.setup(mode, redAlliance);
+		if(Constants.VERBOSE >= Constants.MID) System.out.println("Starting Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance");
 	}
 
 	public void autonomousPeriodic()
@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot
 
 	public void teleopInit()
 	{
-		System.out.println("Running teleopInit()");
+		if(Constants.VERBOSE >= Constants.MID) System.out.println("Teleop Started");
 		//Gearbox.shiftHigh();
 	}
 	
@@ -71,7 +71,7 @@ public class Robot extends IterativeRobot
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		if(mode != lastMode || alliance != lastAlliance)
 		{
-			System.err.println("WARNING: Switched to Auton " + mode.toString() + " on the " + ((alliance) ? "Red" : "Blue") + " Alliance");
+			System.err.println("WARNING: Switched to Auton " + mode.toString() + " on the " + ((alliance) ? "Red" : "Blue") + " Alliance"); //Prints it as a warning so it is visible by default. We don't want to ever run the wrong auton.
 			lastMode = mode;
 			lastAlliance = alliance;
 		}
@@ -79,7 +79,7 @@ public class Robot extends IterativeRobot
 
 	public void disabledInit() //It runs this once the robot connects to the DriverStation too.
 	{
-
+		if(Constants.VERBOSE >= Constants.MID) System.out.println("Robot Disabled");
 	}
 
 }

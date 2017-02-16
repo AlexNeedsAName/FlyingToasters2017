@@ -2,10 +2,14 @@ package org.usfirst.frc.team3641.robot;
 
 public class Constants
 {
-	public static boolean runningAleksBot = false;
+	public static final int OFF = 0;	//Nothing
+	public static final int LOW = 1;    //Stuff we probably want to know about
+	public static final int MID = 2;    //Stuff that's pretty routine, but only runs once.
+	public static final int HIGH = 3;   //Anything that spams the console
 
-	public static final int HIGH = 1;
-	public static final int LOW = 0;
+	public static int VERBOSE = LOW;
+	
+	public static boolean runningAleksBot = false;
 	
 	public static final double ADJATATOR_SPEED = .5;
 

@@ -20,5 +20,10 @@ public class PDP
 	{
 		return pdp.getVoltage();
 	}
+	
+	public static double getCurrent()
+	{
+		return pdp.getTotalCurrent();
+	}
 
 }

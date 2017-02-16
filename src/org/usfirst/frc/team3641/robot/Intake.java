@@ -8,6 +8,7 @@ public class Intake
 	private static Intake instance;
 	private static DoubleSolenoid intakeSolenoid;
 	private static Spark left, right;
+	private static boolean up = true;
 	
 	public static Intake getInstance()
 	{
@@ -24,11 +25,21 @@ public class Intake
 	
 	public static void intakeUp()
 	{
+		if(!up)
+		{
+			if(Constants.VERBOSE >= Constants.MID) System.out.println("Intake up");
+			up = true;
+		}
 		intakeSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	public static void intakeDown()
 	{
+		if(up)
+		{
+			if(Constants.VERBOSE >= Constants.MID) System.out.println("Intake down");
+			up = false;
+		}
 		intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 	

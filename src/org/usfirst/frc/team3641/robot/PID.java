@@ -42,6 +42,7 @@ public class PID
 		lastError = error;
 		if(name != null)
 		{
+			if(Constants.VERBOSE >= Constants.HIGH) System.out.println(name + " PID: { P:" + error * KP + ", I:" + errorRefresh * KI + ", D:" + lastError * KD + " }");
 			SmartDashboard.putNumber(name + " P", error * KP);
 			SmartDashboard.putNumber(name + " I", errorRefresh * KI);
 			SmartDashboard.putNumber(name + " D", lastError * KD);

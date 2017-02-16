@@ -10,8 +10,6 @@ public class Auton
 	private static modes autonMode;
 	private static boolean onRedAlliance;
 	
-	private static final int LOW = 1, MID = 2, HIGH = 3;
-
 	static boolean negativeErrorWhenDone;
 	
 	private static boolean lineFound = false;
@@ -19,7 +17,6 @@ public class Auton
 	
 	private static boolean alreadyRunning;
 	private static Timer timeoutTimer;
-	private static int VERBOSE;
 
 	public static UDP udp;
 
@@ -65,13 +62,12 @@ public class Auton
 		timeoutTimer = new Timer();
 	}
 	
-	public static void setup(modes mode, boolean redAlliance, int verbosity)
+	public static void setup(modes mode, boolean redAlliance)
 	{
 		autonState = states.START;
 		alreadyRunning = false;
 		autonMode = mode;
 		onRedAlliance = redAlliance;
-		VERBOSE = verbosity;
 	}
 	
 	public static void run()
@@ -137,7 +133,7 @@ public class Auton
 			
 		case DRIVE_TO_HOPPER:
 			boolean reachedHopper = driveBy(3, .5);
-			boolean hitTheWall = (Sensors.isStill() && timeoutTimer.get() > .5); //We don't want it to check if it's still too soon, otherwise it just doesn't go 
+			boolean hitTheWall = didWeHitSomething(.1);
 			if(reachedHopper || hitTheWall) increment(states.SCORE_RANKING_POINT);
 			break;
 
@@ -259,10 +255,10 @@ public class Auton
 			initTimeout(timeout);
 			Sensors.resetDriveDistance();
 			negativeErrorWhenDone = (distance < Sensors.getDriveDistance());
-			if(VERBOSE >= LOW) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
+			if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
 			alreadyRunning = true;
 		}
-		if(VERBOSE >= HIGH) System.out.println(Sensors.getDriveDistance() + "m out of " + distance + "m");
+		if(Constants.VERBOSE >= Constants.HIGH) System.out.println(Sensors.getDriveDistance() + "m out of " + distance + "m");
 		double error = DriveBase.driveTo(distance);
 		boolean crossedLine = (negativeErrorWhenDone) ? (error < 0) : (error > 0);
 		boolean  withinThreshold = (Math.abs(error) <= Constants.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
@@ -279,12 +275,12 @@ public class Auton
 	{
 		if(!alreadyRunning)
 		{
-			if(VERBOSE >= LOW) System.out.println("Starting to turn by " + angle + "° in state " + autonState);
+			if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting to turn by " + angle + "° in state " + autonState);
 			initTimeout(timeout);
 			Sensors.resetGyro();
 			alreadyRunning = true;
 		}
-		if(VERBOSE >= HIGH) System.out.println(Sensors.getAngle() + "° out of " + angle + "°");
+		if(Constants.VERBOSE >= Constants.HIGH) System.out.println(Sensors.getAngle() + "° out of " + angle + "°");
 		boolean done = DriveBase.turnTo(angle, 1);
 		
 		return (done || timeoutUp(timeout));
@@ -297,7 +293,7 @@ public class Auton
 
 	private static void initTimeout(double Timeout)
 	{
-		if(VERBOSE >= LOW && Timeout != 0) System.out.println("Starting a " + Timeout + "s Timer");
+		if(Constants.VERBOSE >= Constants.LOW && Timeout != 0) System.out.println("Starting a " + Timeout + "s Timer");
 		timeoutTimer.reset();
 		timeoutTimer.start();
 	}
@@ -309,15 +305,20 @@ public class Auton
 			return false;
 		}
 		double time = timeoutTimer.get();
-//		if(VERBOSE) System.out.println(time + "s out of " + timeout + "s");
+//		if(Constants.VERBOSE) System.out.println(time + "s out of " + timeout + "s");
 		boolean done = (time >= timeout);
-		if(done && VERBOSE >= LOW) System.out.println("\nScrew it, it's close enough. We're out of time");
+		if(done && Constants.VERBOSE >= Constants.LOW) System.out.println("\nScrew it, it's close enough. We're out of time");
 		return done;
+	}
+	
+	private static boolean didWeHitSomething(double minTime)
+	{
+		return (Sensors.isStill() && timeoutTimer.get() > minTime); //We want to know if we are still, but it doesn't help us if it returns true immediately before we started driving.
 	}
 	
 	private static void increment(states state)
 	{
-		if(VERBOSE >= LOW) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
+		if(Constants.VERBOSE >= Constants.LOW) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
 		autonState = state;
 		DriveBase.driveArcade(0, 0); //Stop Driving!
 		initTimeout(0);

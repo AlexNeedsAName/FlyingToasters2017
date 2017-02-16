@@ -55,6 +55,7 @@ public class Shooter
 
 	public static void reset()
 	{
+		if(Constants.VERBOSE >= Constants.MID) System.out.println("Reset Shooter");
 		SmartDashboard.putNumber("Target RPM", 0);
 		set(0);
 		error = 0;
@@ -64,7 +65,7 @@ public class Shooter
 	public static void fire()
 	{
 		if(Math.abs(error) < 50) forceFire();
-		else stopFiring();
+		else elevator.set(0);
 
 	}
 	public static void forceFire()
@@ -75,6 +76,7 @@ public class Shooter
 	
 	public static void stopFiring()
 	{
+		if(Constants.VERBOSE >= Constants.MID) System.out.println("Stopped Firing Shooter");
 		elevator.set(0);
 		Hopper.stopAdjatating();
 	}
