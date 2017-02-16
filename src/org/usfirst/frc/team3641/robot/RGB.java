@@ -3,7 +3,7 @@ import edu.wpi.first.wpilibj.Relay;
 public class RGB
 {
 	private static RGB instance;
-	private static Relay red, blue; //We don't really need green.
+	private static Relay spike;
 	
 	public static int OFF = 0, RED = 1, BLUE = 2;
 	
@@ -15,27 +15,14 @@ public class RGB
 
 	private RGB()
 	{
-		red = new Relay(Constants.RED_SPIKE);
-		blue = new Relay(Constants.BLUE_SPIKE);		
+		spike = new Relay(Constants.RGB_SPIKE);
 	}
 	
 	public static void setColor(int color)
 	{
-		if(color == RED)
-		{
-			red.set(Relay.Value.kOn);
-			blue.set(Relay.Value.kOff);
-		}
-		else if(color == BLUE)
-		{
-			red.set(Relay.Value.kOff);
-			blue.set(Relay.Value.kOn);
-		}
-		else
-		{
-			red.set(Relay.Value.kOff);
-			blue.set(Relay.Value.kOff);
-		}
+		if(color == RED) spike.setDirection(Relay.Direction.kForward);
+		else if(color == BLUE) spike.setDirection(Relay.Direction.kReverse);
+		else spike.set(Relay.Value.kOff);
 		
 	}
 }
