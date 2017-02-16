@@ -17,6 +17,10 @@ public class Auton
 	
 	private static boolean alreadyRunning;
 	private static Timer timeoutTimer;
+	
+	//Distances as measured from back wall unless otherwise stated.
+	//TODO: Measure Distances
+	private static final double distanceToBaseline = 3, distanceToHopperLine = 3, distanceToHopperFromTurn = 1, distanceToGearTurn = 2, distanceToGearFromTurn = 1;
 
 	public static UDP udp;
 
@@ -28,7 +32,13 @@ public class Auton
 		DRIVE_TO_HOPPER_LINE,
 		TURN_TO_HOPPER,
 		DRIVE_TO_HOPPER,
-		SCORE_RANKING_POINT;
+		SCORE_RANKING_POINT,
+		DRIVE_TO_GEAR_TURN,
+		TURN_TO_GEAR,
+		PLACE_GEAR,
+		BACK_AWAY_FROM_GEAR,
+		TURN_FROM_GEAR_TO_NORMAL,
+		DRIVE_FROM_GEAR_TURN_TO_HOPPER_LINE;
 	}
 	
 	public enum modes
@@ -36,6 +46,8 @@ public class Auton
 		DO_NOTHING,
 		CROSS_LINE,
 		HOPPER_AUTON,
+		GEAR_AUTON,
+		COMBO_AUTON,
 		LINE_ALIGN,
 		LINE_FOLLOW;
 		
@@ -84,6 +96,13 @@ public class Auton
 		case HOPPER_AUTON:
 			hopperAuton();
 			break;
+			
+		case GEAR_AUTON:
+			gearAuton();
+			break;
+			
+		case COMBO_AUTON:
+			comboAuton();
 
 		case LINE_ALIGN:
 			lineAlign();
@@ -105,7 +124,7 @@ public class Auton
 			break;
 
 		case DRIVE_FORWARDS:
-			boolean reachedLine = driveBy(3);
+			boolean reachedLine = driveBy(distanceToBaseline);
 			if(reachedLine) increment(states.DONE);
 			break;
 		}
@@ -121,7 +140,7 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER_LINE:
-			boolean reachedLine = driveBy(3);
+			boolean reachedLine = driveBy(distanceToHopperLine);
 			if(reachedLine) increment(states.TURN_TO_HOPPER);
 			break;
 
@@ -132,11 +151,101 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			boolean reachedHopper = driveBy(3, .5);
+			boolean reachedHopper = driveBy(distanceToHopperFromTurn, .5);
 			boolean hitTheWall = didWeHitSomething(.1);
 			if(reachedHopper || hitTheWall) increment(states.SCORE_RANKING_POINT);
 			break;
 
+		case SCORE_RANKING_POINT:
+			Tracking.target(Constants.FUEL_MODE);
+			break;
+		}
+	}
+
+	@SuppressWarnings("incomplete-switch")
+	private static void gearAuton()
+	{
+		switch(autonState)
+		{
+		case START:
+			increment(states.DRIVE_TO_GEAR_TURN);
+			break;
+			
+		case DRIVE_TO_GEAR_TURN:
+			boolean reachedLine = driveBy(distanceToGearTurn);
+			if(reachedLine) increment(states.TURN_TO_GEAR);
+			break;
+
+		case TURN_TO_GEAR:
+			double angle = (onRedAlliance) ? 45 : -45; //If on red alliance, turn right. If on blue, turn left.
+			boolean doneTurning = turnBy(angle, 1);
+			if(doneTurning) increment(states.PLACE_GEAR);
+			break;
+			
+		case PLACE_GEAR:
+			boolean reachedHopper = driveBy(distanceToGearFromTurn, .5);
+			boolean hitTheWall = didWeHitSomething(.1);
+			if(reachedHopper || hitTheWall) increment(states.DONE);
+			break;
+		}
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	private static void comboAuton()
+	{
+		double angle;
+		boolean doneTurning, doneDriving, hitTheWall;
+		switch(autonState)
+		{
+		case START:
+			increment(states.DRIVE_TO_GEAR_TURN);
+			break;
+			
+		case DRIVE_TO_GEAR_TURN:
+			doneDriving = driveBy(distanceToGearTurn);
+			if(doneDriving) increment(states.TURN_TO_GEAR);
+			break;
+
+		case TURN_TO_GEAR:
+			angle = (onRedAlliance) ? 45 : -45; //If on red alliance, turn right. If on blue, turn left.
+			doneTurning = turnBy(angle, 1);
+			if(doneTurning) increment(states.PLACE_GEAR);
+			break;
+			
+		case PLACE_GEAR:
+			doneDriving = driveBy(distanceToGearFromTurn, .5);
+			hitTheWall = didWeHitSomething(.1);
+			if(doneDriving || hitTheWall) increment(states.BACK_AWAY_FROM_GEAR);
+			break;
+			
+		case BACK_AWAY_FROM_GEAR:
+			doneDriving = driveBy(-distanceToGearFromTurn, .5);
+			if(doneDriving) increment(states.TURN_FROM_GEAR_TO_NORMAL);
+			break;
+			
+		case TURN_FROM_GEAR_TO_NORMAL:
+			angle = (onRedAlliance) ? -45 : 45; //If on red alliance, turn left. If on blue, turn right.
+			doneTurning = turnBy(angle, 1);
+			if(doneTurning) increment(states.DRIVE_FROM_GEAR_TURN_TO_HOPPER_LINE);
+			break;
+			
+		case DRIVE_FROM_GEAR_TURN_TO_HOPPER_LINE:
+			doneDriving = driveBy(distanceToHopperLine - distanceToGearTurn);
+			if(doneDriving) increment(states.TURN_TO_HOPPER);
+			break;
+			
+		case TURN_TO_HOPPER:
+			angle = (onRedAlliance) ? 90 : -90; //If on red alliance, turn right. If on blue, turn left.
+			doneTurning = turnBy(angle, 1);
+			if(doneTurning) increment(states.DRIVE_TO_HOPPER);
+			break;
+
+		case DRIVE_TO_HOPPER:
+			doneDriving = driveBy(distanceToHopperFromTurn, .5);
+			hitTheWall = didWeHitSomething(.1);
+			if(doneDriving || hitTheWall) increment(states.SCORE_RANKING_POINT);
+			break;
+			
 		case SCORE_RANKING_POINT:
 			Tracking.target(Constants.FUEL_MODE);
 			break;
@@ -248,6 +357,7 @@ public class Auton
 			}
 		}
 	}
+
 	public static boolean driveBy(double distance, double timeout)
 	{
 		if(!alreadyRunning)
