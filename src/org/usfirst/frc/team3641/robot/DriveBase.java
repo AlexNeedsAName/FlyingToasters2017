@@ -34,8 +34,8 @@ public class DriveBase
 		rightSlave = new CANTalon(Constants.DRIVEBASE_RIGHT_SLAVE_TALON);
 		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 
-		rotationPID = new PID(Constants.DRIVEBASE_ROTATION_KP, Constants.DRIVEBASE_ROTATION_KI, Constants.DRIVEBASE_ROTATION_KD);
-		rotationPID.setConstantFeedForward(Constants.DRIVEBASE_ROTATION_FF);
+		rotationPID = new PID(Constants.DRIVEBASE_ROTATION_KP, Constants.DRIVEBASE_ROTATION_KI, Constants.DRIVEBASE_ROTATION_KD, "Rotation");
+		rotationPID.setIDeadband(5);
 		
 		drivePID = new PID(Constants.DRIVEBASE_KP, Constants.DRIVEBASE_KI, Constants.DRIVEBASE_KD);
 		drivePID.setConstantFeedForward(Constants.DRIVEBASE_FF);
@@ -145,7 +145,6 @@ public class DriveBase
 		double error = distance - Sensors.getDriveDistance();
 		double output = drivePID.pid(error);
 		driveArcade(output, 0);
-		if(Constants.VERBOSE >= Constants.HIGH) System.out.println("Error: " + error + "; Output: " + output);
 		return error;
 	}
 	

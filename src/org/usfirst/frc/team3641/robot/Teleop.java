@@ -47,6 +47,7 @@ public class Teleop
 		//Shooter Stuff
 		if(!operator.isDown(E3D.Button.THUMB)) //Autonomous Subsystem Mode
 		{
+			if(operator.isReleased(E3D.Button.THUMB)) Turret.set(0);
 			if(operator.isDown(E3D.Button.TRIGGER)) Tracking.target(Constants.FUEL_MODE);
 			else if(operator.isReleased(E3D.Button.TRIGGER)) Tracking.resetState();
 			

@@ -7,7 +7,7 @@ public class PID
 	private double KP, KI, KD, FF, MP;
 	private double IRange = 0;
 	private boolean deadbanding;
-	private int OFF = 1, PROPORTIONAL = 1, CONSTANT = 2;
+	private int OFF = 0, PROPORTIONAL = 1, CONSTANT = 2;
 	private int feedForwardMode;
 	private String name;
 
@@ -46,10 +46,11 @@ public class PID
 			if(output > 0) output += FF;
 			else if(output < 0) output -= FF;
 		}
+		else System.out.println("Output: " + output);
 
-		if(name != null)
+		if(name != null && Constants.PRINT_PID)
 		{
-			if(Constants.VERBOSE >= Constants.HIGH) System.out.println(name + " PID: { P:" + error * KP + ", I:" + errorRefresh * KI + ", D:" + lastError * KD + "; Min Power:  " + MP + "; Output: " + output + " }");
+			if(Constants.VERBOSE >= Constants.HIGH) System.out.println(name + " PID: { P:" + error * KP + ", I:" + errorRefresh * KI + ", D:" + lastError * KD + "; Output: " + output + " }");
 			SmartDashboard.putNumber(name + " P", error * KP);
 			SmartDashboard.putNumber(name + " I", errorRefresh * KI);
 			SmartDashboard.putNumber(name + " D", lastError * KD);

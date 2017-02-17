@@ -2,7 +2,7 @@ package org.usfirst.frc.team3641.robot;
 
 public class Constants
 {
-	public static final boolean disableTimeouts = true;
+	public static final boolean disableTimeouts = false;
 	
 	public static final int OFF = 0;	//Nothing
 	public static final int LOW = 1;    //Stuff we probably want to know about
@@ -10,6 +10,7 @@ public class Constants
 	public static final int HIGH = 3;   //Anything that spams the console
 
 	public static int VERBOSE = HIGH;
+	public static boolean PRINT_PID = false;
 	
 	public static boolean runningAleksBot = false;
 	
@@ -26,6 +27,8 @@ public class Constants
 	public static final int ULTRASONIC_TRIGGER = 1;
 
 	public static final int SERIAL_BAUDRATE  = 115200;
+	
+	public static final int NUMBER_OF_ENCODER_STILL_CHECKS = 10;
 
 	//Talons
 	public static final int DRIVEBASE_LEFT_TALON = 3;
@@ -70,10 +73,11 @@ public class Constants
 	public static final double GEAR_TRACKING_KI = 0.0; //TODO: Build robot, then tune this value
 	public static final double GEAR_TRACKING_KD = 0.0; //TODO: Build robot, then tune this value
 
-	public static final double DRIVEBASE_ROTATION_KP = 0.1; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_ROTATION_KI = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_KP = 0.015; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_KI = 0.0015; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_ROTATION_KD = 0.0; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_ROTATION_FF = 0.3;
+	public static final double DRIVEBASE_ROTATION_FF = 0.0;
+	public static final int NUMBER_OF_TURNING_CHECKS = 5; //Must be within error margin for this many loops
 
 	public static final double DRIVEBASE_KP = 0.1; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_KI = 0.0; //TODO: Build robot, then tune this value

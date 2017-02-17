@@ -37,15 +37,15 @@ public class Tracking
 			response = Serial.getData();
 			if(response != null)
 			{
-				double[] data = Serial.parseData(response, 2);
-				if(data == null)
+				if(response.contains("None"))
 				{
-					if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Parse error. Invalid message");
+					System.out.println("Targeting: Goal not found");
 					visionState = Constants.SEND_REQUEST;
 				}
 				else
 				{
-					angle = data[0];
+					String[] strings = response.split(";");
+					angle = Double.parseDouble(strings[0]);
 					SmartDashboard.putNumber("Angle", angle);
 					if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Angle is " + angle + "°");
 					if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TO_TARGET;
@@ -72,28 +72,18 @@ public class Tracking
 			
 		case Constants.VERIFY:
 			response = Serial.getData();
-			if(response != null)
+			if(response != null && response != "None")
 			{
-				double[] data = Serial.parseData(response, 2);
-				if(data == null)
+				String[] strings = response.split(";");
+				angle = Double.parseDouble(strings[0]);
+				if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR)
 				{
-					if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Parse error. Invalid message");
-					visionState = Constants.VERIFY_REQUEST;
+					if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked. FIRE!");
+					visionState = Constants.TRACKED_FUEL;
 				}
-				else
-				{
-					if(mode == Constants.FUEL_MODE)
-					{
-						angle = data[0];
-						if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR)
-						{
-							if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked. FIRE!");
-							visionState = Constants.TRACKED_FUEL;
-						}
-						else resetState();
-					}
-				}
+				else resetState();
 			}
+			else visionState = Constants.VERIFY_REQUEST;
 			break;
 			
 		case Constants.TRACKED_FUEL:

@@ -3,8 +3,8 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Ultrasonic;
-
 import com.kauailabs.navx.frc.AHRS;
+
 public class Sensors
 {
 	private static Sensors instance;
@@ -47,8 +47,7 @@ public class Sensors
 		{
 			shooterRPM = Shooter.right.getEncVelocity() * Constants.ENCODER_TO_METERS;
 			ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.VOLTAGE_TO_METERS;
-			driveDistance+=.1;
-			//driveDistance = DriveBase.left.getEncPosition() * Constants.DRIVE_ENCODER_TO_METERS;
+			driveDistance = DriveBase.left.getAnalogInPosition() * Constants.DRIVE_ENCODER_TO_METERS;
 			turretAngle = Turret.turretTalon.getEncPosition() * Constants.TURRET_ENCODER_TO_ANGLE;
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
