@@ -34,17 +34,22 @@ public class DriveBase
 		rightSlave = new CANTalon(Constants.DRIVEBASE_RIGHT_SLAVE_TALON);
 		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 
-		rotationPID = new PID(Constants.DRIVEBASE_TRACKING_KP, Constants.DRIVEBASE_TRACKING_KI, Constants.DRIVEBASE_TRACKING_KD);
+		rotationPID = new PID(Constants.DRIVEBASE_ROTATION_KP, Constants.DRIVEBASE_ROTATION_KI, Constants.DRIVEBASE_ROTATION_KD);
+		rotationPID.setConstantFeedForward(Constants.DRIVEBASE_ROTATION_FF);
+		
 		drivePID = new PID(Constants.DRIVEBASE_KP, Constants.DRIVEBASE_KI, Constants.DRIVEBASE_KD);
+		drivePID.setConstantFeedForward(Constants.DRIVEBASE_FF);
 	}
 
 	public static void driveArcade(double power, double rotation)
 	{
+		if(Constants.VERBOSE >= 4) System.out.println("Power: " + power + "; Rotation: " + String.format("%.2f", rotation));
 		if(reverseMode) power = -power;
 
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
-
+		
+		if(Constants.VERBOSE >= 4) System.out.println("Left Power: " + leftPower + "; Right Power: " + rightPower);
 		driveTank(leftPower, rightPower);
 	}
 
@@ -66,6 +71,8 @@ public class DriveBase
 			leftPower*= -1;
 			rightPower*= -1;
 		}
+		
+		if(Constants.VERBOSE >= 4) System.out.println("Left Power: " + leftPower + "; Right Power: " + rightPower);
 
 		if(Constants.runningAleksBot)
 		{
@@ -78,8 +85,8 @@ public class DriveBase
 		{
 			left.set(leftPower);
 			leftSlave.set(leftPower);
-			right.set(rightPower);
-			rightSlave.set(rightPower);
+			right.set(-rightPower);
+			rightSlave.set(-rightPower);
 		}
 	}
 
@@ -136,7 +143,9 @@ public class DriveBase
 	public static double driveTo(double distance)
 	{
 		double error = distance - Sensors.getDriveDistance();
-		driveArcade(drivePID.pid(error), 0);
+		double output = drivePID.pid(error);
+		driveArcade(output, 0);
+		if(Constants.VERBOSE >= Constants.HIGH) System.out.println("Error: " + error + "; Output: " + output);
 		return error;
 	}
 	

@@ -10,7 +10,7 @@ public class Shooter
 	private static Shooter instance;
 	public static CANTalon left, right;
 	private static Spark elevator;
-	private static PID pid;
+	private static PID flywheelPID;
 	private static double error;
 
 	public static Shooter getInstance()
@@ -25,7 +25,9 @@ public class Shooter
 		right = new CANTalon(Constants.SHOOTER_RIGHT_TALON);
 		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 		elevator = new Spark(Constants.SHOOTER_ELEVATOR_SPARK);
-		pid = new PID(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, Constants.SHOOTER_FF, "Shooter");
+		
+		flywheelPID = new PID(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, "Shooter");
+		flywheelPID.setProportionalFeedForward(Constants.SHOOTER_FF);
 	}
 
 	public static double calcSpeed(double distance)
@@ -38,7 +40,7 @@ public class Shooter
 		SmartDashboard.putNumber("Target RPM", target);
 		double current = Sensors.getShooterRPM();
 		error = target - current;
-		double output = pid.pid(error, target);
+		double output = flywheelPID.pid(error, target);
 		set(output);
 		return error;
 	}
@@ -59,7 +61,7 @@ public class Shooter
 		SmartDashboard.putNumber("Target RPM", 0);
 		set(0);
 		error = 0;
-		pid.reset();
+		flywheelPID.reset();
 	}
 
 	public static void fire()

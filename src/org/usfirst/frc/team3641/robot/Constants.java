@@ -2,12 +2,14 @@ package org.usfirst.frc.team3641.robot;
 
 public class Constants
 {
+	public static final boolean disableTimeouts = true;
+	
 	public static final int OFF = 0;	//Nothing
 	public static final int LOW = 1;    //Stuff we probably want to know about
 	public static final int MID = 2;    //Stuff that's pretty routine, but only runs once.
 	public static final int HIGH = 3;   //Anything that spams the console
 
-	public static int VERBOSE = LOW;
+	public static int VERBOSE = HIGH;
 	
 	public static boolean runningAleksBot = false;
 	
@@ -26,15 +28,15 @@ public class Constants
 	public static final int SERIAL_BAUDRATE  = 115200;
 
 	//Talons
-	public static final int DRIVEBASE_LEFT_TALON = 1;
-	public static final int DRIVEBASE_LEFT_SLAVE_TALON = 2;
-	public static final int DRIVEBASE_LEFT_SLAVE2_TALON = 3;
-	public static final int DRIVEBASE_RIGHT_TALON = 4;
-	public static final int DRIVEBASE_RIGHT_SLAVE_TALON = 5;
-	public static final int DRIVEBASE_RIGHT_SLAVE2_TALON = 6;
-	public static final int SHOOTER_LEFT_TALON = 7;
-	public static final int SHOOTER_RIGHT_TALON = 8;
-	public static final int TURRET_TALON = 9;
+	public static final int DRIVEBASE_LEFT_TALON = 3;
+	public static final int DRIVEBASE_LEFT_SLAVE_TALON = 4;
+	public static final int DRIVEBASE_LEFT_SLAVE2_TALON = 0;
+	public static final int DRIVEBASE_RIGHT_TALON = 1;
+	public static final int DRIVEBASE_RIGHT_SLAVE_TALON = 2;
+	public static final int DRIVEBASE_RIGHT_SLAVE2_TALON = 0;
+	public static final int SHOOTER_LEFT_TALON = 0;
+	public static final int SHOOTER_RIGHT_TALON = 0;
+	public static final int TURRET_TALON = 6;
 	
 	//Sparks
 	public static final int INTAKE_LEFT_SPARK = 1;
@@ -68,13 +70,15 @@ public class Constants
 	public static final double GEAR_TRACKING_KI = 0.0; //TODO: Build robot, then tune this value
 	public static final double GEAR_TRACKING_KD = 0.0; //TODO: Build robot, then tune this value
 
-	public static final double DRIVEBASE_TRACKING_KP = 0.0; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_TRACKING_KI = 0.0; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_TRACKING_KD = 0.0; //TODO: Build robot, then tune this value
-	
-	public static final double DRIVEBASE_KP = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_KP = 0.1; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_KI = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_KD = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_FF = 0.3;
+
+	public static final double DRIVEBASE_KP = 0.1; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_KI = 0.0; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_KD = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_FF = 0.3;
 
 	public static final double SHOOTER_KP = 0.00006;
 	public static final double SHOOTER_KI = 0.000005;
@@ -109,9 +113,9 @@ public class Constants
 	public static final double DISTANCE_TO_RPM = 750; //TODO: Build Robot and find Value
 	public static final double VOLTAGE_TO_METERS = 1;
 	public static final double ENCODER_TO_METERS = 0; //TODO: Build Robot and find Value
-	public static final double DRIVE_ENCODER_TO_METERS = 100; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
+	public static final double DRIVE_ENCODER_TO_METERS = -0.000623409726; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
 	public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
 	
 	public static final double AUTON_RPM = 60; //TODO: build robot, tune value (you get the drill)
-	public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .5; //Get within 5cm of the target.
+	public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
 }

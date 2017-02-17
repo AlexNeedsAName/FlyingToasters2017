@@ -1,32 +1,31 @@
 package org.usfirst.frc.team3641.robot;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PID
 {
 	private double errorRefresh, lastError;
-	private double KP, KI, KD, FF;
+	private double KP, KI, KD, FF, MP;
 	private double IRange = 0;
-	private boolean deadbanding = false;
+	private boolean deadbanding;
+	private int OFF = 1, PROPORTIONAL = 1, CONSTANT = 2;
+	private int feedForwardMode;
 	private String name;
 
-	public PID(double kp, double ki, double kd, double ff, String Name)
+	public PID(double kp, double ki, double kd, String Name)
 	{
 		errorRefresh = 0;
 		lastError = 0;
 		KP = kp;
 		KI = ki;
 		KD = kd;
-		FF = ff;
 		name = Name;
+		deadbanding = false;
+		feedForwardMode = OFF;
 	}
-	public PID(double kp, double ki, double kd, double ff)
-	{
-		this(kp, ki, kd, ff, null);
-	}
+	
 	public PID(double kp, double ki, double kd)
 	{
-		this(kp, ki, kd, 1.0, null);
+		this(kp, ki, kd, null);
 	}
 
 	public double pid(double error, double target)
@@ -37,12 +36,20 @@ public class PID
 			else errorRefresh = 0;
 		}
 		else errorRefresh += error;
-		
-		double output = (target/FF) + (error * KP) + (errorRefresh * KI) + ((error-lastError) * KD);
+				
+		double output = (error * KP) + (errorRefresh * KI) + ((error-lastError) * KD);
 		lastError = error;
+		
+		if(feedForwardMode == PROPORTIONAL) output += (target/FF);
+		else if(feedForwardMode == CONSTANT)
+		{
+			if(output > 0) output += FF;
+			else if(output < 0) output -= FF;
+		}
+
 		if(name != null)
 		{
-			if(Constants.VERBOSE >= Constants.HIGH) System.out.println(name + " PID: { P:" + error * KP + ", I:" + errorRefresh * KI + ", D:" + lastError * KD + " }");
+			if(Constants.VERBOSE >= Constants.HIGH) System.out.println(name + " PID: { P:" + error * KP + ", I:" + errorRefresh * KI + ", D:" + lastError * KD + "; Min Power:  " + MP + "; Output: " + output + " }");
 			SmartDashboard.putNumber(name + " P", error * KP);
 			SmartDashboard.putNumber(name + " I", errorRefresh * KI);
 			SmartDashboard.putNumber(name + " D", lastError * KD);
@@ -68,6 +75,18 @@ public class PID
 			IRange = range;
 			deadbanding = true;
 		}
+	}
+	
+	public void setProportionalFeedForward(double ff)
+	{
+		feedForwardMode = PROPORTIONAL;
+		FF = ff;
+	}
+	
+	public void setConstantFeedForward(double ff)
+	{
+		feedForwardMode = CONSTANT;
+		FF = ff;
 	}
 
 	public void reset()
