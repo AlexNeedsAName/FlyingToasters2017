@@ -85,6 +85,7 @@ public class Auton
 		alreadyRunning = false;
 		autonMode = mode;
 		onRedAlliance = redAlliance;
+		Tracking.resetState();
 	}
 	
 	public static void run()
