@@ -37,6 +37,7 @@ public class Robot extends IterativeRobot
 
 	public void autonomousInit()
 	{
+		DriveBase.setBreakMode(true);
 		//Gearbox.shiftLow();
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
@@ -53,6 +54,7 @@ public class Robot extends IterativeRobot
 	public void teleopInit()
 	{
 		if(Constants.VERBOSE >= Constants.MID) System.out.println("Teleop Started");
+		DriveBase.setBreakMode(false);
 		//Gearbox.shiftHigh();
 	}
 	

@@ -5,7 +5,6 @@ public class Serial
 {
 	private static Serial instance;
 	private static SerialPort serial;
-	private static boolean initalized;
 
 	public static Serial getInstance()
 	{
@@ -18,40 +17,41 @@ public class Serial
 		try
 		{
 			serial = new SerialPort(Constants.SERIAL_BAUDRATE, SerialPort.Port.kOnboard);
-			initalized = true;
 		}
 		catch(Exception e)
 		{
 			System.err.println("WARNING: Could not initalize Serial Port");
 			System.out.println(e.toString());
-			initalized = false;
 		}
 	}
 
-	public static void sendData(String data)
+	public static boolean sendData(String data)
 	{
-		if(initalized)
+		try
 		{
-			if(Constants.VERBOSE >= Constants.MID) System.out.println("Sent \"" + data + "\" over Serial");
 			serial.writeString(data + "\n");
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
 		}
 	}
 
 	public static String getData()
 	{
-		if(initalized)
+		try
 		{
 			String data = serial.readString();
-			if(Constants.VERBOSE >= Constants.MID && data != null && data.length() != 0) System.out.println("Recieved \"" + data + "\" over Serial");
 			if(data.length() == 0) return null;
 			return data;
 		}
-		else
+		catch(Exception e)
 		{
 			return null;
 		}
 	}
-	
+	/*
 	public static double[] parseData(String message, int expectedLength) //Expected length does not include checksum
 	{
 		expectedLength--;
@@ -84,5 +84,5 @@ public class Serial
 				return null;
 			}
 		}
-	}
+	}*/
 }

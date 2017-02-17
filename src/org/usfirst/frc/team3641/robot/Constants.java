@@ -69,31 +69,27 @@ public class Constants
 	public static final String DRIVER_IP_ADDR = "10.36.42.81";
 
 	//PID Constants
-	public static final double GEAR_TRACKING_KP = 0.0; //TODO: Build robot, then tune this value
-	public static final double GEAR_TRACKING_KI = 0.0; //TODO: Build robot, then tune this value
-	public static final double GEAR_TRACKING_KD = 0.0; //TODO: Build robot, then tune this value
-
-	public static final double DRIVEBASE_ROTATION_KP = 0.015; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_ROTATION_KI = 0.0015; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_KP = 0.025; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_KI = 0.003; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_ROTATION_KD = 0.0; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_ROTATION_FF = 0.0;
 	public static final int NUMBER_OF_TURNING_CHECKS = 5; //Must be within error margin for this many loops
 
-	public static final double DRIVEBASE_KP = 0.1; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_KP = 0.35; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_KI = 0.0; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_KD = 0.0; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_FF = 0.3;
+	public static final double DRIVEBASE_FF = 0.12;
 
 	public static final double SHOOTER_KP = 0.00006;
 	public static final double SHOOTER_KI = 0.000005;
 	public static final double SHOOTER_KD = 0.00000025;
 	public static final double SHOOTER_FF = 5800;
 
-	public static final double TURRET_KP = 0.005;
-	public static final double TURRET_KI = 0.0005;
+	public static final double TURRET_KP = 0.01;
+	public static final double TURRET_KI = 0.001;
 	public static final double TURRET_KD = 0;
 	public static final double TURRET_DEADBAND = 10;
-	public static final double ACCEPTABLE_TURRET_ERROR = 2;
+	public static final double ACCEPTABLE_TURRET_ERROR = 1;
 
 	//Tracking Constants
 	public static final int FUEL_MODE = 1;

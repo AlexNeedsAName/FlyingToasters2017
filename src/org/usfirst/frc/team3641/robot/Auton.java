@@ -11,6 +11,7 @@ public class Auton
 	private static boolean onRedAlliance;
 	
 	private static boolean[] doneTurning;
+	static boolean alreadyInPosition;
 	private static int index;
 	
 	private static boolean negativeErrorWhenDone;
@@ -20,11 +21,11 @@ public class Auton
 	private static boolean endOfLine = false;
 	
 	private static boolean alreadyRunning;
-	private static Timer timeoutTimer;
+	private static Timer timeoutTimer, autonTimer;
 	
 	//Distances as measured from back wall unless otherwise stated.
 	private static final double robotCenter = 0.38;
-	private static final double distanceToBaseline = 3 - robotCenter, distanceToHopperLine = 2.67 - robotCenter, distanceToHopperFromTurn = 1.5, distanceToGearTurn = 2, distanceToGearFromTurn = 1;
+	private static final double distanceToBaseline = 3 - robotCenter, distanceToHopperLine = 2.67 - robotCenter, distanceToHopperFromTurn = 1, distanceToGearTurn = 2, distanceToGearFromTurn = 1;
 
 	public static UDP udp;
 
@@ -76,6 +77,7 @@ public class Auton
 	private Auton()
 	{
 		timeoutTimer = new Timer();
+		autonTimer = new Timer();
 	}
 	
 	public static void setup(modes mode, boolean redAlliance)
@@ -86,6 +88,10 @@ public class Auton
 		autonMode = mode;
 		onRedAlliance = redAlliance;
 		Tracking.resetState();
+		initTimeout(0);
+		alreadyInPosition = false;
+		autonTimer.reset();
+		autonTimer.start();
 	}
 	
 	public static void run()
@@ -139,6 +145,9 @@ public class Auton
 	@SuppressWarnings("incomplete-switch")
 	private static void hopperAuton()
 	{
+		int trackingState;
+		double angle;
+		boolean doneDriving, doneTurning, hitTheWall;
 		switch(autonState)
 		{
 		case START:
@@ -146,25 +155,34 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER_LINE:
-			boolean reachedLine = driveBy(distanceToHopperLine, 2);
-			if(reachedLine) increment(states.TURN_TO_HOPPER);
+			doneDriving = driveBy(distanceToHopperLine, 2);
+			if(doneDriving) increment(states.TURN_TO_HOPPER);
 			break;
 
 		case TURN_TO_HOPPER:
-			double angle = (onRedAlliance) ? 90 : -90; //If on red alliance, turn right. If on blue, turn left.
-			boolean doneTurning = turnBy(angle, 1.3);
+			angle = (onRedAlliance) ? 90 : -90; //If on red alliance, turn right. If on blue, turn left.
+			doneTurning = turnBy(angle, 1.3);
 			if(doneTurning) increment(states.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			boolean reachedHopper = driveBy(distanceToHopperFromTurn, 2);
-			boolean hitTheWall = didWeHitSomething(.5);
+			doneDriving = driveBy(distanceToHopperFromTurn, 1);
+			hitTheWall = didWeHitSomething(.5);
 			if(hitTheWall && Constants.VERBOSE >= Constants.LOW) System.out.println("Ouch!");
-			if(reachedHopper || hitTheWall) increment(states.SCORE_RANKING_POINT);
+			if(doneDriving || hitTheWall) increment(states.SCORE_RANKING_POINT);
 			break;
 
 		case SCORE_RANKING_POINT:
-			Tracking.target(Constants.FUEL_MODE);
+			trackingState = Tracking.target(Constants.FUEL_MODE);
+			if(trackingState == Constants.TRACKED_FUEL && !alreadyInPosition)
+			{
+				if(Constants.VERBOSE >= Constants.LOW && !alreadyInPosition)
+				{
+					double time = autonTimer.get();
+					System.out.println("In position. It took " + String.format("%.2f", time) + "s, leaving us " + String.format("%.2f", 15-time) + "s left to shoot.");
+				}
+				alreadyInPosition = true;
+			}
 			break;
 		}
 	}
@@ -370,8 +388,8 @@ public class Auton
 		if(!alreadyRunning)
 		{
 			initTimeout(timeout);
-			initalDistance = Sensors.getDriveDistance();
 			Sensors.resetDriveDistance();
+			initalDistance = Sensors.getDriveDistance();
 			negativeErrorWhenDone = (distance < Sensors.getDriveDistance());
 			if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
 			alreadyRunning = true;
@@ -379,10 +397,10 @@ public class Auton
 		String currentDistance = String.format("%.2f", Sensors.getDriveDistance()-initalDistance);
 		if(Constants.VERBOSE >= Constants.HIGH) System.out.println( currentDistance + "m out of " + distance + "m");
 		double error = DriveBase.driveTo(initalDistance  + distance);
-		boolean crossedLine = (negativeErrorWhenDone) ? (error > 0) : (error < 0);
+		//boolean crossedLine = (negativeErrorWhenDone) ? (error > 0) : (error < 0);
 		boolean  withinThreshold = (Math.abs(error) <= Constants.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
 		
-		return (crossedLine || withinThreshold || timeoutUp(timeout));
+		return (withinThreshold || timeoutUp(timeout));
 	}
 	
 	public static boolean driveBy(double distance)
@@ -448,6 +466,11 @@ public class Auton
 		DriveBase.driveArcade(0, 0); //Stop Driving!
 		initTimeout(0);
 		alreadyRunning = false;
+		if(autonState == states.SCORE_RANKING_POINT)
+		{
+			double time = autonTimer.get();
+			System.out.println("In position. It took " + String.format("%.2f", time) + "s, leaving us " + String.format("%.2f", 15-time) + "s left to shoot.");
+		}
 	}
 	
 	private static boolean allAreTrue(boolean[] array)

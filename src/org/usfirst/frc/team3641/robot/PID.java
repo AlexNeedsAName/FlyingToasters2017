@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class PID
 {
 	private double errorRefresh, lastError;
-	private double KP, KI, KD, FF, MP;
+	private double KP, KI, KD, FF;
 	private double IRange = 0;
 	private boolean deadbanding;
 	private int OFF = 0, PROPORTIONAL = 1, CONSTANT = 2;
@@ -46,7 +46,6 @@ public class PID
 			if(output > 0) output += FF;
 			else if(output < 0) output -= FF;
 		}
-		else System.out.println("Output: " + output);
 
 		if(name != null && Constants.PRINT_PID)
 		{

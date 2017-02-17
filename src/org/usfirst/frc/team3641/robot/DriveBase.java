@@ -33,7 +33,7 @@ public class DriveBase
 		right = new CANTalon(Constants.DRIVEBASE_RIGHT_TALON);
 		rightSlave = new CANTalon(Constants.DRIVEBASE_RIGHT_SLAVE_TALON);
 		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
-
+		
 		rotationPID = new PID(Constants.DRIVEBASE_ROTATION_KP, Constants.DRIVEBASE_ROTATION_KI, Constants.DRIVEBASE_ROTATION_KD, "Rotation");
 		rotationPID.setIDeadband(5);
 		
@@ -41,6 +41,14 @@ public class DriveBase
 		drivePID.setConstantFeedForward(Constants.DRIVEBASE_FF);
 	}
 
+	public static void setBreakMode(boolean on)
+	{
+		left.enableBrakeMode(on);
+		leftSlave.enableBrakeMode(on);
+		right.enableBrakeMode(on);
+		rightSlave.enableBrakeMode(on);
+	}
+	
 	public static void driveArcade(double power, double rotation)
 	{
 		if(Constants.VERBOSE >= 4) System.out.println("Power: " + power + "; Rotation: " + String.format("%.2f", rotation));

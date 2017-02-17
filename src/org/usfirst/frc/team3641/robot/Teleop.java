@@ -49,7 +49,11 @@ public class Teleop
 		{
 			if(operator.isReleased(E3D.Button.THUMB)) Turret.set(0);
 			if(operator.isDown(E3D.Button.TRIGGER)) Tracking.target(Constants.FUEL_MODE);
-			else if(operator.isReleased(E3D.Button.TRIGGER)) Tracking.resetState();
+			else if(operator.isReleased(E3D.Button.TRIGGER)) 
+			{
+				Tracking.resetState();
+				System.out.println("");
+			}
 			
 			SmartDashboard.putNumber("Vision State", Tracking.getState());
 		}

@@ -62,8 +62,8 @@ public class Sensors
 
 	public static void resetDriveDistance(double distance)
 	{
-		driveDistance = distance;
 		DriveBase.left.setEncPosition((int) (distance / Constants.ENCODER_TO_METERS));
+		driveDistance = DriveBase.left.getAnalogInPosition() * Constants.DRIVE_ENCODER_TO_METERS;
 	}
 	public static void resetDriveDistance()
 	{

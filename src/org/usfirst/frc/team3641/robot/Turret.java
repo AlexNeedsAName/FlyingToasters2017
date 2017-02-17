@@ -26,6 +26,7 @@ public class Turret
 		
 		turretPID = new PID(Constants.TURRET_KP, Constants.TURRET_KI, Constants.TURRET_KD, "Turret");
 		turretPID.setIDeadband(Constants.TURRET_DEADBAND);
+		turretTalon.enableBrakeMode(true);
 	}
 
 	public static boolean turnBy(double angle, double threshold)
@@ -35,6 +36,7 @@ public class Turret
 			double initalAngle = Sensors.getTurretAngle();
 			finalAngle = initalAngle + angle;
 			alreadyRotating = true;
+			if(Constants.VERBOSE >= Constants.LOW) System.out.println("Turret Rotating " + angle + "°");
 		}
 
 		SmartDashboard.putNumber("Target", finalAngle);
@@ -44,7 +46,6 @@ public class Turret
 		double output = turretPID.pid(error);
 
 		set(output);
-		SmartDashboard.putNumber("Turret Output", output);
 
 		return (Math.abs(error) < threshold);
 	}
