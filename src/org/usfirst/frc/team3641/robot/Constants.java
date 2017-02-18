@@ -71,13 +71,13 @@ public class Constants
 	//PID Constants
 	public static final double DRIVEBASE_ROTATION_KP = 0.025; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_ROTATION_KI = 0.003; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_ROTATION_KD = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_ROTATION_KD = 0.0004; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_ROTATION_FF = 0.0;
 	public static final int NUMBER_OF_TURNING_CHECKS = 5; //Must be within error margin for this many loops
 
 	public static final double DRIVEBASE_KP = 0.35; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_KI = 0.0; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_KD = 0.0; //TODO: Build robot, then tune this value
+	public static final double DRIVEBASE_KD = 0.004; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_FF = 0.12;
 
 	public static final double SHOOTER_KP = 0.00006;
