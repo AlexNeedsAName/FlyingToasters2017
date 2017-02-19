@@ -77,7 +77,7 @@ public class Config
 		kP = Double.parseDouble(config.getProperty("kP", String.valueOf(backupKP)));
 		kI = Double.parseDouble(config.getProperty("kI", String.valueOf(backupKI)));
 		kD = Double.parseDouble(config.getProperty("kD", String.valueOf(backupKD)));
-		feedForward = Double.parseDouble(config.getProperty("feedForward", String.valueOf(backupFeedForward)));
+		feedForward = Double.parseDouble(config.getProperty("kFF", String.valueOf(backupFeedForward)));
 		feedForwardType = Integer.parseInt(config.getProperty("feedForwardType", String.valueOf(backupFeedForwardType)));
 		deadband = Double.parseDouble(config.getProperty("deadband", String.valueOf(backupDeadband)));
 		
@@ -85,6 +85,7 @@ public class Config
 		pid.setConstants(kP, kI, kD);
 		if(feedForwardType == 1) pid.setProportionalFeedForward(feedForward);
 		else if(feedForwardType == 2) pid.setConstantFeedForward(feedForward);
+		else pid.setConstantFeedForward(0);
 		pid.setIDeadband(deadband);
 	}
 }
