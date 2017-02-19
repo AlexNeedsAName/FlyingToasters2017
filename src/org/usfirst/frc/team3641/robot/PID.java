@@ -3,11 +3,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PID
 {
+	public static final int OFF = 0, PROPORTIONAL = 1, CONSTANT = 2;
+
 	private double errorRefresh, lastError;
 	private double KP, KI, KD, FF;
 	private double IRange = 0;
 	private boolean deadbanding;
-	private int OFF = 0, PROPORTIONAL = 1, CONSTANT = 2;
 	private int feedForwardMode;
 	private String name;
 
@@ -26,6 +27,11 @@ public class PID
 	public PID(double kp, double ki, double kd)
 	{
 		this(kp, ki, kd, null);
+	}
+	
+	public PID(String Name)
+	{
+		this(0,0,0,Name);
 	}
 
 	public double pid(double error, double target)
@@ -87,6 +93,13 @@ public class PID
 	{
 		feedForwardMode = CONSTANT;
 		FF = ff;
+	}
+	
+	public void setConstants(double kP, double kI, double kD)
+	{
+		KP = kP;
+		KI = kI;
+		KD = kD;
 	}
 
 	public void reset()

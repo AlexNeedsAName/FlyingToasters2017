@@ -11,6 +11,7 @@ public class Shooter
 	public static CANTalon left, right;
 	private static Spark elevator;
 	private static PID flywheelPID;
+	private static Config flywheelConfig;
 	private static double error;
 
 	public static Shooter getInstance()
@@ -26,8 +27,9 @@ public class Shooter
 		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 		elevator = new Spark(Constants.SHOOTER_ELEVATOR_SPARK);
 		
-		flywheelPID = new PID(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, "Shooter");
-		flywheelPID.setProportionalFeedForward(Constants.SHOOTER_FF);
+		flywheelConfig = new Config("ShooterFlywheel");
+		flywheelConfig.setBackupValues(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, Constants.SHOOTER_FF, PID.PROPORTIONAL);
+		flywheelPID = flywheelConfig.getPID();
 	}
 
 	public static double calcSpeed(double distance)

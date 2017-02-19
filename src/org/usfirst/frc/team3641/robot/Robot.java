@@ -29,7 +29,7 @@ public class Robot extends IterativeRobot
 		Tracking.getInstance();
 		Teleop.getInstance();
 		Auton.getInstance();
-		Sensors.getInstance(); //Must be last, it uses things initalized in other classes
+		Sensors.getInstance(); //Must be last, it uses things initialized in other classes
 		underglow = new RGB(Constants.RGB_SPIKE);
 		lastMode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		lastAllianceIsRed = (DS.getAlliance() == DriverStation.Alliance.Red);
@@ -39,7 +39,6 @@ public class Robot extends IterativeRobot
 	public void autonomousInit()
 	{
 		DriveBase.setBreakMode(true);
-		//Gearbox.shiftLow();
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		Auton.setup(mode, redAlliance);
@@ -56,7 +55,6 @@ public class Robot extends IterativeRobot
 	{
 		if(Constants.VERBOSE >= Constants.MID) System.out.println("Teleop Started");
 		DriveBase.setBreakMode(false);
-		//Gearbox.shiftHigh();
 	}
 	
 	public void teleopPeriodic()

@@ -72,7 +72,7 @@ public class Constants
 	public static final double DRIVEBASE_ROTATION_KP = 0.025; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_ROTATION_KI = 0.003; //TODO: Build robot, then tune this value
 	public static final double DRIVEBASE_ROTATION_KD = 0.0004; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_ROTATION_FF = 0.0;
+	public static final double DRIVEBASE_ROTATION_DEADBAND = 5;
 	public static final int NUMBER_OF_TURNING_CHECKS = 5; //Must be within error margin for this many loops
 
 	public static final double DRIVEBASE_KP = 0.35; //TODO: Build robot, then tune this value
