@@ -24,6 +24,7 @@ public class Robot extends IterativeRobot
 		Intake.getInstance();
 		Gearbox.getInstance();
 		PDP.getInstance();
+		Horn.getInstance();
 		Serial.getInstance();
 		Tracking.getInstance();
 		Teleop.getInstance();

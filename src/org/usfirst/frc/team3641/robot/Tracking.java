@@ -23,12 +23,13 @@ public class Tracking
 	public static int target(int mode, boolean autoFire)
 	{
 		String response;
+		boolean tracked;
 		switch(visionState)
 		{
 		case Constants.SEND_REQUEST:
 			Turret.reset();
 			if(mode == Constants.FUEL_MODE) Serial.sendData("1");
-			else Serial.sendData("0");
+			else Serial.sendData("3");
 			if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Sent Request");
 			visionState = Constants.GET_RESPONSE;
 			break;
@@ -45,16 +46,18 @@ public class Tracking
 				else
 				{
 					String[] strings = response.split(";");
-					angle = -Double.parseDouble(strings[0]);
+					angle = Double.parseDouble(strings[0]);
+					if(mode == Constants.GEAR_MODE) angle += Sensors.getAngle();
 					SmartDashboard.putNumber("Angle", angle);
 					if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Angle is " + angle + "°");
-					if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TO_TARGET;
+					if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TURRET_TO_TARGET;
+					else if(mode == Constants.GEAR_MODE) visionState = Constants.ROTATE_DRIVEBASE;
 				}
 			}
 			break;
 
-		case Constants.TURN_TO_TARGET:
-			boolean tracked = Turret.turnBy(angle, Constants.ACCEPTABLE_TURRET_ERROR);
+		case Constants.TURN_TURRET_TO_TARGET:
+			tracked = Turret.turnBy(angle, Constants.ACCEPTABLE_TURRET_ERROR);
 			SmartDashboard.putBoolean("Turret Tracked", tracked);
 			if(tracked)
 			{
@@ -63,10 +66,22 @@ public class Tracking
 				visionState = Constants.VERIFY_REQUEST;
 			}
 			break;
+		
+		case Constants.ROTATE_DRIVEBASE:
+			tracked = DriveBase.turnTo(angle, Constants.ACCEPTABLE_GEAR_ERROR);
+			SmartDashboard.putBoolean("Gear Tracked", tracked);
+			if(tracked)
+			{
+				if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Done turning drivebase... Verifying angle.");
+				Turret.reset();
+				visionState = Constants.VERIFY_REQUEST;
+			}
+			break;
+
 			
 		case Constants.VERIFY_REQUEST:
 			if(mode == Constants.FUEL_MODE) Serial.sendData("1");
-			else Serial.sendData("0");
+			else Serial.sendData("3");
 			visionState = Constants.VERIFY;
 			break;
 			
@@ -82,13 +97,25 @@ public class Tracking
 				else
 				{
 					String[] strings = response.split(";");
-					angle = -Double.parseDouble(strings[0]);
-					if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR)
+					angle = Double.parseDouble(strings[0]);
+					if(mode == Constants.FUEL_MODE)
 					{
-						if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked. FIRE!");
-						visionState = Constants.TRACKED_FUEL;
+						if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR)
+						{
+							if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked. FIRE!");
+							visionState = Constants.TRACKED_FUEL;
+						}
+						else resetState();
 					}
-					else resetState();
+					else
+					{
+						if(Math.abs(angle) < Constants.ACCEPTABLE_GEAR_ERROR + 2)
+						{
+							if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked Gear!");
+							visionState = Constants.TRACKED_GEAR;
+						}
+						else resetState();
+					}
 				}
 			}
 			break;

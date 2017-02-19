@@ -25,13 +25,24 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 				
+		if(driver.isPressed(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(true);
+		else if(driver.isReleased(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(false);
+		
 		//Change Drive Direction
 		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(Constants.NORMAL_MODE);
 		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(Constants.REVERSE_MODE);
 		
-		//Drive Robot
-		if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
-		else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_X));
+		if(driver.isDown(PS4.Button.CIRCLE))
+		{
+			Tracking.target(Constants.GEAR_MODE);
+		}
+		else
+		{
+			if(driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();
+			//Drive Robot
+			if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
+			else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_X));
+		}
 		
 		//Gearbox Things
 		if(driver.isPressed(PS4.Button.PLAYSTATION_BUTTON)) Gearbox.togglePTO();

@@ -54,7 +54,7 @@ public class Constants
 	public static final int RIGHT_SLAVE_VICTOR = 4;
 	
 	//Spikes
-	public static final int RGB_SPIKE = 0;
+	public static final int RGB_SPIKE = 1;
 
 	//Pnumatics
 	public static final int SHIFTER_CHANNEL_FORWARD = 0;
@@ -97,12 +97,13 @@ public class Constants
 
 	public static final int SEND_REQUEST = 1;
 	public static final int GET_RESPONSE = 2;
-	public static final int TURN_TO_TARGET = 3;
-	public static final int SLIDE_GEAR_MECHANISM = 4;	
+	public static final int TURN_TURRET_TO_TARGET = 3;
+	public static final int ROTATE_DRIVEBASE = 4;	
 	public static final int TRACKED_GEAR = 5;
 	public static final int TRACKED_FUEL = 6;
 	public static final int VERIFY_REQUEST = 7;
 	public static final int VERIFY = 8;
+	
 
 
 	public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
