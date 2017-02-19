@@ -1,10 +1,13 @@
 package org.usfirst.frc.team3641.robot;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class Config
 {
+	private static ArrayList<Config> instances;
+	
 	private static final String BASE_DIR = "/home/lvuser/tuning/";
 	private static final String EXTENSION = ".properties";
 	private String file;
@@ -29,6 +32,8 @@ public class Config
 		{
 			System.err.println("WARNING: Failed to open " + file);
 		}
+		
+		instances.add(this);
 	}
 	
 	public void setBackupValues(double BackupKP, double BackupKI, double BackupKD, double BackupDeadband, double BackupFeedForward, int BackupFeedForwardType)
@@ -87,5 +92,10 @@ public class Config
 		else if(feedForwardType == 2) pid.setConstantFeedForward(feedForward);
 		else pid.setConstantFeedForward(0);
 		pid.setIDeadband(deadband);
+	}
+	
+	public static void readAllFiles()
+	{
+		for(Config instance : instances) instance.readConfig();
 	}
 }
