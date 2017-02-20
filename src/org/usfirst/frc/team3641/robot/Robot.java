@@ -62,7 +62,7 @@ public class Robot extends IterativeRobot
 	public void teleopPeriodic()
 	{
 		Sensors.poll();
-		Teleop.run();
+		Teleop.runGuitar();
 	}
 
 	public void testPeriodic()

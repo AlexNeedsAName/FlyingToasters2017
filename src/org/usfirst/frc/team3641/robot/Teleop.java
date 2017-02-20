@@ -7,6 +7,7 @@ public class Teleop
 	private static Teleop instance;
 	public static PS4 driver;
 	public static E3D operator;
+	public static Harmonix guitar;
 
 	public static Teleop getInstance()
 	{
@@ -18,6 +19,7 @@ public class Teleop
 	{
 		driver = new PS4(Constants.PS4_PORT);
 		operator = new E3D(Constants.OPERATOR_PORT);
+		guitar = new Harmonix(2);
 	}
 
 	public static void run()
@@ -75,5 +77,11 @@ public class Teleop
 			if(operator.isDown(E3D.Button.TRIGGER)) Shooter.forceFire();
 			else if(operator.isReleased(E3D.Button.TRIGGER)) Shooter.stopFiring();
 		}
+	}
+	
+	public static void runGuitar()
+	{
+		guitar.poll();
+		DriveBase.driveArcade(guitar.getAxis(Harmonix.Axis.WHAMMY_BAR) * guitar.getAxis(Harmonix.Axis.STRUM), guitar.getAxis(Harmonix.Axis.BUTTONS));
 	}
 }
