@@ -46,12 +46,20 @@ public class Tracking
 				else
 				{
 					String[] strings = response.split(";");
-					angle = Double.parseDouble(strings[0]);
-					if(mode == Constants.GEAR_MODE) angle += Sensors.getAngle();
-					SmartDashboard.putNumber("Angle", angle);
-					if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Angle is " + angle + "°");
-					if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TURRET_TO_TARGET;
-					else if(mode == Constants.GEAR_MODE) visionState = Constants.ROTATE_DRIVEBASE;
+					try
+					{
+						angle = Double.parseDouble(strings[0]);
+						if(mode == Constants.GEAR_MODE) angle += Sensors.getAngle();
+						SmartDashboard.putNumber("Angle", angle);
+						if(Constants.VERBOSE >= Constants.MID) System.out.println("Tracking: Angle is " + angle + "°");
+						if(mode == Constants.FUEL_MODE) visionState = Constants.TURN_TURRET_TO_TARGET;
+						else if(mode == Constants.GEAR_MODE) visionState = Constants.ROTATE_DRIVEBASE;
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Targeting: Invalid String: " + strings[0]);
+						visionState = Constants.SEND_REQUEST;
+					}
 				}
 			}
 			break;
@@ -97,24 +105,32 @@ public class Tracking
 				else
 				{
 					String[] strings = response.split(";");
-					angle = Double.parseDouble(strings[0]);
-					if(mode == Constants.FUEL_MODE)
+					try
 					{
-						if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR)
+						angle = Double.parseDouble(strings[0]);
+						if(mode == Constants.FUEL_MODE)
 						{
-							if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked. FIRE!");
-							visionState = Constants.TRACKED_FUEL;
+							if(Math.abs(angle) < Constants.ACCEPTABLE_FUEL_ERROR)
+							{
+								if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked. FIRE!");
+								visionState = Constants.TRACKED_FUEL;
+							}
+							else resetState();
 						}
-						else resetState();
+						else
+						{
+							if(Math.abs(angle) < Constants.ACCEPTABLE_GEAR_ERROR + 2)
+							{
+								if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked Gear!");
+								visionState = Constants.TRACKED_GEAR;
+							}
+							else resetState();
+						}
 					}
-					else
+					catch(NumberFormatException e)
 					{
-						if(Math.abs(angle) < Constants.ACCEPTABLE_GEAR_ERROR + 2)
-						{
-							if(Constants.VERBOSE >= Constants.LOW) System.out.println("Tracking: Tracked Gear!");
-							visionState = Constants.TRACKED_GEAR;
-						}
-						else resetState();
+						System.out.println("Targeting: Invalid String: " + strings[0]);
+						visionState = Constants.SEND_REQUEST;
 					}
 				}
 			}
