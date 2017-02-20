@@ -2,6 +2,8 @@ package org.usfirst.frc.team3641.robot;
 
 public class Constants
 {
+	private static PropertyReader config = new PropertyReader("Constants");
+	
 	public static final boolean disableTimeouts = false;
 	
 	public static final int OFF = 0;	//Nothing
@@ -104,8 +106,6 @@ public class Constants
 	public static final int VERIFY_REQUEST = 7;
 	public static final int VERIFY = 8;
 	
-
-
 	public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 	public static final double ACCEPTABLE_GEAR_ERROR = 5; //Pixels
 
@@ -119,4 +119,16 @@ public class Constants
 	
 	public static final double AUTON_RPM = 60; //TODO: build robot, tune value (you get the drill)
 	public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
+	
+	public static void reloadConfig()
+	{
+		PID.reloadAllConfigs();
+		readConfig();
+	}
+	public static void readConfig()
+	{
+		config.reloadFile();
+		VERBOSE = config.readInt("VERBOSE", VERBOSE);
+		PRINT_PID = config.readBoolean("PRINT_PID", PRINT_PID);
+	}
 }

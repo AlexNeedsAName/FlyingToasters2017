@@ -26,7 +26,9 @@ public class Shooter
 		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 		elevator = new Spark(Constants.SHOOTER_ELEVATOR_SPARK);
 		
+		flywheelPID = new PID("ShooterFlywheel");
 		flywheelPID.setBackupValues(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, Constants.SHOOTER_FF, PID.PROPORTIONAL);
+		flywheelPID.readConfig();
 	}
 
 	public static double calcSpeed(double distance)

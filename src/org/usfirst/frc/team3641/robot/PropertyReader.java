@@ -7,7 +7,7 @@ import java.util.Properties;
 public class PropertyReader
 {
 	
-	private static final String BASE_DIR = "/home/lvuser/tuning/";
+	private static final String BASE_DIR = "/home/lvuser/config/";
 	private static final String EXTENSION = ".properties";
 	private String file;
 	private Properties config;
@@ -30,7 +30,7 @@ public class PropertyReader
 	{
 		try
 		{
-			//We reload the file in case it has been changed. This way we can tune PID values without rebooting the rio
+			//We reload the file in case it has been changed. This way we can tune values without rebooting the rio
 			config.load(new FileReader(file));
 		}
 		catch (IOException e)
@@ -76,8 +76,23 @@ public class PropertyReader
 		return value;
 	}
 	
-	public double readInt(String key)
+	public int readInt(String key)
 	{
 		return readInt(key, 0);
+	}
+	
+	public boolean readBoolean(String key, boolean backup)
+	{
+		boolean value;
+		String raw = config.getProperty(key, String.valueOf(backup));
+		
+		if(raw.equalsIgnoreCase("true") || raw.equalsIgnoreCase("false")) value = Boolean.valueOf(raw);
+		else value = backup;
+		
+		return value;
+	}
+	public boolean readBoolean(String key)
+	{
+		return readBoolean(key, false);
 	}
 }

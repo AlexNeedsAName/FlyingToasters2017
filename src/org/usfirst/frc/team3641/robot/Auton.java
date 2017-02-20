@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class Auton
 {
 	private static Auton instance;
+	private static PropertyReader config;
 	private static states autonState;
 	private static modes autonMode;
 	private static boolean onRedAlliance;
@@ -23,9 +24,13 @@ public class Auton
 	private static boolean alreadyRunning;
 	private static Timer timeoutTimer, autonTimer;
 	
-	//Distances as measured from back wall unless otherwise stated.
-	private static final double robotCenter = 0.38;
-	private static final double distanceToBaseline = 3 - robotCenter, distanceToHopperLine = 2.67 - robotCenter, distanceToHopperFromTurn = 1, distanceToGearTurn = 2, distanceToGearFromTurn = 1;
+	//Distances as measured from back wall
+	private static double
+			distanceToBaseline = 2.62,
+			distanceToHopperLine = 2.29,
+			distanceToHopperFromTurn = 1,
+			distanceToGearTurn = 2,
+			distanceToGearFromTurn = 1;
 
 	public static UDP udp;
 
@@ -78,11 +83,13 @@ public class Auton
 	{
 		timeoutTimer = new Timer();
 		autonTimer = new Timer();
+		config = new PropertyReader("Auton");
 	}
 	
 	public static void setup(modes mode, boolean redAlliance)
 	{
 		if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting Auton:\n");
+		readConfig();
 		autonState = states.START;
 		alreadyRunning = false;
 		autonMode = mode;
@@ -479,5 +486,15 @@ public class Auton
 	{
 		for(boolean b : array) if(b == false) return false;
 		return true;
+	}
+	
+	private static void readConfig()
+	{
+		config.reloadFile();
+		distanceToBaseline = config.readDouble("distanceToBaseline", distanceToBaseline);
+		distanceToHopperLine = config.readDouble("distanceToHopperLine", distanceToHopperLine);
+		distanceToHopperFromTurn = config.readDouble("distanceToHopperFromTurn", distanceToHopperFromTurn);
+		distanceToGearTurn = config.readDouble("distanceToGearTurn", distanceToGearTurn);
+		distanceToGearFromTurn = config.readDouble("distanceToGearFromTurn", distanceToGearFromTurn);
 	}
 }
