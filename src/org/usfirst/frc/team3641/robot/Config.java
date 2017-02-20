@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class Config
 {
-	private static ArrayList<Config> instances;
+	private static ArrayList<Config> instances = new ArrayList<Config>();
 	
 	private static final String BASE_DIR = "/home/lvuser/tuning/";
 	private static final String EXTENSION = ".properties";
@@ -36,29 +36,29 @@ public class Config
 		instances.add(this);
 	}
 	
-	public void setBackupValues(double BackupKP, double BackupKI, double BackupKD, double BackupDeadband, double BackupFeedForward, int BackupFeedForwardType)
+	public void setBackupPIDValues(double backupKP, double backupKI, double backupKD, double backupDeadband, double backupFeedForward, int backupFeedForwardType)
 	{
-		backupKP = BackupKP;
-		backupKI = BackupKI;
-		backupKD = BackupKD;
-		backupDeadband = BackupDeadband;
-		backupFeedForward = BackupFeedForward;
-		backupFeedForwardType = BackupFeedForwardType;
+		this.backupKP = backupKP;
+		this.backupKI = backupKI;
+		this.backupKD = backupKD;
+		this.backupDeadband = backupDeadband;
+		this.backupFeedForward = backupFeedForward;
+		this.backupFeedForwardType = backupFeedForwardType;
 	}
 	
-	public void setBackupValues(double BackupKP, double BackupKI, double BackupKD, double BackupFeedForward, int BackupFeedForwardType)
+	public void setBackupValues(double backupKP, double backupKI, double backupKD, double backupFeedForward, int backupFeedForwardType)
 	{
-		setBackupValues(BackupKP, BackupKI, BackupKD, 0, BackupFeedForward, BackupFeedForwardType);
+		setBackupPIDValues(backupKP, backupKI, backupKD, 0, backupFeedForward, backupFeedForwardType);
 	}
 	
-	public void setBackupValues(double BackupKP, double BackupKI, double BackupKD, double BackupDeadband)
+	public void setBackupValues(double backupKP, double backupKI, double backupKD, double backupDeadband)
 	{
-		setBackupValues(BackupKP, BackupKI, BackupKD, BackupDeadband, 0, 0);
+		setBackupPIDValues(backupKP, backupKI, backupKD, backupDeadband, 0, 0);
 	}
 	
-	public void setBackupValues(double BackupKP, double BackupKI, double BackupKD)
+	public void setBackupValues(double backupKP, double backupKI, double backupKD)
 	{
-		setBackupValues(BackupKP, BackupKI, BackupKD, 0, 0, 0);
+		setBackupPIDValues(backupKP, backupKI, backupKD, 0, 0, 0);
 	}
 	
 	public PID getPID()
@@ -97,5 +97,6 @@ public class Config
 	public static void readAllFiles()
 	{
 		for(Config instance : instances) instance.readConfig();
+		if(Constants.VERBOSE >= Constants.LOW) System.out.println("Read Config files");
 	}
 }

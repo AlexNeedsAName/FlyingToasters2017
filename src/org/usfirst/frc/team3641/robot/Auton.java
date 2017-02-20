@@ -391,6 +391,7 @@ public class Auton
 			Sensors.resetDriveDistance();
 			initalDistance = Sensors.getDriveDistance();
 			negativeErrorWhenDone = (distance < Sensors.getDriveDistance());
+			Horn.setHorn(true);
 			if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
 			alreadyRunning = true;
 		}
@@ -471,6 +472,7 @@ public class Auton
 			double time = autonTimer.get();
 			System.out.println("In position. It took " + String.format("%.2f", time) + "s, leaving us " + String.format("%.2f", 15-time) + "s left to shoot.");
 		}
+		Horn.setHorn(false);
 	}
 	
 	private static boolean allAreTrue(boolean[] array)
