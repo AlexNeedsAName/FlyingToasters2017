@@ -10,7 +10,6 @@ public class DriveBase
 	public static CANTalon left, leftSlave, right, rightSlave;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
 	private static PID rotationPID, drivePID;
-	private static Config rotationConfig, driveConfig;
 
 	private static boolean reverseMode;
 
@@ -35,13 +34,13 @@ public class DriveBase
 		rightSlave = new CANTalon(Constants.DRIVEBASE_RIGHT_SLAVE_TALON);
 		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 		
-		rotationConfig = new Config("DriveBaseRotation");
-		rotationConfig.setBackupValues(Constants.DRIVEBASE_ROTATION_KP, Constants.DRIVEBASE_ROTATION_KI, Constants.DRIVEBASE_ROTATION_KD, Constants.DRIVEBASE_ROTATION_DEADBAND);
-		rotationPID = rotationConfig.getPID();
+		rotationPID = new PID("DriveBaseRotation");
+		rotationPID.setBackupValues(Constants.DRIVEBASE_ROTATION_KP, Constants.DRIVEBASE_ROTATION_KI, Constants.DRIVEBASE_ROTATION_KD, Constants.DRIVEBASE_ROTATION_DEADBAND);
+		rotationPID.readConfig();
 		
-		driveConfig = new Config("DriveBase");
-		driveConfig.setBackupValues(Constants.DRIVEBASE_KP, Constants.DRIVEBASE_KI, Constants.DRIVEBASE_KD, Constants.DRIVEBASE_FF, PID.CONSTANT);
-		drivePID = driveConfig.getPID();
+		drivePID = new PID("DriveBase");
+		drivePID.setBackupValues(Constants.DRIVEBASE_KP, Constants.DRIVEBASE_KI, Constants.DRIVEBASE_KD, Constants.DRIVEBASE_FF, PID.CONSTANT);
+		drivePID.readConfig();
 	}
 
 	public static void setBreakMode(boolean on)

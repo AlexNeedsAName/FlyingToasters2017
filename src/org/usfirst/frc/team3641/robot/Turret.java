@@ -10,7 +10,6 @@ public class Turret
 	public static CANTalon turretTalon;
 	private static Turret instance;
 	private static PID turretPID;
-	private static Config turretConfig;
 	public static boolean alreadyRotating = false;
 	private static double finalAngle;
 
@@ -25,9 +24,10 @@ public class Turret
 		turretTalon = new CANTalon(Constants.TURRET_TALON);
 		turretTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		
-		turretConfig = new Config("Turret");
-		turretConfig.setBackupValues(Constants.TURRET_KP, Constants.TURRET_KI, Constants.TURRET_KD, Constants.TURRET_DEADBAND);
-		turretPID = turretConfig.getPID();
+		turretPID = new PID("Turret");
+		turretPID.setBackupValues(Constants.TURRET_KP, Constants.TURRET_KI, Constants.TURRET_KD, Constants.TURRET_DEADBAND);
+		turretPID.readConfig();
+		
 		turretTalon.enableBrakeMode(true);
 	}
 

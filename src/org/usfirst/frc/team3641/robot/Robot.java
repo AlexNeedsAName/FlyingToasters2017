@@ -38,7 +38,7 @@ public class Robot extends IterativeRobot
 
 	public void autonomousInit()
 	{
-		Config.readAllFiles();
+		PID.reloadAllConfigs();
 		DriveBase.setBreakMode(true);
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
@@ -54,7 +54,7 @@ public class Robot extends IterativeRobot
 
 	public void teleopInit()
 	{
-		Config.readAllFiles();
+		PID.reloadAllConfigs();
 		if(Constants.VERBOSE >= Constants.MID) System.out.println("Teleop Started");
 		DriveBase.setBreakMode(false);
 	}
