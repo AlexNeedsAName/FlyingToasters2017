@@ -13,7 +13,7 @@ public class Serial
 	}
 
 	/**
-	 * Initalize the serial port.
+	 * Initialize the serial port.
 	 */
 	private Serial()
 	{
@@ -65,38 +65,8 @@ public class Serial
 			return null;
 		}
 	}
-	/*
-	public static double[] parseData(String message, int expectedLength) //Expected length does not include checksum
-	{
-		expectedLength--;
-		String data[] = message.split(";");
-		if(data.length != expectedLength + 1)
-		{
-			return null;
-		}
-		else
-		{			
-			//long hash = Long.parseLong(data[expectedLength]);
-			String content = "";
-			double[] values = new double[3];
-			for(int i=0; i<expectedLength; i++)
-			{
-				content += data[i];
-				if(i+1 != expectedLength)
-				{
-					content += ";";
-					values[i] = Double.parseDouble(content);
-				}
-			}
-			
-			if(true)//Hash.verifyOneAtATime(content, hash))
-			{
-				return values;
-			}
-			else
-			{
-				return null;
-			}
-		}
-	}*/
+	
+	//public static double[] parseData(String message, int expectedLength) //Expected length does not include checksum
+	//{
+	//}
 }

@@ -55,7 +55,6 @@ public class Gearbox
 	public static void togglePTO()
 	{
 		if(!Constants.runningAleksBot) setPTO(!inPTOMode);
-		DriveBase.driveArcade(inPTOMode ? 1 : 0, 0);
 	}
 	
 	/**

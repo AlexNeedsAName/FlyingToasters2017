@@ -29,7 +29,7 @@ public class Robot extends IterativeRobot
 		Teleop.getInstance();
 		Auton.getInstance();
 		Sensors.getInstance(); //Must be last, it uses things initialized in other classes
-		underglow = new RGB(Constants.PWM.Spikes.RGB_SPIKE);
+		//underglow = new RGB(Constants.PWM.Spikes.RGB_SPIKE);
 		lastMode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		lastAllianceIsRed = (DS.getAlliance() == DriverStation.Alliance.Red);
 		connectedYet = false;

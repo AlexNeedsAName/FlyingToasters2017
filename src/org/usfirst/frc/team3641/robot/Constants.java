@@ -6,7 +6,7 @@ public class Constants
 	
 	public static boolean runningAleksBot = false;
 	
-	public static boolean GUITAR_MODE = false;
+	public static boolean GUITAR_MODE;
 		
 	public static final boolean disableAutonTimeouts = false;
 
@@ -47,8 +47,8 @@ public class Constants
 			}
 		}
 
-		public static Level VERBOSE = Level.HIGH;
-		public static boolean PRINT_PID = false;
+		public static Level VERBOSE;
+		public static boolean PRINT_PID;
 		
 		public static boolean isAbove(Level level)
 		{
@@ -180,8 +180,8 @@ public class Constants
 	public static void readConfig()
 	{
 		config.reloadFile();
-		Verbosity.VERBOSE = Verbosity.Level.fromInt(config.readInt("VERBOSE", Verbosity.VERBOSE.getLevel()));
-		Verbosity.PRINT_PID = config.readBoolean("PRINT_PID", Verbosity.PRINT_PID);
-		GUITAR_MODE = config.readBoolean("GUITAR_MODE", GUITAR_MODE);
+		Verbosity.VERBOSE = Verbosity.Level.fromInt(config.readInt("VERBOSE", Verbosity.Level.LOW.getLevel()));
+		Verbosity.PRINT_PID = config.readBoolean("PRINT_PID", false);
+		GUITAR_MODE = config.readBoolean("GUITAR_MODE", false);
 	}
 }

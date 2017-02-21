@@ -81,13 +81,11 @@ public class DriveBase
 	 */
 	public static void driveArcade(double power, double rotation)
 	{
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.INSANITY)) System.out.println("Power: " + power + "; Rotation: " + String.format("%.2f", rotation));
-		if(mode == DriveMode.REVERSE) power = -power;
+		if(mode == DriveMode.REVERSE) rotation = -rotation;
 
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
 		
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.INSANITY)) System.out.println("Left Power: " + leftPower + "; Right Power: " + rightPower);
 		driveTank(leftPower, rightPower);
 	}
 
