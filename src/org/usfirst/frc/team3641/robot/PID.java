@@ -1,6 +1,5 @@
 package org.usfirst.frc.team3641.robot;
 import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PID
@@ -17,6 +16,12 @@ public class PID
 	private int feedForwardMode;
 	private String name;
 
+	/**
+	 * Initializes a new instance of the PID class.
+	 * 
+	 * @param name The name of the config file to read from and the name to print for debugging
+	 * purposes.
+	 */
 	public PID(String name)
 	{
 		properties = new PropertyReader(name);
@@ -25,6 +30,10 @@ public class PID
 		reset();
 	}
 	
+	/**
+	 * Loads the current values from the config file. If it fails to read anything, it uses the
+	 * backup value (0 unless manually set).
+	 */
 	public void readConfig()
 	{
 		properties.reloadFile();
@@ -38,6 +47,16 @@ public class PID
 		this.deadband = properties.readDouble("deadband", Bdeadband);
 	}
 	
+	/**
+	 * Sets the backup values to use if they can't be read from the config file.
+	 * 
+	 * @param BkP THe backup kP.
+	 * @param BkI The backup kI.
+	 * @param BkD The backup kD.
+	 * @param BkFF The backup feed forward.
+	 * @param BfeedForwardMode The backup feed forward mode.
+	 * @param Bdeadband The backup deadband range.
+	 */
 	public void setBackupValues(double BkP, double BkI, double BkD, double BkFF, int BfeedForwardMode, double Bdeadband)
 	{
 		this.BkP = BkP;
@@ -50,18 +69,44 @@ public class PID
 		this.Bdeadband = Bdeadband;
 	}
 	
+	/**
+	 * Sets the most of the backup values to use if they can't be read from the config file.
+	 * The backup deadband will be set to 0.
+	 * 
+	 * @param BkP THe backup kP.
+	 * @param BkI The backup kI.
+	 * @param BkD The backup kD.
+	 * @param BkFF The backup feed forward.
+	 * @param BfeedForwardMode The backup feed forward mode.
+	 */
 	public void setBackupValues(double BkP, double BkI, double BkD, double BkFF, int BfeedForwardMode)
 	{
 		setBackupValues(BkP, BkI, BkD, BkFF, BfeedForwardMode, 0);
 	}
 	
+	/**
+	 * Sets the most of the backup values to use if they can't be read from the config file.
+	 * The backup feed forward will be set to off.
+	 * 
+	 * @param BkP THe backup kP.
+	 * @param BkI The backup kI.
+	 * @param BkD The backup kD.
+	 * @param Bdeadband The backup deadband.
+	 */
 	public void setBackupValues(double BkP, double BkI, double BkD, double Bdeadband)
 	{
 		setBackupValues(BkP, BkI, BkD, 0, 0, Bdeadband);
 	}
 
-			
-	public double pid(double error, double target)
+	
+	/**
+	 * Runs the PID loop.
+	 * 
+	 * @param error The error to target.
+	 * @param target The target value (used for proportional feed forward).
+	 * @return Motor output power.
+	 */
+	public double run(double error, double target)
 	{
 		if(deadband != 0)
 		{
@@ -90,17 +135,31 @@ public class PID
 		return output;
 	}
 
+	/**
+	 * Runs the PID loop.
+	 * If using proportional feed forward, since there is no target it is ignored.
+	 * 
+	 * @param error The error to target.
+	 * @return Motor output power.
+	 */
 	public double pid(double error)
 	{
-		return pid(error, 0);
+		return run(error, 0);
 	}
 			
+	/**
+	 * Resets the PID Loop.
+	 * Sets the error over time and the last error to 0.
+	 */
 	public void reset()
 	{
 		errorRefresh = 0;
 		lastError = 0;
 	}
 	
+	/**
+	 * Reloads the values of all the PID instances from their respective config files.
+	 */
 	public static void reloadAllConfigs()
 	{
 		for(PID instance : instances) instance.readConfig();

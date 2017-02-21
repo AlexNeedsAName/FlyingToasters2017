@@ -1,5 +1,4 @@
 package org.usfirst.frc.team3641.robot;
-
 import edu.wpi.first.wpilibj.Timer;
 
 @SuppressWarnings("unused") //I might not be using those functions now, but they're there to be building blocks for future routines.
@@ -41,10 +40,13 @@ public class Auton
 
 	public static UDP udp;
 
+	
+	/**
+	 * All the Auton states we can be in. For each state you use in a routine, add it here.
+	 */
 	private enum states
 	{
-		START,
-		DONE,
+		START, DONE,
 		DRIVE_FORWARDS,
 		DRIVE_TO_HOPPER_LINE,
 		TURN_TO_HOPPER,
@@ -59,6 +61,9 @@ public class Auton
 		CALM_DOWN;
 	}
 	
+	/**
+	 * All the Auton routines.
+	 */
 	public enum modes
 	{
 		DO_NOTHING,
@@ -70,6 +75,13 @@ public class Auton
 		LINE_FOLLOW;
 		
 		private static final modes[] values = modes.values(); //We cache the value array for preformance
+
+		/**
+		 * Get an auton mode from an integer.
+		 * 
+		 * @param i The number of the mode we want to run
+		 * @return The mode with that number
+		 */
 		public static modes fromInt(int i)
 		{
 			if(i >= values.length || i<0)
@@ -87,6 +99,9 @@ public class Auton
 		return instance;
 	}
 
+	/**
+	 * Initializes all the objects that need to be initialized.
+	 */
 	private Auton()
 	{
 		timeoutTimer = new Timer();
@@ -94,6 +109,14 @@ public class Auton
 		config = new PropertyReader("Auton");
 	}
 	
+	/**
+	 * Selects the auton mode and alliance.
+	 * Also resets all the values possibly used in auton, so we can test without rebooting the rio.
+	 * 
+	 * @param mode The auton routine you wish to run.
+	 * @param redAlliance The alliance you are on. This value effects the turns, since the field is
+	 * asymmetrical this year.
+	 */
 	public static void setup(modes mode, boolean redAlliance)
 	{
 		if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting Auton:\n");
@@ -109,6 +132,9 @@ public class Auton
 		autonTimer.start();
 	}
 	
+	/**
+	 * Run the auton in the mode and alliance selected in the setup method.
+	 */
 	public static void run()
 	{
 		switch(autonMode)
@@ -142,6 +168,9 @@ public class Auton
 		}
 	}
 	
+	/**
+	 * Second simplest auton after DO_NOTHING. Just drives across the line and stops.
+	 */
 	@SuppressWarnings("incomplete-switch") //I don't care about the other values, I know they won't be used :P
 	private static void crossBaseline()
 	{
@@ -158,6 +187,9 @@ public class Auton
 		}
 	}
 
+	/**
+	 * Drives to the hopper, auto targets the turret, then fires the shooter until auton is over.
+	 */
 	@SuppressWarnings("incomplete-switch")
 	private static void hopperAuton()
 	{
@@ -203,6 +235,10 @@ public class Auton
 		}
 	}
 
+	/**
+	 * Drives to the gear loading station and places the gear.
+	 */
+	//TODO: Add support for each of the three stations with different starting points.
 	@SuppressWarnings("incomplete-switch")
 	private static void gearAuton()
 	{
@@ -231,6 +267,9 @@ public class Auton
 		}
 	}
 	
+	/**
+	 * Drives to the gear station, places the gear, then backs into hopper, tracks, and fires.
+	 */
 	@SuppressWarnings("incomplete-switch")
 	private static void comboAuton()
 	{
@@ -281,6 +320,9 @@ public class Auton
 		}
 	}
 	
+	/**
+	 * Aligns with a line using vision on a beagle bone.
+	 */
 	private static void lineAlign()
 	{
 		String receivedData;
@@ -308,6 +350,9 @@ public class Auton
 
 	}
 
+	/**
+	 * Follows a line using vision on a beagle bone.
+	 */
 	private static void lineFollow()
 	{
 		String receivedData;
@@ -387,6 +432,13 @@ public class Auton
 		}
 	}
 
+	/**
+	 * Drives for a specified distance with a timeout.
+	 * 
+	 * @param distance The distance to drive in meters.
+	 * @param timeout The number of seconds to try driving before timing out.
+	 * @return True once done driving or when the timeout is up.
+	 */
 	public static boolean driveBy(double distance, double timeout)
 	{
 		if(!alreadyRunning)
@@ -408,11 +460,24 @@ public class Auton
 		return (withinThreshold || timeoutUp(timeout));
 	}
 	
+	/**
+	 * Drives for a specified distance.
+	 * 
+	 * @param distance The distance to drive in meters.
+	 * @return True once done driving.
+	 */
 	public static boolean driveBy(double distance)
 	{
 		return driveBy(distance, 0);
 	}
 
+	/**
+	 * Turns a specified number of degrees with a timeout.
+	 * 
+	 * @param angle The angle to turn to in degrees.
+	 * @param timeout The number of seconds to try driving before timing out.
+	 * @return True once done turning or when the timeout is up.
+	 */
 	private static boolean turnBy(double angle, double timeout)
 	{
 		if(!alreadyRunning)
@@ -432,11 +497,23 @@ public class Auton
 		return (allAreTrue(doneTurning) || timeoutUp(timeout));
 	}
 	
+	/**
+	 * Turns a specified number of degrees.
+	 * 
+	 * @param angle The angle to turn to in degrees.
+	 * @return True once done turning.
+	 */
 	private static boolean turnBy(double angle)
 	{
 		return turnBy(angle, 0);
 	}
 	
+	/**
+	 * Waits for a specified number of seconds.
+	 * 
+	 * @param timeout The time to wait in seconds.
+	 * @return True if time is up.
+	 */
 	private static boolean waitFor(double timeout)
 	{
 		if(!alreadyRunning)
@@ -447,6 +524,11 @@ public class Auton
 		return timeoutUp(timeout);
 	}
 
+	/**
+	 * Starts a timeout timer with the specified number of seconds.
+	 * 
+	 * @param Timeout The number of seconds on the timer.
+	 */
 	private static void initTimeout(double Timeout)
 	{
 		if(Constants.VERBOSE >= Constants.LOW && Timeout != 0) System.out.println("Starting a " + Timeout + "s Timer");
@@ -454,6 +536,12 @@ public class Auton
 		timeoutTimer.start();
 	}
 	
+	/**
+	 * Checks if time is up on the timeout timer.
+	 * 
+	 * @param timeout The number of seconds on the timer.
+	 * @return True once the time on the timer has reached the timeout.
+	 */
 	private static boolean timeoutUp(double timeout)
 	{
 		if(Constants.disableTimeouts) return false;
@@ -462,17 +550,30 @@ public class Auton
 			return false;
 		}
 		double time = timeoutTimer.get();
-//		if(Constants.VERBOSE) System.out.println(time + "s out of " + timeout + "s");
+		if(Constants.VERBOSE >= Constants.HIGH) System.out.println(time + "s out of " + timeout + "s");
 		boolean done = (time >= timeout);
 		if(done && Constants.VERBOSE >= Constants.LOW) System.out.println("\nScrew it, it's close enough. We're out of time");
 		return done;
 	}
 	
+	/**
+	 * Checks if the navx thinks we're still with a minimum time (We don't want it to return
+	 * instantly because the robot hasn't started moving yet.
+	 * 
+	 * @param minTime Maximum time in seconds we expect the robot to take to start moving.
+	 * @return True once the navx thinks we are still and the minimum time has been reached.
+	 */
 	private static boolean didWeHitSomething(double minTime)
 	{
 		return (Sensors.isStill() && timeoutTimer.get() > minTime); //We want to know if we are still, but it doesn't help us if it returns true immediately before we started driving.
 	}
 	
+	/**
+	 * Increments from the current state to the specified state. Stops driving, and resets the other
+	 * variables the states depend on.
+	 * 
+	 * @param state The state to increment to.
+	 */
 	private static void increment(states state)
 	{
 		if(Constants.VERBOSE >= Constants.MID) System.out.println("Took " + timeoutTimer.get() + "s to complete " + autonState.toString());
@@ -489,12 +590,22 @@ public class Auton
 		Horn.setHorn(false);
 	}
 	
+	/**
+	 * Checks if all elements of an array are true.
+	 * 
+	 * @param array Array to check.
+	 * @return True if all the elements in the array are true
+	 */
 	private static boolean allAreTrue(boolean[] array)
 	{
 		for(boolean b : array) if(b == false) return false;
 		return true;
 	}
 	
+	/**
+	 * Attempts to read values from the config file. If it ever fails, it just uses the previous
+	 * value
+	 */
 	private static void readConfig()
 	{
 		System.out.println("GTBD: " + gearTurnBackDistance);

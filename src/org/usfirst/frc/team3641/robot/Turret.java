@@ -1,5 +1,4 @@
 package org.usfirst.frc.team3641.robot;
-
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 
@@ -19,6 +18,9 @@ public class Turret
 		return instance;
 	}
 
+	/**
+	 * Initalizes the turret, its Talon, and its PID.
+	 */
 	private Turret()
 	{
 		turretTalon = new CANTalon(Constants.TURRET_TALON);
@@ -31,6 +33,13 @@ public class Turret
 		turretTalon.enableBrakeMode(true);
 	}
 
+	/**
+	 * Turns by the specified number of degrees.
+	 * 
+	 * @param angle The angle in degrees to turn by.
+	 * @param threshold The amount of acceptable error in degrees.
+	 * @return True if error is within the threshold.
+	 */
 	public static boolean turnBy(double angle, double threshold)
 	{
 		if(!alreadyRotating)
@@ -52,12 +61,20 @@ public class Turret
 		return (Math.abs(error) < threshold);
 	}
 	
+	/**
+	 * Manually sets the power of the turret motor.
+	 * 
+	 * @param power The power to set the motor to.
+	 */
 	public static void set(double power)
 	{
 		turretTalon.set(power);
 		SmartDashboard.putNumber("Turret Encoder", Sensors.getTurretAngle());
 	}
 
+	/**
+	 * Reset the values turnBy uses.
+	 */
 	public static void reset()
 	{
 		alreadyRotating = false;

@@ -14,12 +14,11 @@ public class Constants
 	public static int VERBOSE = HIGH;
 	public static boolean PRINT_PID = false;
 	
+	public static boolean GUITAR_MODE = false;
+	
 	public static boolean runningAleksBot = false;
 	
 	public static final double ADJATATOR_SPEED = .5;
-
-	public static final int REVERSE_MODE = 1;
-	public static final int NORMAL_MODE = 2;
 
 	public static final int PS4_PORT = 0;
 	public static final int OPERATOR_PORT = 1;
@@ -117,6 +116,7 @@ public class Constants
 	public static final double DRIVE_ENCODER_TO_METERS = -0.000623409726; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
 	public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
 	
+	public static final double SHOOTER_MAX_ERROR = 50; //RPM
 	public static final double AUTON_RPM = 60; //TODO: build robot, tune value (you get the drill)
 	public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
 	
@@ -130,5 +130,6 @@ public class Constants
 		config.reloadFile();
 		VERBOSE = config.readInt("VERBOSE", VERBOSE);
 		PRINT_PID = config.readBoolean("PRINT_PID", PRINT_PID);
+		GUITAR_MODE = config.readBoolean("GUITAR_MODE", GUITAR_MODE);
 	}
 }

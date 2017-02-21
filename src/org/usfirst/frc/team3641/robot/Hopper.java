@@ -14,11 +14,17 @@ public class Hopper
 		return instance;
 	}
 	
+	/**
+	 * Initalize the Hopper (just the spark for the adjatator right now)
+	 */
 	private Hopper()
 	{
 		adjatator = new Spark(Constants.HOPPER_ADJATATOR_SPARK);
 	}
 
+	/**
+	 * Start adjatating the hopper so we can feed the shooter.
+	 */
 	public static void adjatate()
 	{
 		if(!alreadyAdjatating)
@@ -28,6 +34,10 @@ public class Hopper
 		}
 		adjatator.set(Constants.ADJATATOR_SPEED);
 	}
+	
+	/**
+	 * Stop adjatating the hopper.
+	 */
 	public static void stopAdjatating()
 	{
 		if(alreadyAdjatating)

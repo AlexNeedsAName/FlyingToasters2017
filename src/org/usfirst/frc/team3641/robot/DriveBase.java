@@ -1,7 +1,6 @@
 package org.usfirst.frc.team3641.robot;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
-
 import edu.wpi.first.wpilibj.Victor;
 
 public class DriveBase
@@ -11,7 +10,7 @@ public class DriveBase
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
 	private static PID rotationPID, drivePID;
 
-	private static boolean reverseMode;
+	private static DriveMode mode;
 
 	public static DriveBase getInstance()
 	{
@@ -19,6 +18,17 @@ public class DriveBase
 		return instance;
 	}
 
+	/**
+	 * Different drive modes.
+	 */
+	public enum DriveMode
+	{
+		NORMAL, REVERSE
+	}
+		
+	/**
+	 * Initalizes the Drive Base with its Talon and PID classes.
+	 */
 	private DriveBase()
 	{
 		if(Constants.runningAleksBot)
@@ -43,6 +53,11 @@ public class DriveBase
 		drivePID.readConfig();
 	}
 
+	/**
+	 * Turns break mode on or off.
+	 * 
+	 * @param on True if you want it on, false if you want it off.
+	 */
 	public static void setBreakMode(boolean on)
 	{
 		left.enableBrakeMode(on);
@@ -51,10 +66,16 @@ public class DriveBase
 		rightSlave.enableBrakeMode(on);
 	}
 	
+	/**
+	 * Drives the robot with arcade drive.
+	 * 
+	 * @param power The speed forwards/backwards
+	 * @param rotation The rotation clockwise/counterclockwise
+	 */
 	public static void driveArcade(double power, double rotation)
 	{
 		if(Constants.VERBOSE >= 4) System.out.println("Power: " + power + "; Rotation: " + String.format("%.2f", rotation));
-		if(reverseMode) power = -power;
+		if(mode == DriveMode.REVERSE) power = -power;
 
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
@@ -63,6 +84,13 @@ public class DriveBase
 		driveTank(leftPower, rightPower);
 	}
 
+	
+	/**
+	 * Drives The robot with tank drive.
+	 * 
+	 * @param leftPower Power for the left half of the drive train (your left stick)
+	 * @param rightPower Power for the right half of the drive train (your right stick)
+	 */
 	public static void driveTank(double leftPower, double rightPower)
 	{
 
@@ -76,7 +104,7 @@ public class DriveBase
 			rightPower/= maxPower;
 		}
 
-		if(reverseMode)
+		if(mode == DriveMode.REVERSE)
 		{
 			leftPower*= -1;
 			rightPower*= -1;
@@ -100,24 +128,33 @@ public class DriveBase
 		}
 	}
 
-	public static void setDriveMode(int mode)
+	/**
+	 * Switch between normal and reverse mode.
+	 * 
+	 * @param Mode DriveMode you want to switch to.
+	 */
+	public static void setDriveMode(DriveMode Mode)
 	{
-		if(mode == Constants.REVERSE_MODE) reverseMode = true;
-		else reverseMode = false;
+		mode = Mode;
 	}
 
-	public static void shift(boolean high)
+	/**
+	 * Shifts the gearbox to high or low gear.
+	 * 
+	 * @param gear The gearbox gear you want to shift to
+	 */
+	public static void shift(Gearbox.Gear gear)
 	{
-		if(high)
-		{
-			//shift high
-		}
-		else
-		{
-			//shift low
-		}
+		Gearbox.shift(gear);
 	}
 
+	/**
+	 * Turns to an absolute angle.
+	 * 
+	 * @param targetAngle The angle in degrees to turn to.
+	 * @param threshold How accurate you want to be.
+	 * @return True if you are within error is within the threshold.
+	 */
 	public static boolean turnTo(double targetAngle, double threshold)
 	{
 		double error = Coords.calcAngleError(targetAngle, Sensors.getAngle());
@@ -150,6 +187,11 @@ public class DriveBase
 		driveArcade(0, 0);
 	}
 
+	/**
+	 * Drives to an absolute distance based off encoders
+	 * @param distance Distance in meters to drive to.
+	 * @return Distance off.
+	 */
 	public static double driveTo(double distance)
 	{
 		double error = distance - Sensors.getDriveDistance();

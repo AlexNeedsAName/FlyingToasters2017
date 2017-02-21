@@ -1,5 +1,4 @@
 package org.usfirst.frc.team3641.robot;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Spark;
 
@@ -16,6 +15,9 @@ public class Intake
 		return instance;
 	}
 	
+	/**
+	 * Initialize the intake, its sparks and its solenoids.
+	 */
 	private Intake()
 	{
 		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_CHANNEL_FORWARD, Constants.INTAKE_CHANNEL_REVERSE);
@@ -23,6 +25,9 @@ public class Intake
 		right = new Spark(Constants.INTAKE_RIGHT_SPARK);
 	}
 	
+	/**
+	 * Raise the intake.
+	 */
 	public static void intakeUp()
 	{
 		if(!up)
@@ -33,6 +38,9 @@ public class Intake
 		intakeSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 	
+	/**
+	 * Lower the intake.
+	 */
 	public static void intakeDown()
 	{
 		if(up)
@@ -43,6 +51,10 @@ public class Intake
 		intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 	
+	/**
+	 * Set the intake roller speed.
+	 * @param speed The speed you want to set the intake to.
+	 */
 	public static void set(double speed)
 	{
 		left.set(speed);

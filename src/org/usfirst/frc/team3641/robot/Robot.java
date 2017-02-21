@@ -1,5 +1,4 @@
 package org.usfirst.frc.team3641.robot;
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -62,7 +61,8 @@ public class Robot extends IterativeRobot
 	public void teleopPeriodic()
 	{
 		Sensors.poll();
-		Teleop.runGuitar();
+		if(Constants.GUITAR_MODE) Teleop.runGuitar();
+		else Teleop.run();
 	}
 
 	public void testPeriodic()
@@ -80,8 +80,8 @@ public class Robot extends IterativeRobot
 			lastMode = mode;
 			lastAllianceIsRed = redAlliance;
 			
-			if(DS.getAlliance() == DriverStation.Alliance.Invalid) underglow.setColor(RGB.OFF);
-			else underglow.setColor((redAlliance) ? RGB.RED : RGB.BLUE);
+			if(DS.getAlliance() == DriverStation.Alliance.Invalid) underglow.setColor(RGB.Color.OFF);
+			else underglow.setColor((redAlliance) ? RGB.Color.RED : RGB.Color.BLUE);
 		}
 	}
 

@@ -1,5 +1,4 @@
 package org.usfirst.frc.team3641.robot;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
@@ -12,6 +11,11 @@ public class PropertyReader
 	private String file;
 	private Properties config;
 	
+	/**
+	 * Initalizes a new property reader.
+	 * 
+	 * @param name The name of the file.
+	 */
 	public PropertyReader(String name)
 	{
 		file = BASE_DIR + name + EXTENSION;
@@ -26,6 +30,9 @@ public class PropertyReader
 		}
 	}
 	
+	/**
+	 * Reloads the config file.
+	 */
 	public void reloadFile()
 	{
 		try
@@ -39,6 +46,13 @@ public class PropertyReader
 		}
 	}
 	
+	/**
+	 * Reads a double from the config file.
+	 * 
+	 * @param key The key you want to read.
+	 * @param backup The backup value to use if it can't read the specified key.
+	 * @return The value of the key in the config file.
+	 */
 	public double readDouble(String key, double backup)
 	{ 
 
@@ -55,11 +69,25 @@ public class PropertyReader
 		return value;
 	}
 	
+	/**
+	 * Reads a double from the config file.
+	 * If the key is not found/the file can't be read it defaults to 0.
+	 * 
+	 * @param key The key you want to read.
+	 * @return The value of the specified key.
+	 */
 	public double readDouble(String key)
 	{
 		return readDouble(key, 0);
 	}
 	
+	/**
+	 * Reads a integer from the config file.
+	 * 
+	 * @param key The key you want to read.
+	 * @param backup The backup value to use if it can't read the specified key.
+	 * @return The value of the key in the config file.
+	 */
 	public int readInt(String key, int backup)
 	{ 
 
@@ -76,11 +104,25 @@ public class PropertyReader
 		return value;
 	}
 	
+	/**
+	 * Reads a int from the config file.
+	 * If the key is not found/the file can't be read it defaults to 0.
+	 * 
+	 * @param key The key you want to read.
+	 * @return The value of the specified key.
+	 */
 	public int readInt(String key)
 	{
 		return readInt(key, 0);
 	}
 	
+	/**
+	 * Reads a boolean from the config file.
+	 * 
+	 * @param key The key you want to read.
+	 * @param backup The backup value to use if it can't read the specified key.
+	 * @return The value of the key in the config file.
+	 */
 	public boolean readBoolean(String key, boolean backup)
 	{
 		boolean value;
@@ -91,6 +133,14 @@ public class PropertyReader
 		
 		return value;
 	}
+	
+	/**
+	 * Reads a boolean from the config file.
+	 * If the key is not found/the file can't be read it defaults to false.
+	 * 
+	 * @param key The key you want to read.
+	 * @return The value of the specified key.
+	 */
 	public boolean readBoolean(String key)
 	{
 		return readBoolean(key, false);

@@ -1,5 +1,4 @@
 package org.usfirst.frc.team3641.robot;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -12,7 +11,13 @@ public class UDP
 	static DatagramPacket packet;
 	static byte[] buf;
 
-	public UDP(String IP, int Port)	//Sets the vars and opens a connection to the pi
+	/**
+	 * Create a new UDP connection.
+	 * 
+	 * @param IP The IP of the connection.
+	 * @param Port The port to use.
+	 */
+	public UDP(String IP, int Port)
 	{
 		try 
 		{
@@ -27,6 +32,13 @@ public class UDP
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Get the most recent message.
+	 * 
+	 * @param oldResponse The last message it got.
+	 * @return The most recent message.
+	 */
 	public String flush(String oldResponse)
 	{
 		String response = getData();
@@ -36,7 +48,22 @@ public class UDP
 		}
 		else return oldResponse;
 	}
+	
+	/**
+	 * Get the most recent message.
+	 * 
+	 * @return The most recent message.
+	 */
+	public String flush()
+	{
+		return(flush(null));
+	}
 
+	/**
+	 * Sends a string over the UDP Connection.
+	 * 
+	 * @param data The string to send.
+	 */
 	public void sendData(String data) //Sends the request to the pi
 	{
 		try
@@ -51,6 +78,12 @@ public class UDP
 			//e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Get a message from the connection.
+	 * 
+	 * @return The message. Null if there is an error, or if there is none.
+	 */
 	public String getData()
 	{
 		try
@@ -64,7 +97,7 @@ public class UDP
 		}
 		catch (Exception e)
 		{
-			//System.out.println(e.getMessage());
+			System.out.println("WARNING: " + e.getMessage());
 			return null;
 		}	
 	}

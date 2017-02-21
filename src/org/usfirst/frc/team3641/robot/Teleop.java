@@ -1,7 +1,5 @@
 package org.usfirst.frc.team3641.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class Teleop
 {
 	private static Teleop instance;
@@ -15,6 +13,9 @@ public class Teleop
 		return instance;
 	}
 
+	/**
+	 * Initalizes Teleop and its controllers.
+	 */
 	private Teleop()
 	{
 		driver = new PS4(Constants.PS4_PORT);
@@ -22,6 +23,9 @@ public class Teleop
 		guitar = new Harmonix(2);
 	}
 
+	/**
+	 * Runs the main teleop code. Should be run from a loop (teleopPerodic)
+	 */
 	public static void run()
 	{
 		driver.poll();
@@ -31,8 +35,8 @@ public class Teleop
 		else if(driver.isReleased(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(false);
 		
 		//Change Drive Direction
-		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(Constants.NORMAL_MODE);
-		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(Constants.REVERSE_MODE);
+		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(DriveBase.DriveMode.NORMAL);
+		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(DriveBase.DriveMode.REVERSE);
 		
 		if(driver.isDown(PS4.Button.CIRCLE))
 		{
@@ -49,8 +53,8 @@ public class Teleop
 		//Gearbox Things
 		if(driver.isPressed(PS4.Button.PLAYSTATION_BUTTON)) Gearbox.togglePTO();
 		
-		if(driver.isPressed(PS4.Button.SHARE)) Gearbox.shiftLow();
-		else if(driver.isPressed(PS4.Button.OPTIONS)) Gearbox.shiftHigh();
+		if(driver.isPressed(PS4.Button.SHARE)) Gearbox.shift(Gearbox.Gear.LOW);
+		else if(driver.isPressed(PS4.Button.OPTIONS)) Gearbox.shift(Gearbox.Gear.HIGH);
 		
 		//Intake Stuff
 		if(driver.isPressed(PS4.Button.LEFT_BUMPER)) Intake.intakeDown();
@@ -67,9 +71,8 @@ public class Teleop
 				Tracking.resetState();
 				System.out.println("");
 			}
-			
-			SmartDashboard.putNumber("Vision State", Tracking.getState());
 		}
+		
 		else //Manual Mode
 		{
 			Turret.set(operator.getAxis(E3D.Axis.Z)/2);
@@ -78,7 +81,10 @@ public class Teleop
 			else if(operator.isReleased(E3D.Button.TRIGGER)) Shooter.stopFiring();
 		}
 	}
-	
+
+	/**
+	 * Runs the teleop code for driving with the Guitar as a controller.
+	 */
 	public static void runGuitar()
 	{
 		guitar.poll();

@@ -13,6 +13,14 @@ public class Gearbox
 		return instance;
 	}
 
+	/**
+	 * Different states you can shift the gearbox to.
+	 */
+	public enum Gear
+	{
+		LOW, HIGH
+	}
+
 	private Gearbox()
 	{
 		if(!Constants.runningAleksBot)
@@ -22,16 +30,18 @@ public class Gearbox
 		}
 	}
 
-	public static void shiftHigh()
+	public static void shift(Gear gear)
 	{
-		if(Constants.VERBOSE >= Constants.MID) System.out.println("Shifting Down");
-		if(!Constants.runningAleksBot) shifter.set(DoubleSolenoid.Value.kForward);
-	}
-
-	public static void shiftLow()
-	{
-		if(Constants.VERBOSE >= Constants.MID) System.out.println("Shifting Down");
-		if(!Constants.runningAleksBot) shifter.set(DoubleSolenoid.Value.kReverse);
+		if(gear == Gear.LOW)
+		{
+			if(Constants.VERBOSE >= Constants.MID) System.out.println("Shifting Down");
+			if(!Constants.runningAleksBot) shifter.set(DoubleSolenoid.Value.kForward);
+		}
+		else
+		{
+			if(Constants.VERBOSE >= Constants.MID) System.out.println("Shifting Down");
+			if(!Constants.runningAleksBot) shifter.set(DoubleSolenoid.Value.kReverse);
+		}
 	}
 	
 	public static void togglePTO()

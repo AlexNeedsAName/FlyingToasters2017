@@ -8,6 +8,11 @@ public class Harmonix
 	private EnumMap<Axis, Double> axes;
 	private Joystick rawJoystick;
 
+	/**
+	 * Initalize the joysitck with the port.
+	 * 
+	 * @param port The port it uses on the driver station.
+	 */
 	public Harmonix(int port)
 	{
 		rawJoystick= new Joystick(port);
@@ -17,40 +22,71 @@ public class Harmonix
 		poll(); //Populate the current EnumMap so the last EnumMap won't be null when the user polls for the first time.
 	}
 	
+	/**
+	 * The buttons it supports
+	 */
 	public static enum Button
 	{
 		BLUE, GREEN, RED, YELLOW, ORANGE,
-		LOWER;
+		LOWER,
+		STRUM;
 	}
 	
+	/**
+	 * The axes it supports
+	 */
 	public enum Axis
 	{
 		STRUM, WHAMMY_BAR, BUTTONS;
 	}
 
+	/**
+	 * Returns the value of the specified axis.
+	 * 
+	 * @param axis The axis to read.
+	 * @return The value of said axis.
+	 */
 	public double getAxis(Axis axis)
 	{
 		return axes.get(axis);
 	}
 		
-	//Is it down at all
+	/**
+	 * Checks if the specified button is down at all.
+	 * 
+	 * @param button The button to read.
+	 * @return True if the button is down.
+	 */
 	public boolean isDown(Button button)
 	{
 		return current.get(button);
 	}
 	
-	//Rising Edge only
+	/**
+	 * Checks if the specified button has just been pressed.
+	 * 
+	 * @param button The button to read.
+	 * @return True on the rising edge of the button.
+	 */
 	public boolean isPressed(Button button)
 	{
 		return (current.get(button) && !last.get(button));
 	}
 	
-	//Falling Edge only
+	/**
+	 * Checks if the specified button has just been released.
+	 * 
+	 * @param button The button to read.
+	 * @return True on the falling edge of the button.
+	 */
 	public boolean isReleased(Button button)
 	{
 		return (!current.get(button) && last.get(button));
 	}
 	
+	/**
+	 * Read the current state of each button and axis.
+	 */
 	public void poll()
 	{
 		last = current.clone();
@@ -65,8 +101,7 @@ public class Harmonix
 		
 		axes.put(Axis.WHAMMY_BAR, wb);
 		
-		System.out.println("Strum: " + axes.get(Axis.STRUM) + "; Whammy Bar: " + axes.get(Axis.WHAMMY_BAR));
-
+		current.put(Button.STRUM, !(axes.get(Axis.STRUM) == 0));
 		current.put(Button.GREEN, rawJoystick.getRawButton(2));
 		current.put(Button.RED, rawJoystick.getRawButton(3));
 		current.put(Button.YELLOW, rawJoystick.getRawButton(4));
@@ -78,6 +113,11 @@ public class Harmonix
 		axes.put(Axis.BUTTONS, buttonsToAxis());
 	}
 
+	/**
+	 * Converts the current value of the frets to an axis.
+	 * 
+	 * @return A number based on which frets are down.
+	 */
 	public double buttonsToAxis()
 	{
 		double rotation = 0;

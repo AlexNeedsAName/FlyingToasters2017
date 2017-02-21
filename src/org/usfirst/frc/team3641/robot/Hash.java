@@ -3,11 +3,24 @@ import java.nio.charset.StandardCharsets;
 
 public class Hash
 {
+	/**
+	 * Verify a one at a time hash.
+	 * 
+	 * @param msg The message.
+	 * @param hash The hash to verify.
+	 * @return True if the hash generated from the message matches the give hash.
+	 */
 	public static boolean verifyOneAtATime(String msg, long hash)
 	{
 		return (oneAtATime(msg) == hash);
 	}
 	
+	/**
+	 * Hash a message with the one at a time hash.
+	 * 
+	 * @param msg The message to hash.
+	 * @return The hash of the message.
+	 */
 	public static long oneAtATime(String msg)
 	{
 		byte[] key = msg.getBytes(StandardCharsets.UTF_8);

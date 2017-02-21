@@ -12,6 +12,9 @@ public class Serial
 		return instance;
 	}
 
+	/**
+	 * Initalize the serial port.
+	 */
 	private Serial()
 	{
 		try
@@ -25,6 +28,12 @@ public class Serial
 		}
 	}
 
+	/**
+	 * Send a string over serial.
+	 * 
+	 * @param data The string to send over serial.
+	 * @return Success.
+	 */
 	public static boolean sendData(String data)
 	{
 		try
@@ -38,6 +47,11 @@ public class Serial
 		}
 	}
 
+	/**
+	 * Get a string over serial.
+	 * 
+	 * @return The string received over serial. Returns null if there is an error or the length is 0
+	 */
 	public static String getData()
 	{
 		try

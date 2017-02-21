@@ -10,6 +10,11 @@ public class PS4
 	private Joystick rawJoystick;
 	private double leftAngle, leftMagnitude, rightAngle, rightMagnitude;
 
+	/**
+	 * Initalize the PS4 controller with the port.
+	 * 
+	 * @param port The port it uses on the driver station.
+	 */
 	public PS4(int port)
 	{
 		rawJoystick= new Joystick(port);
@@ -19,6 +24,9 @@ public class PS4
 		poll(); //Populate the current EnumMap so the last EnumMap won't be null when the user polls for the first time.
 	}
 	
+	/**
+	 * The buttons it supports
+	 */
 	public static enum Button
 	{
 		X, CIRCLE, TRIANGLE, SQUARE,
@@ -30,12 +38,21 @@ public class PS4
 		TOUCHPAD_BUTTON;
 	}
 	
+	/**
+	 * The axes it supports
+	 */
 	public enum Axis
 	{
 		LEFT_X, LEFT_Y, LEFT_TRIGGER,
 		RIGHT_X, RIGHT_Y, RIGHT_TRIGGER;
 	}
-
+	
+	/**
+	 * Set the rumble on the controller.
+	 * 
+	 * @param rumble The amount of rumble you want.
+	 * @param balance The balance left to right. -1 is left, 0 is centered, 1 is right.
+	 */
 	public void setRumble(Double rumble, Double balance) //Balance goes from -1 (left) to 1 (right), with 0 being centered
 	{
 		double left = rumble - balance*rumble;
@@ -55,51 +72,93 @@ public class PS4
 		rawJoystick.setRumble(RumbleType.kRightRumble, right);
 	}
 	
+	/**
+	 * Returns the value of the specified axis.
+	 * 
+	 * @param axis The axis to read.
+	 * @return The value of said axis.
+	 */
 	public double getAxis(Axis axis)
 	{
 		return axes.get(axis);
 	}
 	
-	//Left Stick Stuff
+	/**
+	 * Get the polar angle of the left stick.
+	 * 
+	 * @return The polar angle of the left stick.
+	 */
 	public double getLeftAngle()
 	{
 		return leftAngle;
 	}
 	
+	/**
+	 * Get the polar magnitude of the left stick.
+	 * 
+	 * @return the polar magnitude of the left stick.
+	 */
 	public double getLeftMagnitude()
 	{
 		return leftMagnitude;
 	}
 	
-	//Right Stick Stuff
+	/**
+	 * Get the polar angle of the right stick.
+	 * 
+	 * @return The polar angle of the right stick.
+	 */
 	public double getRightAngle()
 	{
 		return rightAngle;
 	}
 	
+	/**
+	 * Get the polar magnitude of the right stick.
+	 * 
+	 * @return the polar magnitude of the right stick.
+	 */
 	public double getRightMagnitude()
 	{
 		return rightMagnitude;
 	}
 	
-	//Is it down at all
+	/**
+	 * Checks if the specified button is down at all.
+	 * 
+	 * @param button The button to read.
+	 * @return True if the button is down.
+	 */
 	public boolean isDown(Button button)
 	{
 		return current.get(button);
 	}
 	
-	//Rising Edge only
+	/**
+	 * Checks if the specified button has just been pressed.
+	 * 
+	 * @param button The button to read.
+	 * @return True on the rising edge of the button.
+	 */
 	public boolean isPressed(Button button)
 	{
 		return (current.get(button) && !last.get(button));
 	}
 	
-	//Falling Edge only
+	/**
+	 * Checks if the specified button has just been released.
+	 * 
+	 * @param button The button to read.
+	 * @return True on the falling edge of the button.
+	 */
 	public boolean isReleased(Button button)
 	{
 		return (!current.get(button) && last.get(button));
 	}
 	
+	/**
+	 * Read the current state of each button and axis.
+	 */
 	public void poll()
 	{
 		last = current.clone();
@@ -135,6 +194,5 @@ public class PS4
 		leftAngle = Coords.rectToPolarAngle(getAxis(Axis.LEFT_X), getAxis(Axis.LEFT_Y));
 		rightMagnitude = Coords.rectToPolarRadius(getAxis(Axis.RIGHT_X), getAxis(Axis.RIGHT_Y));
 		rightAngle = Coords.rectToPolarAngle(getAxis(Axis.RIGHT_X), getAxis(Axis.RIGHT_Y));
-
 	}
 }

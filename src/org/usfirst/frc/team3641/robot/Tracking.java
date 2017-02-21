@@ -15,12 +15,22 @@ public class Tracking
 		return instance;
 	}
 
+	/**
+	 * Initalizes the Tracking class.
+	 */
 	private Tracking()
 	{
 		visionState = Constants.SEND_REQUEST;
 	}
 
-	public static int target(int mode, boolean autoFire)
+	/**
+	 * Runs full auto targeting. Tracks, targets, and fires.
+	 * 
+	 * @param mode Gear mode or Fuel mode.
+	 * @param autoFire True if you want it to fire when tracked. (In fuel mode)
+	 * @return The current tracking state.
+	 */
+	public static int target(int mode, boolean autoFire) //TODO: Split up the contents of the switch/case to functions
 	{
 		String response;
 		boolean tracked;
@@ -150,20 +160,24 @@ public class Tracking
 
 	}
 	
+	/**
+	 * Runs auto targeting. Tracks and targets.
+	 * 
+	 * @param mode Gear mode or Fuel mode.
+	 * @return The current tracking state.
+	 */
 	public static int target(int mode)
 	{
 		return target(mode, true);
 	}
-	
 
+	/**
+	 * Reset tracking back to its inital state.
+	 */
 	public static void resetState()
 	{
 		visionState = Constants.SEND_REQUEST;
 		Turret.reset();
 		Shooter.stopFiring();
-	}
-	public static int getState()
-	{
-		return visionState;
-	}
+	}	
 }
