@@ -4,132 +4,184 @@ public class Constants
 {
 	private static PropertyReader config = new PropertyReader("Constants");
 	
-	public static final boolean disableTimeouts = false;
-	
-	public static final int OFF = 0;	//Nothing
-	public static final int LOW = 1;    //Stuff we probably want to know about
-	public static final int MID = 2;    //Stuff that's pretty routine, but only runs once.
-	public static final int HIGH = 3;   //Anything that spams the console
-
-	public static int VERBOSE = HIGH;
-	public static boolean PRINT_PID = false;
-	
-	public static boolean GUITAR_MODE = false;
-	
 	public static boolean runningAleksBot = false;
 	
+	public static boolean GUITAR_MODE = false;
+		
+	public static final boolean disableAutonTimeouts = false;
+
 	public static final double ADJATATOR_SPEED = .5;
 
-	public static final int PS4_PORT = 0;
-	public static final int OPERATOR_PORT = 1;
+	public static class Verbosity
+	{
+		public static enum Level
+		{
+			OFF(0),      //Nothing
+			LOW(1),      //Stuff we probably want to know about.
+			MID(2),      //Anything we might not care about, but could be nice to know.
+			HIGH(3),     //Anything that spams the console.
+			INSANITY(4); //Always runs every code loop. Why would you want this.
+			
+			private int level;
+			
+			private Level(int level)
+			{
+				this.level = level;
+			}
+			
+			public int getLevel()
+			{
+				return level;
+			}
+			
+			private static final Level[] values = Level.values(); //We cache the value array for preformance
 
-	public static final int ULTRASONIC_PORT = 0;
-	public static final int ULTRASONIC_ECHO = 0;
-	public static final int ULTRASONIC_TRIGGER = 1;
+			public static Level fromInt(int i)
+			{
+				if(i >= values.length || i<0)
+				{
+					System.err.println("WARNING: Auton " + i + " out of range. Defaulting to " + values[0].toString());
+					i = 0;
+				}
+				return values[i];
+			}
+		}
 
-	public static final int SERIAL_BAUDRATE  = 115200;
+		public static Level VERBOSE = Level.HIGH;
+		public static boolean PRINT_PID = false;
+		
+		public static boolean isAbove(Level level)
+		{
+			return (VERBOSE.getLevel() >= level.getLevel());
+		}	
+	}
+
+	public static class Serial
+	{
+		public static final int SERIAL_BAUDRATE  = 115200;
+	}
+
+	public static class CAN
+	{
+		public static class Talons
+		{
+			public static final int DRIVEBASE_LEFT_1 = 1;
+			public static final int DRIVEBASE_LEFT_2 = 2;
+			public static final int DRIVEBASE_LEFT_3 = 3;
+			public static final int DRIVEBASE_RIGHT_1 = 4;
+			public static final int DRIVEBASE_RIGHT_2 = 5;
+			public static final int DRIVEBASE_RIGHT_3 = 6;
+			public static final int SHOOTER_LEFT= 0;
+			public static final int SHOOTER_RIGHT = 0;
+			public static final int TURRET = 0;
+		}
+	}
 	
-	public static final int NUMBER_OF_ENCODER_STILL_CHECKS = 10;
-
-	//Talons
-	public static final int DRIVEBASE_LEFT_TALON = 3;
-	public static final int DRIVEBASE_LEFT_SLAVE_TALON = 4;
-	public static final int DRIVEBASE_LEFT_SLAVE2_TALON = 0;
-	public static final int DRIVEBASE_RIGHT_TALON = 1;
-	public static final int DRIVEBASE_RIGHT_SLAVE_TALON = 2;
-	public static final int DRIVEBASE_RIGHT_SLAVE2_TALON = 0;
-	public static final int SHOOTER_LEFT_TALON = 0;
-	public static final int SHOOTER_RIGHT_TALON = 0;
-	public static final int TURRET_TALON = 6;
+	public static class PWM
+	{
+		public static class Sparks
+		{
+			public static final int INTAKE_LEFT = 1;
+			public static final int INTAKE_RIGHT = 2;
+			public static final int HOPPER_ADJATATOR = 3;
+			public static final int SHOOTER_ELEVATOR = 4;
+		}
+		
+		public static class Victors
+		{
+			public static final int LEFT = 1;
+			public static final int LEFT_SLAVE = 2;
+			public static final int RIGHT = 3;
+			public static final int RIGHT_SLAVE = 4;
+		}
+		
+		public static class Spikes
+		{
+			public static final int RGB_SPIKE = 5;
+		}
+	}
 	
-	//Sparks
-	public static final int INTAKE_LEFT_SPARK = 1;
-	public static final int INTAKE_RIGHT_SPARK = 2;
-	public static final int HOPPER_ADJATATOR_SPARK = 3;
-	public static final int SHOOTER_ELEVATOR_SPARK = 4;
+	public static class Pnumatics
+	{
+		public static final int SHIFTER_FORWARD = 0;
+		public static final int SHIFTER_REVERSE = 1;
+		public static final int PTO_FORWARD = 2;
+		public static final int PTO_REVERSE = 3;
+		public static final int INTAKE_FORWARD = 4;
+		public static final int INTAKE_REVERSE = 5;
+	}
 
-	//Victors (for Alek)
-	public static final int LEFT_VICTOR = 1;
-	public static final int LEFT_SLAVE_VICTOR = 2;
-	public static final int RIGHT_VICTOR = 3;
-	public static final int RIGHT_SLAVE_VICTOR = 4;
+	public static class PID
+	{
+		public static final double DRIVEBASE_ROTATION_KP = 0.025; //TODO: Build robot, then tune this value
+		public static final double DRIVEBASE_ROTATION_KI = 0.003; //TODO: Build robot, then tune this value
+		public static final double DRIVEBASE_ROTATION_KD = 0.0004; //TODO: Build robot, then tune this value
+		public static final double DRIVEBASE_ROTATION_DEADBAND = 5;
 	
-	//Spikes
-	public static final int RGB_SPIKE = 1;
-
-	//Pnumatics
-	public static final int SHIFTER_CHANNEL_FORWARD = 0;
-	public static final int SHIFTER_CHANNEL_REVERSE = 1;
-	public static final int PTO_CHANNEL_FORWARD = 2;
-	public static final int PTO_CHANNEL_REVERSE = 3;
-	public static final int INTAKE_CHANNEL_FORWARD = 4;
-	public static final int INTAKE_CHANNEL_REVERSE = 5;
-
-	//UDP Constants	
-	public static final int DRIVER_PORT = 5800;
-	public static final String DRIVER_IP_ADDR = "10.36.42.81";
-
-	//PID Constants
-	public static final double DRIVEBASE_ROTATION_KP = 0.025; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_ROTATION_KI = 0.003; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_ROTATION_KD = 0.0004; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_ROTATION_DEADBAND = 5;
-	public static final int NUMBER_OF_TURNING_CHECKS = 5; //Must be within error margin for this many loops
-
-	public static final double DRIVEBASE_KP = 0.35; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_KI = 0.0; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_KD = 0.004; //TODO: Build robot, then tune this value
-	public static final double DRIVEBASE_FF = 0.12;
-
-	public static final double SHOOTER_KP = 0.00006;
-	public static final double SHOOTER_KI = 0.000005;
-	public static final double SHOOTER_KD = 0.00000025;
-	public static final double SHOOTER_FF = 5800;
-
-	public static final double TURRET_KP = 0.01;
-	public static final double TURRET_KI = 0.001;
-	public static final double TURRET_KD = 0;
-	public static final double TURRET_DEADBAND = 10;
-	public static final double ACCEPTABLE_TURRET_ERROR = 1;
-
-	//Tracking Constants
-	public static final int FUEL_MODE = 1;
-	public static final int GEAR_MODE = 2;
-
-	public static final int SEND_REQUEST = 1;
-	public static final int GET_RESPONSE = 2;
-	public static final int TURN_TURRET_TO_TARGET = 3;
-	public static final int ROTATE_DRIVEBASE = 4;	
-	public static final int TRACKED_GEAR = 5;
-	public static final int TRACKED_FUEL = 6;
-	public static final int VERIFY_REQUEST = 7;
-	public static final int VERIFY = 8;
+		public static final double DRIVEBASE_KP = 0.35;
+		public static final double DRIVEBASE_KI = 0.0;
+		public static final double DRIVEBASE_KD = 0.004;
+		public static final double DRIVEBASE_FF = 0.12;
 	
-	public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
-	public static final double ACCEPTABLE_GEAR_ERROR = 5; //Pixels
+		public static final double SHOOTER_KP = 0.00006;
+		public static final double SHOOTER_KI = 0.000005;
+		public static final double SHOOTER_KD = 0.00000025;
+		public static final double SHOOTER_FF = 5800;
+	
+		public static final double TURRET_KP = 0.01;
+		public static final double TURRET_KI = 0.001;
+		public static final double TURRET_KD = 0;
+		public static final double TURRET_DEADBAND = 10;
+	}
 
-	//Conversions
-	public static final double ENCODER_TO_RPM = -7.5; // ticks/s * 60s/min * 1rev/8ticks = 7.5 RPM 
-	public static final double DISTANCE_TO_RPM = 750; //TODO: Build Robot and find Value
-	public static final double VOLTAGE_TO_METERS = 1;
-	public static final double ENCODER_TO_METERS = 0; //TODO: Build Robot and find Value
-	public static final double DRIVE_ENCODER_TO_METERS = -0.000623409726; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
-	public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
+	public static class Controllers
+	{
+		public static final int DRIVER = 0;
+		public static final int OPERATOR = 1;
+		public static final int GUITAR = 2;
+	}
 	
-	public static final double SHOOTER_MAX_ERROR = 50; //RPM
-	public static final double AUTON_RPM = 60; //TODO: build robot, tune value (you get the drill)
-	public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
-	
+	public static class AnalogIn
+	{
+		public static final int ULTRASONIC_PORT = 0;
+		public static final int ULTRASONIC_ECHO = 0;
+		public static final int ULTRASONIC_TRIGGER = 1;
+	}
+
+	public static class Thresholds
+	{
+		public static final int NUMBER_OF_TURNING_CHECKS = 5; //Must be within error margin for this many loops
+		public static final int NUMBER_OF_ENCODER_STILL_CHECKS = 10;
+		
+		public static final double ACCEPTABLE_TURRET_ERROR = 1;
+		public static final double SHOOTER_MAX_ERROR = 50; //RPM
+		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
+		
+		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
+		public static final double ACCEPTABLE_GEAR_ERROR = 2; //Degrees
+	}
+
+	public class Conversions
+	{
+		public static final double ENCODER_TO_RPM = -7.5; // ticks/s * 60s/min * 1rev/8ticks = 7.5 RPM 
+		public static final double DISTANCE_TO_RPM = 750; //TODO: Build Robot and find Value
+		public static final double VOLTAGE_TO_METERS = 1;
+		public static final double ENCODER_TO_METERS = 0; //TODO: Build Robot and find Value
+		public static final double DRIVE_ENCODER_TO_METERS = -0.000623409726; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
+		public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
+	}
+		
 	public static void reloadConfig()
 	{
-		PID.reloadAllConfigs();
+		org.usfirst.frc.team3641.robot.PID.reloadAllConfigs();
 		readConfig();
 	}
+
 	public static void readConfig()
 	{
 		config.reloadFile();
-		VERBOSE = config.readInt("VERBOSE", VERBOSE);
-		PRINT_PID = config.readBoolean("PRINT_PID", PRINT_PID);
+		Verbosity.VERBOSE = Verbosity.Level.fromInt(config.readInt("VERBOSE", Verbosity.VERBOSE.getLevel()));
+		Verbosity.PRINT_PID = config.readBoolean("PRINT_PID", Verbosity.PRINT_PID);
 		GUITAR_MODE = config.readBoolean("GUITAR_MODE", GUITAR_MODE);
 	}
 }

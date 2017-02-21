@@ -119,7 +119,7 @@ public class Auton
 	 */
 	public static void setup(modes mode, boolean redAlliance)
 	{
-		if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting Auton:\n");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Starting Auton:\n");
 		readConfig();
 		autonState = states.START;
 		alreadyRunning = false;
@@ -193,7 +193,7 @@ public class Auton
 	@SuppressWarnings("incomplete-switch")
 	private static void hopperAuton()
 	{
-		int trackingState;
+		Tracking.State trackingState;
 		double angle;
 		boolean doneDriving, doneTurning, hitTheWall;
 		switch(autonState)
@@ -216,15 +216,15 @@ public class Auton
 		case DRIVE_TO_HOPPER:
 			doneDriving = driveBy(distanceToHopperFromTurn, 1);
 			hitTheWall = didWeHitSomething(.5);
-			if(hitTheWall && Constants.VERBOSE >= Constants.LOW) System.out.println("Ouch!");
+			if(hitTheWall && Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Ouch!");
 			if(doneDriving || hitTheWall) increment(states.SCORE_RANKING_POINT);
 			break;
 
 		case SCORE_RANKING_POINT:
-			trackingState = Tracking.target(Constants.FUEL_MODE);
-			if(trackingState == Constants.TRACKED_FUEL && !alreadyInPosition)
+			trackingState = Tracking.target(Tracking.Mode.FUEL_MODE);
+			if(trackingState == Tracking.State.TRACKED_FUEL && !alreadyInPosition)
 			{
-				if(Constants.VERBOSE >= Constants.LOW && !alreadyInPosition)
+				if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW) && !alreadyInPosition)
 				{
 					double time = autonTimer.get();
 					System.out.println("In position. It took " + String.format("%.2f", time) + "s, leaving us " + String.format("%.2f", 15-time) + "s left to shoot.");
@@ -238,9 +238,8 @@ public class Auton
 	/**
 	 * Drives to the gear loading station and places the gear.
 	 */
-	//TODO: Add support for each of the three stations with different starting points.
 	@SuppressWarnings("incomplete-switch")
-	private static void gearAuton()
+	private static void gearAuton() //TODO: Add support for each of the three stations with different starting points.
 	{
 		switch(autonState)
 		{
@@ -315,7 +314,7 @@ public class Auton
 			break;
 			
 		case SCORE_RANKING_POINT:
-			Tracking.target(Constants.FUEL_MODE);
+			Tracking.target(Tracking.Mode.FUEL_MODE);
 			break;
 		}
 	}
@@ -448,14 +447,14 @@ public class Auton
 			initalDistance = Sensors.getDriveDistance();
 			negativeErrorWhenDone = (distance < Sensors.getDriveDistance());
 			if(usingHorn) Horn.setHorn(true);
-			if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
 			alreadyRunning = true;
 		}
 		String currentDistance = String.format("%.2f", Sensors.getDriveDistance()-initalDistance);
-		if(Constants.VERBOSE >= Constants.HIGH) System.out.println( currentDistance + "m out of " + distance + "m");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.HIGH)) System.out.println( currentDistance + "m out of " + distance + "m");
 		double error = DriveBase.driveTo(initalDistance  + distance);
 		//boolean crossedLine = (negativeErrorWhenDone) ? (error > 0) : (error < 0);
-		boolean  withinThreshold = (Math.abs(error) <= Constants.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
+		boolean  withinThreshold = (Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
 		
 		return (withinThreshold || timeoutUp(timeout));
 	}
@@ -482,13 +481,13 @@ public class Auton
 	{
 		if(!alreadyRunning)
 		{
-			if(Constants.VERBOSE >= Constants.LOW) System.out.println("Starting to turn by " + angle + "° in state " + autonState);
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Starting to turn by " + angle + "° in state " + autonState);
 			initTimeout(timeout);
 			Sensors.resetGyro();
 			alreadyRunning = true;
-			doneTurning = new boolean[Constants.NUMBER_OF_TURNING_CHECKS];
+			doneTurning = new boolean[Constants.Thresholds.NUMBER_OF_TURNING_CHECKS];
 		}
-		if(Constants.VERBOSE >= Constants.HIGH) System.out.println(Sensors.getAngle() + "° out of " + angle + "°");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.HIGH)) System.out.println(Sensors.getAngle() + "° out of " + angle + "°");
 		boolean done = DriveBase.turnTo(angle, 1);
 		doneTurning[index] = done;
 		index++;
@@ -531,7 +530,7 @@ public class Auton
 	 */
 	private static void initTimeout(double Timeout)
 	{
-		if(Constants.VERBOSE >= Constants.LOW && Timeout != 0) System.out.println("Starting a " + Timeout + "s Timer");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW) && Timeout != 0) System.out.println("Starting a " + Timeout + "s Timer");
 		timeoutTimer.reset();
 		timeoutTimer.start();
 	}
@@ -544,15 +543,15 @@ public class Auton
 	 */
 	private static boolean timeoutUp(double timeout)
 	{
-		if(Constants.disableTimeouts) return false;
+		if(Constants.disableAutonTimeouts) return false;
 		if(timeout == 0)
 		{
 			return false;
 		}
 		double time = timeoutTimer.get();
-		if(Constants.VERBOSE >= Constants.HIGH) System.out.println(time + "s out of " + timeout + "s");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.HIGH)) System.out.println(time + "s out of " + timeout + "s");
 		boolean done = (time >= timeout);
-		if(done && Constants.VERBOSE >= Constants.LOW) System.out.println("\nScrew it, it's close enough. We're out of time");
+		if(done && Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("\nScrew it, it's close enough. We're out of time");
 		return done;
 	}
 	
@@ -576,8 +575,8 @@ public class Auton
 	 */
 	private static void increment(states state)
 	{
-		if(Constants.VERBOSE >= Constants.MID) System.out.println("Took " + timeoutTimer.get() + "s to complete " + autonState.toString());
-		if(Constants.VERBOSE >= Constants.LOW) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Took " + timeoutTimer.get() + "s to complete " + autonState.toString());
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
 		autonState = state;
 		DriveBase.driveArcade(0, 0); //Stop Driving!
 		initTimeout(0);

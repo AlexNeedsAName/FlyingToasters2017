@@ -20,9 +20,9 @@ public class Intake
 	 */
 	private Intake()
 	{
-		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_CHANNEL_FORWARD, Constants.INTAKE_CHANNEL_REVERSE);
-		left = new Spark(Constants.INTAKE_LEFT_SPARK);
-		right = new Spark(Constants.INTAKE_RIGHT_SPARK);
+		intakeSolenoid = new DoubleSolenoid(Constants.Pnumatics.INTAKE_FORWARD, Constants.Pnumatics.INTAKE_REVERSE);
+		left = new Spark(Constants.PWM.Sparks.INTAKE_LEFT);
+		right = new Spark(Constants.PWM.Sparks.INTAKE_RIGHT);
 	}
 	
 	/**
@@ -32,7 +32,7 @@ public class Intake
 	{
 		if(!up)
 		{
-			if(Constants.VERBOSE >= Constants.MID) System.out.println("Intake up");
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Intake up");
 			up = true;
 		}
 		intakeSolenoid.set(DoubleSolenoid.Value.kForward);
@@ -45,7 +45,7 @@ public class Intake
 	{
 		if(up)
 		{
-			if(Constants.VERBOSE >= Constants.MID) System.out.println("Intake down");
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Intake down");
 			up = false;
 		}
 		intakeSolenoid.set(DoubleSolenoid.Value.kReverse);

@@ -19,7 +19,7 @@ public class Hopper
 	 */
 	private Hopper()
 	{
-		adjatator = new Spark(Constants.HOPPER_ADJATATOR_SPARK);
+		adjatator = new Spark(Constants.PWM.Sparks.HOPPER_ADJATATOR);
 	}
 
 	/**
@@ -29,7 +29,7 @@ public class Hopper
 	{
 		if(!alreadyAdjatating)
 		{
-			if(Constants.VERBOSE >= Constants.MID) System.out.println("Now adjetating hopper");
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Now adjetating hopper");
 			alreadyAdjatating = true;
 		}
 		adjatator.set(Constants.ADJATATOR_SPEED);
@@ -42,7 +42,7 @@ public class Hopper
 	{
 		if(alreadyAdjatating)
 		{
-			if(Constants.VERBOSE >= Constants.MID) System.out.println("No longer adjetating hopper");
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("No longer adjetating hopper");
 			alreadyAdjatating = false;
 		}
 		adjatator.set(0);

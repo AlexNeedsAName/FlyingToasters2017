@@ -30,12 +30,12 @@ public class Sensors
 	{
 		if(Constants.runningAleksBot)
 		{
-			ultra = new Ultrasonic(Constants.ULTRASONIC_ECHO , Constants.ULTRASONIC_TRIGGER);
+			ultra = new Ultrasonic(Constants.AnalogIn.ULTRASONIC_TRIGGER , Constants.AnalogIn.ULTRASONIC_TRIGGER);
 			ultra.setAutomaticMode(true);
 		}
 		else
 		{
-			ultrasonic = new AnalogInput(Constants.ULTRASONIC_PORT); 
+			ultrasonic = new AnalogInput(Constants.AnalogIn.ULTRASONIC_PORT); 
 		}
 	}
 
@@ -51,10 +51,10 @@ public class Sensors
 		}
 		else
 		{
-			shooterRPM = Shooter.right.getEncVelocity() * Constants.ENCODER_TO_METERS;
-			ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.VOLTAGE_TO_METERS;
-			driveDistance = DriveBase.left.getAnalogInPosition() * Constants.DRIVE_ENCODER_TO_METERS;
-			turretAngle = Turret.turretTalon.getEncPosition() * Constants.TURRET_ENCODER_TO_ANGLE;
+			shooterRPM = Shooter.right.getEncVelocity() * Constants.Conversions.ENCODER_TO_METERS;
+			ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.Conversions.VOLTAGE_TO_METERS;
+			driveDistance = DriveBase.left1.getAnalogInPosition() * Constants.Conversions.DRIVE_ENCODER_TO_METERS;
+			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TO_ANGLE;
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
 		}
@@ -75,8 +75,8 @@ public class Sensors
 	 */
 	public static void resetDriveDistance(double distance)
 	{
-		DriveBase.left.setEncPosition((int) (distance / Constants.ENCODER_TO_METERS));
-		driveDistance = DriveBase.left.getAnalogInPosition() * Constants.DRIVE_ENCODER_TO_METERS;
+		DriveBase.left1.setEncPosition((int) (distance / Constants.Conversions.ENCODER_TO_METERS));
+		driveDistance = DriveBase.left1.getAnalogInPosition() * Constants.Conversions.DRIVE_ENCODER_TO_METERS;
 	}
 	
 	/**

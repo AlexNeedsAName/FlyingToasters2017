@@ -29,7 +29,7 @@ public class Robot extends IterativeRobot
 		Teleop.getInstance();
 		Auton.getInstance();
 		Sensors.getInstance(); //Must be last, it uses things initialized in other classes
-		underglow = new RGB(Constants.RGB_SPIKE);
+		underglow = new RGB(Constants.PWM.Spikes.RGB_SPIKE);
 		lastMode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		lastAllianceIsRed = (DS.getAlliance() == DriverStation.Alliance.Red);
 		connectedYet = false;
@@ -42,7 +42,7 @@ public class Robot extends IterativeRobot
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		Auton.setup(mode, redAlliance);
-		if(Constants.VERBOSE >= Constants.MID) System.out.println("Starting Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Starting Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance");
 	}
 
 	public void autonomousPeriodic()
@@ -54,8 +54,8 @@ public class Robot extends IterativeRobot
 	public void teleopInit()
 	{
 		Constants.reloadConfig();
-		if(Constants.VERBOSE >= Constants.MID) System.out.println("Teleop Started");
-		DriveBase.setBreakMode(true);
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Teleop Started");
+		DriveBase.setBreakMode(false);
 	}
 	
 	public void teleopPeriodic()
@@ -88,7 +88,7 @@ public class Robot extends IterativeRobot
 	public void disabledInit() //It runs this once the robot connects to the DriverStation too.
 	{
 		Horn.setHorn(false);
-		if(Constants.VERBOSE >= Constants.MID) System.out.println("Robot Disabled");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Robot Disabled");
 	}
 
 }

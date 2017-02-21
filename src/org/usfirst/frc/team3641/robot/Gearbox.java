@@ -5,6 +5,7 @@ public class Gearbox
 {
 	private static Gearbox instance;
 	private static DoubleSolenoid shifter, PTO;
+	private static Gear currentGear;
 	private static boolean inPTOMode = false;
 
 	public static Gearbox getInstance()
@@ -21,38 +22,51 @@ public class Gearbox
 		LOW, HIGH
 	}
 
+	/**
+	 * Initalize the Gearbox.
+	 */
 	private Gearbox()
 	{
 		if(!Constants.runningAleksBot)
 		{
-			shifter = new DoubleSolenoid(Constants.SHIFTER_CHANNEL_FORWARD, Constants.SHIFTER_CHANNEL_REVERSE);
-			PTO = new DoubleSolenoid(Constants.PTO_CHANNEL_FORWARD, Constants.PTO_CHANNEL_REVERSE);
+			shifter = new DoubleSolenoid(Constants.Pnumatics.SHIFTER_FORWARD, Constants.Pnumatics.SHIFTER_REVERSE);
+			PTO = new DoubleSolenoid(Constants.Pnumatics.PTO_FORWARD, Constants.Pnumatics.PTO_REVERSE);
 		}
 	}
 
+	/**
+	 * Shift gears
+	 * 
+	 * @param gear The gear you want to shift to.
+	 */
 	public static void shift(Gear gear)
 	{
-		if(gear == Gear.LOW)
+		if(gear != currentGear)
 		{
-			if(Constants.VERBOSE >= Constants.MID) System.out.println("Shifting Down");
-			if(!Constants.runningAleksBot) shifter.set(DoubleSolenoid.Value.kForward);
-		}
-		else
-		{
-			if(Constants.VERBOSE >= Constants.MID) System.out.println("Shifting Down");
-			if(!Constants.runningAleksBot) shifter.set(DoubleSolenoid.Value.kReverse);
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Shifting to " + gear.toString() + " gear.");
+			if(!Constants.runningAleksBot) shifter.set((gear == Gear.LOW) ? (DoubleSolenoid.Value.kForward) : (DoubleSolenoid.Value.kReverse));
+			currentGear = gear;
 		}
 	}
 	
+	/**
+	 * Toggles the PTO.
+	 */
 	public static void togglePTO()
 	{
 		if(!Constants.runningAleksBot) setPTO(!inPTOMode);
-		if(Constants.VERBOSE >= Constants.LOW) System.out.println(((inPTOMode) ? "Engaging" : "Disengaging") + " PTO");
+		DriveBase.driveArcade(inPTOMode ? 1 : 0, 0);
 	}
 	
+	/**
+	 * Sets the PTO to a specified state.
+	 * 
+	 * @param on True for on, false for off.
+	 */
 	public static void setPTO(boolean on)
 	{
 		inPTOMode = on;
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println(((inPTOMode) ? "Engaging" : "Disengaging") + " PTO");
 		PTO.set(inPTOMode ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 	}
 

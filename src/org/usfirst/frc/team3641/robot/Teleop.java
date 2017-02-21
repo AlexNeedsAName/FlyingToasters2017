@@ -18,9 +18,9 @@ public class Teleop
 	 */
 	private Teleop()
 	{
-		driver = new PS4(Constants.PS4_PORT);
-		operator = new E3D(Constants.OPERATOR_PORT);
-		guitar = new Harmonix(2);
+		driver = new PS4(Constants.Controllers.DRIVER);
+		operator = new E3D(Constants.Controllers.OPERATOR);
+		guitar = new Harmonix(Constants.Controllers.GUITAR);
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class Teleop
 	{
 		driver.poll();
 		operator.poll();
-				
+		
 		if(driver.isPressed(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(true);
 		else if(driver.isReleased(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(false);
 		
@@ -40,14 +40,13 @@ public class Teleop
 		
 		if(driver.isDown(PS4.Button.CIRCLE))
 		{
-			Tracking.target(Constants.GEAR_MODE);
+			Tracking.target(Tracking.Mode.GEAR_MODE);
 		}
 		else
 		{
-			if(driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();
 			//Drive Robot
 			if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
-			else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_X));
+			//else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_X));
 		}
 		
 		//Gearbox Things
@@ -65,12 +64,7 @@ public class Teleop
 		if(!operator.isDown(E3D.Button.THUMB)) //Autonomous Subsystem Mode
 		{
 			if(operator.isReleased(E3D.Button.THUMB)) Turret.set(0);
-			if(operator.isDown(E3D.Button.TRIGGER)) Tracking.target(Constants.FUEL_MODE);
-			else if(operator.isReleased(E3D.Button.TRIGGER)) 
-			{
-				Tracking.resetState();
-				System.out.println("");
-			}
+			if(operator.isDown(E3D.Button.TRIGGER)) Tracking.target(Tracking.Mode.FUEL_MODE);  
 		}
 		
 		else //Manual Mode
@@ -80,6 +74,8 @@ public class Teleop
 			if(operator.isDown(E3D.Button.TRIGGER)) Shooter.forceFire();
 			else if(operator.isReleased(E3D.Button.TRIGGER)) Shooter.stopFiring();
 		}
+		
+		if(operator.isReleased(E3D.Button.TRIGGER) || driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();
 	}
 
 	/**

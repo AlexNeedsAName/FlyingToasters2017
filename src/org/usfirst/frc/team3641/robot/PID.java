@@ -125,13 +125,12 @@ public class PID
 			else if(output < 0) output -= kFF;
 		}
 
-		if(name != null && Constants.PRINT_PID)
-		{
-			if(Constants.VERBOSE >= Constants.HIGH) System.out.println(name + " PID: { P:" + error * kP + ", I:" + errorRefresh * kI + ", D:" + lastError * kD + "; Output: " + output + " }");
-			SmartDashboard.putNumber(name + " P", error * kP);
-			SmartDashboard.putNumber(name + " I", errorRefresh * kI);
-			SmartDashboard.putNumber(name + " D", lastError * kD);
-		}
+		if(name != null && Constants.Verbosity.PRINT_PID) System.out.println(name + " PID: { P:" + error * kP + ", I:" + errorRefresh * kI + ", D:" + lastError * kD + "; Output: " + output + " }");
+
+		SmartDashboard.putNumber(name + " P", error * kP);
+		SmartDashboard.putNumber(name + " I", errorRefresh * kI);
+		SmartDashboard.putNumber(name + " D", lastError * kD);
+		
 		return output;
 	}
 

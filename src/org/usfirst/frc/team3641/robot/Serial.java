@@ -19,7 +19,7 @@ public class Serial
 	{
 		try
 		{
-			serial = new SerialPort(Constants.SERIAL_BAUDRATE, SerialPort.Port.kOnboard);
+			serial = new SerialPort(Constants.Serial.SERIAL_BAUDRATE, SerialPort.Port.kOnboard);
 		}
 		catch(Exception e)
 		{

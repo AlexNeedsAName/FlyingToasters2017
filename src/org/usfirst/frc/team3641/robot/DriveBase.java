@@ -1,4 +1,6 @@
 package org.usfirst.frc.team3641.robot;
+import org.usfirst.frc.team3641.robot.Constants.PWM;
+
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.Victor;
@@ -6,7 +8,7 @@ import edu.wpi.first.wpilibj.Victor;
 public class DriveBase
 {
 	private static DriveBase instance;
-	public static CANTalon left, leftSlave, right, rightSlave;
+	public static CANTalon left1, left2, left3, right1, right2, right3;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
 	private static PID rotationPID, drivePID;
 
@@ -33,23 +35,26 @@ public class DriveBase
 	{
 		if(Constants.runningAleksBot)
 		{
-			PWMleft = new Victor(Constants.LEFT_VICTOR);
-			PWMleftSlave = new Victor(Constants.LEFT_SLAVE_VICTOR);
-			PWMright = new Victor(Constants.RIGHT_VICTOR);
-			PWMrightSlave = new Victor(Constants.RIGHT_SLAVE_VICTOR);
+			PWMleft = new Victor(PWM.Victors.LEFT);
+			PWMleftSlave = new Victor(PWM.Victors.LEFT_SLAVE);
+			PWMright = new Victor(Constants.PWM.Victors.RIGHT);
+			PWMrightSlave = new Victor(Constants.PWM.Victors.RIGHT_SLAVE);
 		}
-		left = new CANTalon(Constants.DRIVEBASE_LEFT_TALON);
-		leftSlave = new CANTalon(Constants.DRIVEBASE_LEFT_SLAVE_TALON);
-		right = new CANTalon(Constants.DRIVEBASE_RIGHT_TALON);
-		rightSlave = new CANTalon(Constants.DRIVEBASE_RIGHT_SLAVE_TALON);
-		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		
+		left1 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_LEFT_1);
+		left2 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_LEFT_2);
+		left3 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_LEFT_3);
+		right1 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_1);
+		right2 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_2);
+		right3 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_3);
+		left1.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 		
 		rotationPID = new PID("DriveBaseRotation");
-		rotationPID.setBackupValues(Constants.DRIVEBASE_ROTATION_KP, Constants.DRIVEBASE_ROTATION_KI, Constants.DRIVEBASE_ROTATION_KD, Constants.DRIVEBASE_ROTATION_DEADBAND);
+		rotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KD, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
 		rotationPID.readConfig();
 		
 		drivePID = new PID("DriveBase");
-		drivePID.setBackupValues(Constants.DRIVEBASE_KP, Constants.DRIVEBASE_KI, Constants.DRIVEBASE_KD, Constants.DRIVEBASE_FF, PID.CONSTANT);
+		drivePID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
 		drivePID.readConfig();
 	}
 
@@ -60,10 +65,12 @@ public class DriveBase
 	 */
 	public static void setBreakMode(boolean on)
 	{
-		left.enableBrakeMode(on);
-		leftSlave.enableBrakeMode(on);
-		right.enableBrakeMode(on);
-		rightSlave.enableBrakeMode(on);
+		left1.enableBrakeMode(on);
+		left2.enableBrakeMode(on);
+		left3.enableBrakeMode(on);
+		right1.enableBrakeMode(on);
+		right2.enableBrakeMode(on);
+		right3.enableBrakeMode(on);
 	}
 	
 	/**
@@ -74,13 +81,13 @@ public class DriveBase
 	 */
 	public static void driveArcade(double power, double rotation)
 	{
-		if(Constants.VERBOSE >= 4) System.out.println("Power: " + power + "; Rotation: " + String.format("%.2f", rotation));
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.INSANITY)) System.out.println("Power: " + power + "; Rotation: " + String.format("%.2f", rotation));
 		if(mode == DriveMode.REVERSE) power = -power;
 
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
 		
-		if(Constants.VERBOSE >= 4) System.out.println("Left Power: " + leftPower + "; Right Power: " + rightPower);
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.INSANITY)) System.out.println("Left Power: " + leftPower + "; Right Power: " + rightPower);
 		driveTank(leftPower, rightPower);
 	}
 
@@ -110,7 +117,7 @@ public class DriveBase
 			rightPower*= -1;
 		}
 		
-		if(Constants.VERBOSE >= 4) System.out.println("Left Power: " + leftPower + "; Right Power: " + rightPower);
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.INSANITY)) System.out.println("Left Power: " + leftPower + "; Right Power: " + rightPower);
 
 		if(Constants.runningAleksBot)
 		{
@@ -121,10 +128,12 @@ public class DriveBase
 		}
 		else
 		{
-			left.set(leftPower);
-			leftSlave.set(leftPower);
-			right.set(-rightPower);
-			rightSlave.set(-rightPower);
+			left1.set(leftPower);
+			left2.set(leftPower);
+			left3.set(leftPower);
+			right1.set(-rightPower);
+			right2.set(-rightPower);
+			right3.set(-rightPower);
 		}
 	}
 
@@ -135,7 +144,11 @@ public class DriveBase
 	 */
 	public static void setDriveMode(DriveMode Mode)
 	{
-		mode = Mode;
+		if(mode != Mode)
+		{
+			mode = Mode;
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Switching to " + mode.toString() + " mode.");
+		}
 	}
 
 	/**
@@ -162,7 +175,16 @@ public class DriveBase
 		return (Math.abs(error) <= threshold);
 	}
 
-	//Please don't use this. It blocks drive output and all other functions due to the while loop. I'm going to remove it next commit.
+	/**
+	 * Turns by an absolute angle.
+	 * 
+	 * @param inputDegrees The angle in degrees to turn to.
+	 * @param errorMargin How accurate you want to be.
+	 * 
+	 * @deprecated Replaced by {@link #turnTo()}. To use with relative angles, just set the target
+	 * to be your current angle when you start plus your target.
+	 */
+	@Deprecated
 	public static void turnDegrees(double inputDegrees, double errorMargin) 
 	{
 		Sensors.resetGyro();

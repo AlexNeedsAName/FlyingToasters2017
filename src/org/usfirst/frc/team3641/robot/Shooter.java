@@ -23,13 +23,13 @@ public class Shooter
 	 */
 	public Shooter()
 	{
-		left = new CANTalon(Constants.SHOOTER_LEFT_TALON);
-		right = new CANTalon(Constants.SHOOTER_RIGHT_TALON);
+		left = new CANTalon(Constants.CAN.Talons.SHOOTER_LEFT);
+		right = new CANTalon(Constants.CAN.Talons.SHOOTER_RIGHT);
 		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
-		elevator = new Spark(Constants.SHOOTER_ELEVATOR_SPARK);
+		elevator = new Spark(Constants.PWM.Sparks.SHOOTER_ELEVATOR);
 		
 		flywheelPID = new PID("ShooterFlywheel");
-		flywheelPID.setBackupValues(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD, Constants.SHOOTER_FF, PID.PROPORTIONAL);
+		flywheelPID.setBackupValues(Constants.PID.SHOOTER_KP, Constants.PID.SHOOTER_KI, Constants.PID.SHOOTER_KD, Constants.PID.SHOOTER_FF, PID.PROPORTIONAL);
 		flywheelPID.readConfig();
 	}
 
@@ -41,7 +41,7 @@ public class Shooter
 	 */
 	public static double calcSpeed(double distance)
 	{
-		return Constants.AUTON_RPM; //TODO: Add kinematic equation based on distance
+		return 0; //TODO: Add kinematic equation based on distance
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class Shooter
 	 */
 	public static void reset()
 	{
-		if(Constants.VERBOSE >= Constants.MID) System.out.println("Reset Shooter");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Reset Shooter");
 		SmartDashboard.putNumber("Target RPM", 0);
 		set(0);
 		error = 0;
@@ -92,7 +92,7 @@ public class Shooter
 	 */
 	public static void fire()
 	{
-		if(Math.abs(error) < Constants.SHOOTER_MAX_ERROR) forceFire();
+		if(Math.abs(error) < Constants.Thresholds.SHOOTER_MAX_ERROR) forceFire();
 		else elevator.set(0);
 
 	}
@@ -114,7 +114,7 @@ public class Shooter
 	 */
 	public static void stopFiring()
 	{
-		if(Constants.VERBOSE >= Constants.MID) System.out.println("Stopped Firing Shooter");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Stopped Firing Shooter");
 		elevator.set(0);
 		Hopper.stopAdjatating();
 	}

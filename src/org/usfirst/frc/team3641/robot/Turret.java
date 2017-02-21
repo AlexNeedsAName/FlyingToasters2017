@@ -23,11 +23,11 @@ public class Turret
 	 */
 	private Turret()
 	{
-		turretTalon = new CANTalon(Constants.TURRET_TALON);
+		turretTalon = new CANTalon(Constants.CAN.Talons.TURRET);
 		turretTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		
 		turretPID = new PID("Turret");
-		turretPID.setBackupValues(Constants.TURRET_KP, Constants.TURRET_KI, Constants.TURRET_KD, Constants.TURRET_DEADBAND);
+		turretPID.setBackupValues(Constants.PID.TURRET_KP, Constants.PID.TURRET_KI, Constants.PID.TURRET_KD, Constants.PID.TURRET_DEADBAND);
 		turretPID.readConfig();
 		
 		turretTalon.enableBrakeMode(true);
@@ -47,7 +47,7 @@ public class Turret
 			double initalAngle = Sensors.getTurretAngle();
 			finalAngle = initalAngle + angle;
 			alreadyRotating = true;
-			if(Constants.VERBOSE >= Constants.LOW) System.out.println("Turret Rotating " + angle + "°");
+			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Turret Rotating " + angle + "°");
 		}
 
 		SmartDashboard.putNumber("Target", finalAngle);
