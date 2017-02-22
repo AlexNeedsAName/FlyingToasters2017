@@ -16,6 +16,7 @@ public class Robot extends IterativeRobot
 	public void robotInit()
 	{	
 		Constants.runningAleksBot = SmartDashboard.getBoolean("Running Alek's Bot?", false);
+		Constants.readConfig();
 		DriveBase.getInstance();
 		Shooter.getInstance();
 		Turret.getInstance();
