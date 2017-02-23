@@ -12,6 +12,14 @@ public class Constants
 
 	public static final double ADJATATOR_SPEED = .5;
 
+	public static class Shooter
+	{
+		public static final double HEIGHT = 0.57; //Meters
+		public static final double ANGLE = 70;    //Degrees
+		public static final double WHEEL_RADIUS = 0.053; //Meters
+		public static final double TARGET_HEIGHT = 2.46; //Meters
+	}
+	
 	public static class Verbosity
 	{
 		public static enum Level
@@ -163,6 +171,7 @@ public class Constants
 
 	public class Conversions
 	{
+		public static final double SPEED_TO_RPM = (60 / (2*Math.PI*Shooter.WHEEL_RADIUS)) * 2;
 		public static final double ENCODER_TO_RPM = -7.5; // ticks/s * 60s/min * 1rev/8ticks = 7.5 RPM 
 		public static final double DISTANCE_TO_RPM = 750; //TODO: Build Robot and find Value
 		public static final double VOLTAGE_TO_METERS = 1;

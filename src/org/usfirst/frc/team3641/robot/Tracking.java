@@ -166,8 +166,7 @@ public class Tracking
 		case TRACKED_FUEL:
 			if(autoFire)
 			{
-				double targetRPM = Shooter.calcSpeed(distance);
-				double error = Shooter.setRPM(targetRPM);
+				double error = Shooter.setSpeed(0); //TODO: Set it to a real speed.
 				if(error < 50) Shooter.fire();
 			}
 			break;

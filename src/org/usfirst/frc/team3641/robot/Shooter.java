@@ -36,12 +36,12 @@ public class Shooter
 	/**
 	 * Calculate the ideal speed of the shooter based off a given distance.
 	 * 
-	 * @param distance The distance to the goal in meters.
-	 * @return The ideal speed of the shooter in RPM.
+	 * @param speed The target speed in m/s.
+	 * @return The current error in RPM.
 	 */
-	public static double calcSpeed(double distance)
+	public static double setSpeed(double speed)
 	{
-		return 0; //TODO: Add kinematic equation based on distance
+		return setRPM(speed * Constants.Conversions.SPEED_TO_RPM);
 	}
 	
 	/**
