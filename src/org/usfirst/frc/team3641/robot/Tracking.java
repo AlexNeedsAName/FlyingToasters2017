@@ -77,7 +77,6 @@ public class Tracking
 					{
 						angle = Double.parseDouble(strings[0]);
 						if(mode == Mode.GEAR_MODE) angle += Sensors.getAngle();
-						SmartDashboard.putNumber("Angle", angle);
 						if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Tracking: Angle is " + angle + "°");
 						if(mode == Mode.FUEL_MODE) visionState = State.TURN_TURRET_TO_TARGET;
 						else if(mode == Mode.GEAR_MODE) visionState = State.ROTATE_DRIVEBASE;
@@ -135,6 +134,7 @@ public class Tracking
 					try
 					{
 						angle = Double.parseDouble(strings[0]);
+						distance = Double.parseDouble(strings[1]);
 						if(mode == Mode.FUEL_MODE)
 						{
 							if(Math.abs(angle) < Constants.Thresholds.ACCEPTABLE_FUEL_ERROR)
@@ -166,8 +166,8 @@ public class Tracking
 		case TRACKED_FUEL:
 			if(autoFire)
 			{
-				double error = Shooter.setSpeed(0); //TODO: Set it to a real speed.
-				if(error < 50) Shooter.fire();
+				Shooter.setDistance(distance);
+				Shooter.fire();
 			}
 			break;
 			

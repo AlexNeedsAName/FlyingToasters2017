@@ -11,7 +11,6 @@ public class Auton
 	private static boolean onRedAlliance;
 	
 	private static boolean[] doneTurning;
-	static boolean alreadyInPosition;
 	private static int index;
 	
 	private static boolean negativeErrorWhenDone;
@@ -51,6 +50,7 @@ public class Auton
 		DRIVE_TO_HOPPER_LINE,
 		TURN_TO_HOPPER,
 		DRIVE_TO_HOPPER,
+		TARGET_BOILER,
 		SCORE_RANKING_POINT,
 		DRIVE_TO_GEAR_TURN,
 		TURN_TO_GEAR,
@@ -127,7 +127,6 @@ public class Auton
 		onRedAlliance = redAlliance;
 		Tracking.resetState();
 		initTimeout(0);
-		alreadyInPosition = false;
 		autonTimer.reset();
 		autonTimer.start();
 	}
@@ -217,20 +216,17 @@ public class Auton
 			doneDriving = driveBy(distanceToHopperFromTurn, 1);
 			hitTheWall = didWeHitSomething(.5);
 			if(hitTheWall && Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Ouch!");
-			if(doneDriving || hitTheWall) increment(states.SCORE_RANKING_POINT);
+			if(doneDriving || hitTheWall) increment(states.TARGET_BOILER);
 			break;
 
-		case SCORE_RANKING_POINT:
+		case TARGET_BOILER:
 			trackingState = Tracking.target(Tracking.Mode.FUEL_MODE);
-			if(trackingState == Tracking.State.TRACKED_FUEL && !alreadyInPosition)
-			{
-				if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW) && !alreadyInPosition)
-				{
-					double time = autonTimer.get();
-					System.out.println("In position. It took " + String.format("%.2f", time) + "s, leaving us " + String.format("%.2f", 15-time) + "s left to shoot.");
-				}
-				alreadyInPosition = true;
-			}
+			if(trackingState == Tracking.State.TRACKED_FUEL) increment(states.SCORE_RANKING_POINT);
+			break;
+			
+		case SCORE_RANKING_POINT:
+			Shooter.setDistance(distanceToHopperLine);
+			Shooter.fire();
 			break;
 		}
 	}
@@ -274,6 +270,7 @@ public class Auton
 	{
 		double angle;
 		boolean doneTurning, doneDriving, hitTheWall, doneWaiting;
+		Tracking.State trackingState;
 		switch(autonState)
 		{
 		case START:
@@ -310,11 +307,17 @@ public class Auton
 		case DRIVE_TO_HOPPER:
 			doneDriving = driveBy(gearTurnBackToHopper);
 			hitTheWall = didWeHitSomething(.1);
-			if(doneDriving || hitTheWall) increment(states.SCORE_RANKING_POINT);
+			if(doneDriving || hitTheWall) increment(states.TARGET_BOILER);
+			break;
+			
+		case TARGET_BOILER:
+			trackingState = Tracking.target(Tracking.Mode.FUEL_MODE);
+			if(trackingState == Tracking.State.TRACKED_FUEL) increment(states.SCORE_RANKING_POINT);
 			break;
 			
 		case SCORE_RANKING_POINT:
-			Tracking.target(Tracking.Mode.FUEL_MODE);
+			Shooter.setDistance(distanceToHopperLine);
+			Shooter.fire();
 			break;
 		}
 	}
@@ -581,11 +584,6 @@ public class Auton
 		DriveBase.driveArcade(0, 0); //Stop Driving!
 		initTimeout(0);
 		alreadyRunning = false;
-		if(autonState == states.SCORE_RANKING_POINT)
-		{
-			double time = autonTimer.get();
-			System.out.println("In position. It took " + String.format("%.2f", time) + "s, leaving us " + String.format("%.2f", 15-time) + "s left to shoot.");
-		}
 		Horn.setHorn(false);
 	}
 	

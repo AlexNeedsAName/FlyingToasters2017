@@ -14,8 +14,10 @@ public class Constants
 
 	public static class Shooter
 	{
+		public static final double GRAVITY = -9.81; // m/s/s
+		public static final double LIFT = 0;       // m/s/s
 		public static final double HEIGHT = 0.57; //Meters
-		public static final double ANGLE = 70;    //Degrees
+		public static final double ANGLE = 70;   //Degrees
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 	}

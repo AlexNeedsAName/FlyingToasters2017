@@ -33,6 +33,43 @@ public class Shooter
 		flywheelPID.readConfig();
 	}
 
+	
+	/**
+	 * Set the shooter speed *automagically* based on the distance to the target
+	 * 
+	 * @param distance The distance to your target.
+	 * @return The error in RPM.
+	 */
+	public static double setDistance(double distance)
+	{
+		double x = distance;
+		double y = Constants.Shooter.TARGET_HEIGHT-Constants.Shooter.HEIGHT;
+		double θ = Constants.Shooter.ANGLE;
+		double g = Constants.Shooter.GRAVITY + Constants.Shooter.LIFT;
+		double v = calcVelocity(x,y,θ,g);
+		return setSpeed(v);
+	}
+	
+	/**
+	 * Calculate the ideal velocity of a projective given a distance, a height, an angle, and gravity.
+	 * 
+	 * @param x The distance to the target.
+	 * @param y The height to the target.
+	 * @param θ The launch angle.
+	 * @param g The y acceleration. Normally gravity, but any lift from the backspin would be added here too.
+	 * @return The ideal velocity to hit the target.
+	 */
+	public static double calcVelocity(double x, double y, double θ, double g)
+	{
+		θ = Math.toRadians(θ);
+		return Math.sqrt( (g*x*x) / (2*Math.cos(θ)*Math.cos(θ) * (y-(x*Math.tan(θ))) ) );
+		/* 
+		 * https://www.desmos.com/calculator/zzrzc66pur
+		 * This took way too long. It's derived from the kinematic equations. We solved
+		 * x for time, then plugged it into the y equation and solved for velocity.
+		 */
+	}
+
 	/**
 	 * Calculate the ideal speed of the shooter based off a given distance.
 	 * 
