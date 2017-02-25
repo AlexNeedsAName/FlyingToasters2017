@@ -1,8 +1,5 @@
 package org.usfirst.frc.team3641.robot;
 import java.util.EnumMap;
-
-import org.usfirst.frc.team3641.robot.Harmonix.Button;
-
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Harmonix
