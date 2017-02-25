@@ -1,11 +1,14 @@
 package org.usfirst.frc.team3641.robot;
 import java.util.EnumMap;
+
+import org.usfirst.frc.team3641.robot.Harmonix.Button;
+
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Harmonix
 {
 	private EnumMap<Button, Boolean> current, last;
-	private EnumMap<Axis, Double> axes;
+	private EnumMap<Axis, Double> axes, lastAxes;
 	private Joystick rawJoystick;
 
 	/**
@@ -70,7 +73,11 @@ public class Harmonix
 	 */
 	public boolean isPressed(Button button)
 	{
-		return (current.get(button) && !last.get(button));
+		//Strum is special, because two states count as pressed.
+		//If we switch between those, it passed over the unpressed state without polling,
+		//so we want it to count as pressed anyway.
+		if(button == Button.STRUM) return (isDown(button) && lastAxes.get(Axis.STRUM) != axes.get(Axis.STRUM));
+		else return (current.get(button) && !last.get(button));
 	}
 	
 	/**
@@ -90,10 +97,12 @@ public class Harmonix
 	public void poll()
 	{
 		last = current.clone();
+		lastAxes = axes.clone();
 
 		if(rawJoystick.getPOV(0) == 0) axes.put(Axis.STRUM, 1.0);
 		else if(rawJoystick.getPOV(0) == 180) axes.put(Axis.STRUM, -1.0);
 		else axes.put(Axis.STRUM, 0.0);
+		
 
 		double wb = rawJoystick.getRawAxis(2);
 		if(wb == -0.0078125) wb = 0;
@@ -121,17 +130,35 @@ public class Harmonix
 	public double buttonsToAxis()
 	{
 		double rotation = 0;
-		if(isDown(Button.RED) && !isDown(Button.BLUE)) rotation = -.5;
-		else if(isDown(Button.BLUE) && !isDown(Button.RED)) rotation = .5;
-		if(rotation != 0)
+		double numberOfButtons = 0;
+		if(!isDown(Button.LOWER))
 		{
-			if(isDown(Button.GREEN) || isDown(Button.ORANGE)) rotation *= 2;
-			if(isDown(Button.YELLOW)) rotation /= 2;
-		}
-		else
-		{
-			if(isDown(Button.GREEN) && !isDown(Button.ORANGE)) rotation = -1;
-			else if(isDown(Button.ORANGE) && !isDown(Button.GREEN)) rotation = 1;
+			if(isDown(Button.GREEN))
+			{
+				rotation += 1;
+				numberOfButtons++;
+			}
+			if(isDown(Button.RED))
+			{
+				rotation += .5;
+				numberOfButtons++;
+			}
+			if(isDown(Button.YELLOW))
+			{
+				rotation += 0;
+				numberOfButtons++;
+			}
+			if(isDown(Button.BLUE))
+			{
+				rotation -= .5;
+				numberOfButtons++;
+			}
+			if(isDown(Button.ORANGE))
+			{
+				rotation -= 1;
+				numberOfButtons++;
+			}
+			if(numberOfButtons != 0) rotation /= numberOfButtons;
 		}
 		return rotation;
 	}
