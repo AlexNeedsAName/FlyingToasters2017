@@ -12,6 +12,20 @@ public class Constants
 
 	public static final double ADJATATOR_SPEED = .5;
 
+	public static class Auton
+	{
+		public static double distanceToBaseline = 2.62;
+		public static double distanceToHopperLine = 2.29;
+		public static double distanceToHopperFromTurn = 1;
+		public static double distanceToGearTurn = 2;
+		public static double distanceToGearFromTurn = 1;
+		public static double gearTurnAngle = -75;
+		public static double hopperTurnAngle = 90;
+		public static double gearTurnBackAngle = 0;
+		public static double gearTurnBackToHopper = 1;
+		public static double gearTurnBackDistance = 1;
+	}
+	
 	public static class Shooter
 	{
 		public static final double GRAVITY = -9.81; // m/s/s

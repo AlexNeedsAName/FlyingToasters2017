@@ -11,7 +11,7 @@ public class PS4
 	private double leftAngle, leftMagnitude, rightAngle, rightMagnitude;
 
 	/**
-	 * Initalize the PS4 controller with the port.
+	 * Initialize the PS4 controller with the port.
 	 * 
 	 * @param port The port it uses on the driver station.
 	 */

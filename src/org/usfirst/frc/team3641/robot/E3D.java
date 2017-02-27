@@ -10,7 +10,7 @@ public class E3D
 	private double angle, magnitude;
 
 	/**
-	 * Initalize the Logitech Extreme 3D Pro with the port.
+	 * Initialize the Logitech Extreme 3D Pro with the port.
 	 * 
 	 * @param port The port it uses on the driver station.
 	 */

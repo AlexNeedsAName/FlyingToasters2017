@@ -22,19 +22,6 @@ public class Auton
 	private static boolean alreadyRunning;
 	private static Timer timeoutTimer, autonTimer;
 	
-	//Distances as measured from back wall
-	private static double
-			distanceToBaseline = 2.62,
-			distanceToHopperLine = 2.29,
-			distanceToHopperFromTurn = 1,
-			distanceToGearTurn = 2,
-			distanceToGearFromTurn = 1,
-			gearTurnAngle = -75,
-			hopperTurnAngle = 90,
-			gearTurnBackAngle = 0,
-			gearTurnBackToHopper = 1,
-			gearTurnBackDistance = 1;
-	
 	private static boolean usingHorn = true;
 
 	public static UDP udp;
@@ -180,7 +167,7 @@ public class Auton
 			break;
 
 		case DRIVE_FORWARDS:
-			boolean reachedLine = driveBy(distanceToBaseline);
+			boolean reachedLine = driveBy(Constants.Auton.distanceToBaseline);
 			if(reachedLine) increment(states.DONE);
 			break;
 		}
@@ -202,18 +189,18 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER_LINE:
-			doneDriving = driveBy(distanceToHopperLine, 2);
+			doneDriving = driveBy(Constants.Auton.distanceToHopperLine, 2);
 			if(doneDriving) increment(states.TURN_TO_HOPPER);
 			break;
 
 		case TURN_TO_HOPPER:
-			angle = (onRedAlliance) ? hopperTurnAngle : -hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
+			angle = (onRedAlliance) ? Constants.Auton.hopperTurnAngle : -Constants.Auton.hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			doneTurning = turnBy(angle, 1.3);
 			if(doneTurning) increment(states.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			doneDriving = driveBy(distanceToHopperFromTurn, 1);
+			doneDriving = driveBy(Constants.Auton.distanceToHopperFromTurn, 1);
 			hitTheWall = didWeHitSomething(.5);
 			if(hitTheWall && Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Ouch!");
 			if(doneDriving || hitTheWall) increment(states.TARGET_BOILER);
@@ -225,7 +212,7 @@ public class Auton
 			break;
 			
 		case SCORE_RANKING_POINT:
-			Shooter.setDistance(distanceToHopperLine);
+			Shooter.setDistance(Constants.Auton.distanceToHopperLine);
 			Shooter.fire();
 			break;
 		}
@@ -244,18 +231,18 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_GEAR_TURN:
-			boolean reachedLine = driveBy(distanceToGearTurn);
+			boolean reachedLine = driveBy(Constants.Auton.distanceToGearTurn);
 			if(reachedLine) increment(states.TURN_TO_GEAR);
 			break;
 
 		case TURN_TO_GEAR:
-			double angle = (onRedAlliance) ? gearTurnAngle : -gearTurnAngle; //If on red alliance, turn right. If on blue, turn left.
+			double angle = (onRedAlliance) ? Constants.Auton.gearTurnAngle : -Constants.Auton.gearTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			boolean doneTurning = turnBy(angle, 1);
 			if(doneTurning) increment(states.PLACE_GEAR);
 			break;
 			
 		case PLACE_GEAR:
-			boolean reachedHopper = driveBy(distanceToGearFromTurn, .5);
+			boolean reachedHopper = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
 			boolean hitTheWall = didWeHitSomething(.1);
 			if(reachedHopper || hitTheWall) increment(states.DONE);
 			break;
@@ -278,34 +265,34 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_GEAR_TURN:
-			doneDriving = driveBy(distanceToGearTurn);
+			doneDriving = driveBy(Constants.Auton.distanceToGearTurn);
 			if(doneDriving) increment(states.TURN_TO_GEAR);
 			break;
 
 		case TURN_TO_GEAR:
-			angle = (onRedAlliance) ? gearTurnAngle : -gearTurnAngle; //If on red alliance, turn right. If on blue, turn left.
+			angle = (onRedAlliance) ? Constants.Auton.gearTurnAngle : -Constants.Auton.gearTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			doneTurning = turnBy(angle);
 			if(doneTurning) increment(states.PLACE_GEAR);
 			break;
 			
 		case PLACE_GEAR:
-			doneDriving = driveBy(distanceToGearFromTurn);
+			doneDriving = driveBy(Constants.Auton.distanceToGearFromTurn);
 			if(doneDriving) increment(states.BACK_AWAY_FROM_GEAR);
 			break;
 						
 		case BACK_AWAY_FROM_GEAR:
-			doneDriving = driveBy(gearTurnBackDistance);
+			doneDriving = driveBy(Constants.Auton.gearTurnBackDistance);
 			if(doneDriving) increment(states.TURN_FROM_GEAR_TO_NORMAL);
 			break;
 			
 		case TURN_FROM_GEAR_TO_NORMAL:
-			angle = (onRedAlliance) ? gearTurnBackAngle : -gearTurnBackAngle; //If on red alliance, turn left. If on blue, turn right.
+			angle = (onRedAlliance) ? Constants.Auton.gearTurnBackAngle : -Constants.Auton.gearTurnBackAngle; //If on red alliance, turn left. If on blue, turn right.
 			doneTurning = turnBy(angle);
 			if(doneTurning) increment(states.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			doneDriving = driveBy(gearTurnBackToHopper);
+			doneDriving = driveBy(Constants.Auton.gearTurnBackToHopper);
 			hitTheWall = didWeHitSomething(.1);
 			if(doneDriving || hitTheWall) increment(states.TARGET_BOILER);
 			break;
@@ -316,7 +303,7 @@ public class Auton
 			break;
 			
 		case SCORE_RANKING_POINT:
-			Shooter.setDistance(distanceToHopperLine);
+			Shooter.setDistance(Constants.Auton.distanceToHopperLine);
 			Shooter.fire();
 			break;
 		}
@@ -605,21 +592,17 @@ public class Auton
 	 */
 	private static void readConfig()
 	{
-		System.out.println("GTBD: " + gearTurnBackDistance);
-		System.out.println("GTBA: " + gearTurnBackAngle);
 		config.reloadFile();
-		distanceToBaseline = config.readDouble("distanceToBaseline", distanceToBaseline);
-		distanceToHopperLine = config.readDouble("distanceToHopperLine", distanceToHopperLine);
-		distanceToHopperFromTurn = config.readDouble("distanceToHopperFromTurn", distanceToHopperFromTurn);
-		distanceToGearTurn = config.readDouble("distanceToGearTurn", distanceToGearTurn);
-		distanceToGearFromTurn = config.readDouble("distanceToGearFromTurn", distanceToGearFromTurn);
-		hopperTurnAngle = config.readDouble("hopperTurnAngle", hopperTurnAngle);
-		gearTurnAngle = config.readDouble("gearTurnAngle", gearTurnAngle);
-		gearTurnBackAngle = config.readDouble("gearTurnBackAngle", gearTurnBackAngle);
-		gearTurnBackDistance = config.readDouble("gearTurnBackDistance", gearTurnBackDistance);
-		gearTurnBackToHopper = config.readDouble("gearTurnBackToHopper", gearTurnBackToHopper);
+		Constants.Auton.distanceToBaseline = config.readDouble("distanceToBaseline", Constants.Auton.distanceToBaseline);
+		Constants.Auton.distanceToHopperLine = config.readDouble("distanceToHopperLine", Constants.Auton.distanceToHopperLine);
+		Constants.Auton.distanceToHopperFromTurn = config.readDouble("distanceToHopperFromTurn", Constants.Auton.distanceToHopperFromTurn);
+		Constants.Auton.distanceToGearTurn = config.readDouble("distanceToGearTurn", Constants.Auton.distanceToGearTurn);
+		Constants.Auton.distanceToGearFromTurn = config.readDouble("distanceToGearFromTurn", Constants.Auton.distanceToGearFromTurn);
+		Constants.Auton.hopperTurnAngle = config.readDouble("hopperTurnAngle", Constants.Auton.hopperTurnAngle);
+		Constants.Auton.gearTurnAngle = config.readDouble("gearTurnAngle", Constants.Auton.gearTurnAngle);
+		Constants.Auton.gearTurnBackAngle = config.readDouble("gearTurnBackAngle", Constants.Auton.gearTurnBackAngle);
+		Constants.Auton.gearTurnBackDistance = config.readDouble("gearTurnBackDistance", Constants.Auton.gearTurnBackDistance);
+		Constants.Auton.gearTurnBackToHopper = config.readDouble("gearTurnBackToHopper", Constants.Auton.gearTurnBackToHopper);
 		usingHorn = config.readBoolean("usingHorn", usingHorn);
-		System.out.println("GTBD: " + gearTurnBackDistance);
-		System.out.println("GTBA: " + gearTurnBackAngle);
 	}
 }

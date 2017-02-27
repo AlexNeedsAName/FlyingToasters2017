@@ -69,7 +69,7 @@ public class Shooter
 		 * x for time, then plugged it into the y equation and solved for velocity.
 		 */
 	}
-
+	
 	/**
 	 * Calculate the ideal speed of the shooter based off a given distance.
 	 * 

@@ -9,7 +9,7 @@ public class Harmonix
 	private Joystick rawJoystick;
 
 	/**
-	 * Initalize the joysitck with the port.
+	 * Initialize the joysitck with the port.
 	 * 
 	 * @param port The port it uses on the driver station.
 	 */
