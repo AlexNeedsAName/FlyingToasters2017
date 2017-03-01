@@ -38,6 +38,9 @@ public class Teleop
 		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(DriveBase.DriveMode.NORMAL);
 		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(DriveBase.DriveMode.REVERSE);
 		
+		//if(driver.isPressed(PS4.Button.OPTIONS)) DriveBase.toggleSquaredRotation();
+		//if(driver.isPressed(PS4.Button.SHARE)) DriveBase.toggleSquaredPower();
+				
 		if(driver.isDown(PS4.Button.CIRCLE))
 		{
 			Tracking.target(Tracking.Mode.GEAR_MODE);

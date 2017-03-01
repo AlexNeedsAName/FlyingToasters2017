@@ -4,6 +4,7 @@ import org.usfirst.frc.team3641.robot.Constants.PWM;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveBase
 {
@@ -11,6 +12,8 @@ public class DriveBase
 	public static CANTalon left1, left2, left3, right1, right2, right3;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
 	private static PID rotationPID, drivePID;
+	
+	private static boolean squaredRotation, squaredPower;
 
 	private static DriveMode mode;
 
@@ -56,6 +59,9 @@ public class DriveBase
 		drivePID = new PID("DriveBase");
 		drivePID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
 		drivePID.readConfig();
+		
+		squaredRotation = false;
+		squaredPower = false;
 	}
 
 	/**
@@ -72,7 +78,71 @@ public class DriveBase
 		right2.enableBrakeMode(on);
 		right3.enableBrakeMode(on);
 	}
+
+	/**
+	 * Turn on or off squared rotation control.
+	 * 
+	 * @param on True for on, False for off.
+	 */
+	public static void setSquaredRotation(boolean on)
+	{
+		squaredRotation = on;
+		SmartDashboard.putBoolean("Squared Rotation", on);
+	}
+			
+	/**
+	 * Turn on or off squared power control.
+	 * 
+	 * @param on True for on, False for off.
+	 */
+	public static void setSquaredPower(boolean on)
+	{
+		squaredPower = on;
+		SmartDashboard.putBoolean("Squared Power", on);
+	}
 	
+	/**
+	 * Toggle squared power control.
+	 * 
+	 * @param on True for on, False for off.
+	 */
+	public static void toggleSquaredRotation()
+	{
+		setSquaredRotation(!squaredRotation);
+	}
+	
+	/**
+	* Toggle squared power control.
+	* 
+	* @param on True for on, False for off.
+	*/
+	public static void toggleSquaredPower()
+	{
+		setSquaredPower(!squaredPower);
+	}
+	
+	/**
+	 * Turn on or off squared controls.
+	 * 
+	 * @param on True for on, False for off.
+	 */
+	public static void setSquaredControls(boolean on)
+	{
+		setSquaredRotation(on);
+		setSquaredPower(on);
+	}
+	
+	/**
+	* Toggle squared controls.
+	* 
+	* @param on True for on, False for off.
+	*/
+	public static void toggleSquaredControls()
+	{
+		toggleSquaredRotation();
+		toggleSquaredPower();
+	}
+
 	/**
 	 * Drives the robot with arcade drive.
 	 * 
@@ -81,14 +151,17 @@ public class DriveBase
 	 */
 	public static void driveArcade(double power, double rotation)
 	{
+		if(Gearbox.inPTOMode()) rotation = 0;
 		if(mode == DriveMode.REVERSE) rotation = -rotation;
+		
+		if(squaredRotation) rotation = Math.signum(rotation) * (rotation*rotation);
+		if(squaredPower) power = Math.signum(power) * (power*power);
 
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
 		
 		driveTank(leftPower, rightPower);
 	}
-
 	
 	/**
 	 * Drives The robot with tank drive.

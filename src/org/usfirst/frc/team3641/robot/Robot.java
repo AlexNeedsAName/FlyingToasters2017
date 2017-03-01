@@ -38,6 +38,7 @@ public class Robot extends IterativeRobot
 
 	public void autonomousInit()
 	{
+		DriveBase.setSquaredControls(false);
 		Constants.reloadConfig();
 		DriveBase.setBreakMode(true);
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
@@ -54,9 +55,10 @@ public class Robot extends IterativeRobot
 
 	public void teleopInit()
 	{
+		DriveBase.setSquaredControls(true);
 		Constants.reloadConfig();
 		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Teleop Started");
-		DriveBase.setBreakMode(false);
+		DriveBase.setBreakMode(true);
 	}
 	
 	public void teleopPeriodic()
