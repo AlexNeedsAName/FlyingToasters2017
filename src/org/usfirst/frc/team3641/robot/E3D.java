@@ -50,7 +50,7 @@ public class E3D
 	 */
 	public enum Axis
 	{
-		X, Y, Z;
+		X, Y, Z, THROTTLE;
 	}
 	
 	/**
@@ -160,6 +160,7 @@ public class E3D
 		axes.put(Axis.X, rawJoystick.getRawAxis(0));
 		axes.put(Axis.Y, -rawJoystick.getRawAxis(1));
 		axes.put(Axis.Z, rawJoystick.getRawAxis(2));
+		axes.put(Axis.THROTTLE, rawJoystick.getRawAxis(3));
 		
 		current.put(Button.TRIGGER, rawJoystick.getRawButton(1));
 		current.put(Button.THUMB, rawJoystick.getRawButton(2));

@@ -115,6 +115,7 @@ public class Auton
 		Tracking.resetState();
 		Gearbox.shift(Gearbox.Gear.LOW);
 		Sensors.resetDriveDistance();
+		Intake.setFlapDown();
 		initTimeout(0);
 		autonTimer.reset();
 		autonTimer.start();

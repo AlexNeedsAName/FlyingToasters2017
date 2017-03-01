@@ -39,6 +39,7 @@ public class Constants
 		public static final double ANGLE = 70;   //Degrees
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
+		public static final double MAX_RPM = 0; //TODO: Run at full speed and measure value.
 	}
 	
 	public static class Verbosity
@@ -138,6 +139,8 @@ public class Constants
 		public static final int PTO_REVERSE = 3;
 		public static final int INTAKE_FORWARD = 4;
 		public static final int INTAKE_REVERSE = 5;
+		public static final int FLAP_FORWARD = 6;
+		public static final int FLAP_REVERSE = 7;
 	}
 
 	public static class PID

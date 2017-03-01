@@ -6,6 +6,7 @@ public class Teleop
 	public static PS4 driver;
 	public static E3D operator;
 	public static Harmonix guitar;
+	public static boolean arcadeMode;
 
 	public static Teleop getInstance()
 	{
@@ -21,6 +22,7 @@ public class Teleop
 		driver = new PS4(Constants.Controllers.DRIVER);
 		operator = new E3D(Constants.Controllers.OPERATOR);
 		guitar = new Harmonix(Constants.Controllers.GUITAR);
+		arcadeMode = true;
 	}
 
 	/**
@@ -32,38 +34,40 @@ public class Teleop
 		operator.poll();
 		
 		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
-		
-		if(driver.isPressed(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(true);
-		else if(driver.isReleased(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(false);
-		
-		//Change Drive Direction
+				
+		//Change Settings with D-Pad
 		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(DriveBase.DriveMode.NORMAL);
 		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(DriveBase.DriveMode.REVERSE);
-		
-		//if(driver.isPressed(PS4.Button.OPTIONS)) DriveBase.toggleSquaredRotation();
-		//if(driver.isPressed(PS4.Button.SHARE)) DriveBase.toggleSquaredPower();
-				
+		if(driver.isPressed(PS4.Button.DPAD_UP)) arcadeMode = true;
+		else if(driver.isPressed(PS4.Button.DPAD_DOWN)) arcadeMode = false;
+						
 		if(driver.isDown(PS4.Button.CIRCLE))
 		{
 			Tracking.target(Tracking.Mode.GEAR_MODE);
 		}
 		else
 		{
-			//Drive Robot
-			if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
-			else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_X));
+			if(arcadeMode)
+			{
+				if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
+				else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_X));
+			}
+			else
+			{
+				DriveBase.driveTank(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_Y));
+			}
 		}
 		
-		//Gearbox Things
-		if(driver.isPressed(PS4.Button.PLAYSTATION_BUTTON)) Gearbox.togglePTO();
-		
-		if(driver.isPressed(PS4.Button.SHARE)) Gearbox.shift(Gearbox.Gear.LOW);
-		else if(driver.isPressed(PS4.Button.OPTIONS)) Gearbox.shift(Gearbox.Gear.HIGH);
+		//Gearbox Stuff
+		if(driver.isPressed(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.LOW);
+		else if(driver.isReleased(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.HIGH);
 		
 		//Intake Stuff
-		if(driver.isPressed(PS4.Button.LEFT_BUMPER)) Intake.intakeDown();
-		else if (driver.isPressed(PS4.Button.RIGHT_BUMPER)) Intake.intakeUp();
-		Intake.set(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
+		if(driver.isPressed(PS4.Button.LEFT_STICK_BUTTON)) Intake.intakeDown();
+		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
+		if(driver.getAxis(PS4.Axis.LEFT_TRIGGER) > .5) Intake.setFlapDown();
+		else Intake.setFlapUp();
+		Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 
 		//Shooter Stuff
 		if(!operator.isDown(E3D.Button.THUMB)) //Autonomous Subsystem Mode
@@ -78,6 +82,8 @@ public class Teleop
 			
 			if(operator.isDown(E3D.Button.TRIGGER)) Shooter.forceFire();
 			else if(operator.isReleased(E3D.Button.TRIGGER)) Shooter.stopFiring();
+			
+			Shooter.setRPM(Constants.Shooter.MAX_RPM * operator.getAxis(E3D.Axis.THROTTLE));
 		}
 		
 		if(operator.isReleased(E3D.Button.TRIGGER) || driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();

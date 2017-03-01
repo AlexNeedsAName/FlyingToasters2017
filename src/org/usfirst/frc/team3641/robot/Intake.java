@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Spark;
 public class Intake
 {
 	private static Intake instance;
-	private static DoubleSolenoid intakeSolenoid;
+	private static DoubleSolenoid intakeSolenoid, flapSolenoid;
 	private static Spark left, right;
 	private static boolean up = true;
 	
@@ -21,6 +21,7 @@ public class Intake
 	private Intake()
 	{
 		intakeSolenoid = new DoubleSolenoid(Constants.Pnumatics.INTAKE_FORWARD, Constants.Pnumatics.INTAKE_REVERSE);
+		flapSolenoid = new DoubleSolenoid(Constants.Pnumatics.FLAP_FORWARD, Constants.Pnumatics.FLAP_REVERSE);
 		left = new Spark(Constants.PWM.Sparks.INTAKE_LEFT);
 		right = new Spark(Constants.PWM.Sparks.INTAKE_RIGHT);
 	}
@@ -52,10 +53,26 @@ public class Intake
 	}
 	
 	/**
+	 * Put down.
+	 */
+	public static void setFlapDown()
+	{
+		flapSolenoid.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	/**
+	 * Put up.
+	 */
+	public static void setFlapUp()
+	{
+		flapSolenoid.set(DoubleSolenoid.Value.kReverse);
+	}
+
+	/**
 	 * Set the intake roller speed.
 	 * @param speed The speed you want to set the intake to.
 	 */
-	public static void set(double speed)
+	public static void setSpeed(double speed)
 	{
 		left.set(speed);
 		right.set(-speed);
