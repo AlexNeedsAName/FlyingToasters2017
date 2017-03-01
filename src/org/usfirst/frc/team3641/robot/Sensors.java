@@ -8,7 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 public class Sensors
 {
 	private static Sensors instance;
-	private static double ultrasonicDistance = 0, shooterRPM, driveDistance, angle, turretAngle;
+	private static double ultrasonicDistance = 0, shooterRPM, totalDriveDistance, currentDriveDistance, angle, turretAngle;
 	private static boolean isStill;
 
 	private static AnalogInput ultrasonic;
@@ -53,7 +53,9 @@ public class Sensors
 		{
 			shooterRPM = Shooter.right.getEncVelocity() * Constants.Conversions.ENCODER_TO_METERS;
 			ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.Conversions.VOLTAGE_TO_METERS;
-			driveDistance = DriveBase.left1.getAnalogInPosition() * Constants.Conversions.DRIVE_ENCODER_TO_METERS;
+			currentDriveDistance = (double) DriveBase.left3.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;
+			if(Gearbox.getGear() == Gearbox.Gear.LOW) currentDriveDistance *= Constants.Conversions.LOW_GEAR_RATIO;
+			else currentDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
 			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TO_ANGLE;
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
@@ -68,23 +70,28 @@ public class Sensors
 		if(Constants.runningAleksBot) SPIgyro.reset();
 		else gyro.reset();
 	}
-
-	/**
-	 * Reset the drive distance.
-	 * @param distance The distance in meters to set the encoder distance to.
-	 */
-	public static void resetDriveDistance(double distance)
-	{
-		DriveBase.left1.setEncPosition((int) (distance / Constants.Conversions.ENCODER_TO_METERS));
-		driveDistance = DriveBase.left1.getAnalogInPosition() * Constants.Conversions.DRIVE_ENCODER_TO_METERS;
-	}
 	
+	public static void setDriveDistance(double distance)
+	{
+		totalDriveDistance = distance;
+		resetCurrentDriveDistance();
+	}
+
 	/**
 	 * Reset the drive distance to 0.
 	 */
 	public static void resetDriveDistance()
 	{
-		resetDriveDistance(0);
+		setDriveDistance(0);
+	}
+	
+	/**
+	 * Resets the distance driven in the current gear.
+	 */
+	private static void resetCurrentDriveDistance()
+	{
+		currentDriveDistance = 0;
+		DriveBase.left3.setEncPosition(0);
 	}
 
 	/**
@@ -114,7 +121,7 @@ public class Sensors
 	 */
 	public static double getDriveDistance()
 	{
-		return driveDistance;
+		return currentDriveDistance + totalDriveDistance;
 	}
 
 	/**
@@ -145,5 +152,16 @@ public class Sensors
 	public static boolean isStill()
 	{
 		return isStill;
+	}
+	
+	/**
+	 * Adds the current distance to the total distance and resets the current distance.
+	 * 
+	 * @param gear
+	 */
+	public static void shiftEncoderGear()
+	{
+		totalDriveDistance += currentDriveDistance;
+		resetCurrentDriveDistance();
 	}
 }

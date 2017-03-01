@@ -50,7 +50,7 @@ public class DriveBase
 		right1 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_1);
 		right2 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_2);
 		right3 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_3);
-		left1.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		left3.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 		
 		rotationPID = new PID("DriveBaseRotation");
 		rotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KD, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
@@ -152,17 +152,20 @@ public class DriveBase
 	public static void driveArcade(double power, double rotation)
 	{
 		if(Gearbox.inPTOMode()) rotation = 0;
-		if(mode == DriveMode.REVERSE) rotation = -rotation;
+		else
+		{
+			if(mode == DriveMode.REVERSE) rotation = -rotation;
+			if(squaredRotation) rotation = Math.signum(rotation) * (rotation*rotation);
+		}
 		
-		if(squaredRotation) rotation = Math.signum(rotation) * (rotation*rotation);
 		if(squaredPower) power = Math.signum(power) * (power*power);
-
+		
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
 		
 		driveTank(leftPower, rightPower);
 	}
-	
+		
 	/**
 	 * Drives The robot with tank drive.
 	 * 

@@ -6,7 +6,7 @@ public class Gearbox
 	private static Gearbox instance;
 	private static DoubleSolenoid shifter, PTO;
 	private static Gear currentGear;
-	private static boolean inPTOMode = false;
+	private static boolean inPTOMode;
 
 	public static Gearbox getInstance()
 	{
@@ -23,7 +23,7 @@ public class Gearbox
 	}
 
 	/**
-	 * Initalize the Gearbox.
+	 * Initialize the Gearbox.
 	 */
 	private Gearbox()
 	{
@@ -32,6 +32,8 @@ public class Gearbox
 			shifter = new DoubleSolenoid(Constants.Pnumatics.SHIFTER_FORWARD, Constants.Pnumatics.SHIFTER_REVERSE);
 			PTO = new DoubleSolenoid(Constants.Pnumatics.PTO_FORWARD, Constants.Pnumatics.PTO_REVERSE);
 		}
+		shift(Gear.LOW);
+		setPTO(false);
 	}
 
 	/**
@@ -44,8 +46,9 @@ public class Gearbox
 		if(gear != currentGear)
 		{
 			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Shifting to " + gear.toString() + " gear.");
-			if(!Constants.runningAleksBot) shifter.set((gear == Gear.LOW) ? (DoubleSolenoid.Value.kForward) : (DoubleSolenoid.Value.kReverse));
+			if(!Constants.runningAleksBot) shifter.set((gear == Gear.LOW) ? (DoubleSolenoid.Value.kReverse) : (DoubleSolenoid.Value.kForward));
 			currentGear = gear;
+			Sensors.shiftEncoderGear();
 		}
 	}
 	
@@ -66,7 +69,7 @@ public class Gearbox
 	{
 		inPTOMode = on;
 		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println(((inPTOMode) ? "Engaging" : "Disengaging") + " PTO");
-		PTO.set(inPTOMode ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+		PTO.set(inPTOMode ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
 	}
 	
 	/**
@@ -75,6 +78,16 @@ public class Gearbox
 	public static boolean inPTOMode()
 	{
 		return inPTOMode;
+	}
+	
+	/**
+	 * Gets the current gear of the gearbox.
+	 * 
+	 * @return
+	 */
+	public static Gear getGear()
+	{
+		return currentGear;
 	}
 
 }

@@ -26,6 +26,11 @@ public class Constants
 		public static double gearTurnBackDistance = 1;
 	}
 	
+	public static class DriveBase
+	{
+
+	}
+	
 	public static class Shooter
 	{
 		public static final double GRAVITY = -9.81; // m/s/s
@@ -187,7 +192,13 @@ public class Constants
 
 	public class Conversions
 	{
-		public static final double SPEED_TO_RPM = (60 / (2*Math.PI*Shooter.WHEEL_RADIUS)) * 2;
+		public static final double DRIVE_WHEEL_DIAMETER = .1;
+		public static final double DRIVE_WHEEL_CIRCUMFERENCE = Math.PI*DRIVE_WHEEL_DIAMETER;
+		public static final double DRIVE_ENCODER_TICKS_PER_TURN = -4096.0;
+		public static final double LOW_GEAR_RATIO = 2.0/5.0;
+		public static final double HIGH_GEAR_RATIO = 3.0/4.0;
+		
+		public static final double SPEED_TO_RPM = (60 / (2*Math.PI*Shooter.WHEEL_RADIUS/2)) * 2;
 		public static final double ENCODER_TO_RPM = -7.5; // ticks/s * 60s/min * 1rev/8ticks = 7.5 RPM 
 		public static final double DISTANCE_TO_RPM = 750; //TODO: Build Robot and find Value
 		public static final double VOLTAGE_TO_METERS = 1;

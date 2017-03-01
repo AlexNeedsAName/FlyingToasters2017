@@ -31,6 +31,8 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 		
+		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
+		
 		if(driver.isPressed(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(true);
 		else if(driver.isReleased(PS4.Button.TOUCHPAD_BUTTON)) Horn.setHorn(false);
 		

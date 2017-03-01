@@ -113,6 +113,8 @@ public class Auton
 		autonMode = mode;
 		onRedAlliance = redAlliance;
 		Tracking.resetState();
+		Gearbox.shift(Gearbox.Gear.LOW);
+		Sensors.resetDriveDistance();
 		initTimeout(0);
 		autonTimer.reset();
 		autonTimer.start();
