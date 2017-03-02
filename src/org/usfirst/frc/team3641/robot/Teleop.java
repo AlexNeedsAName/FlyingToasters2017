@@ -41,10 +41,10 @@ public class Teleop
 		if(driver.isPressed(PS4.Button.DPAD_UP)) arcadeMode = true;
 		else if(driver.isPressed(PS4.Button.DPAD_DOWN)) arcadeMode = false;
 						
-		if(driver.isDown(PS4.Button.CIRCLE))
-		{
-			Tracking.target(Tracking.Mode.GEAR_MODE);
-		}
+		if(driver.isPressed(PS4.Button.TRIANGLE)) DriveBase.toggleLock();
+		
+		if(DriveBase.isLocked()) DriveBase.runLock();
+		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
 		else
 		{
 			if(arcadeMode)
@@ -61,6 +61,8 @@ public class Teleop
 		//Gearbox Stuff
 		if(driver.isPressed(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.LOW);
 		else if(driver.isReleased(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.HIGH);
+		if(driver.isPressed(PS4.Button.LEFT_BUMPER)) Gearbox.setPTO(true);
+		if(driver.isReleased(PS4.Button.LEFT_BUMPER)) Gearbox.setPTO(false);
 		
 		//Intake Stuff
 		if(driver.isPressed(PS4.Button.LEFT_STICK_BUTTON)) Intake.intakeDown();
@@ -75,7 +77,6 @@ public class Teleop
 			if(operator.isReleased(E3D.Button.THUMB)) Turret.set(0);
 			if(operator.isDown(E3D.Button.TRIGGER)) Tracking.target(Tracking.Mode.FUEL_MODE);  
 		}
-		
 		else //Manual Mode
 		{
 			Turret.set(operator.getAxis(E3D.Axis.Z)/2);

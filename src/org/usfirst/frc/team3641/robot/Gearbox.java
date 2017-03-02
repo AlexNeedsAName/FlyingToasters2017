@@ -69,7 +69,7 @@ public class Gearbox
 	{
 		inPTOMode = on;
 		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println(((inPTOMode) ? "Engaging" : "Disengaging") + " PTO");
-		PTO.set(inPTOMode ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+		PTO.set(inPTOMode ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**

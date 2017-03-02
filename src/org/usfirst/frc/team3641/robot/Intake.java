@@ -6,7 +6,7 @@ public class Intake
 {
 	private static Intake instance;
 	private static DoubleSolenoid intakeSolenoid, flapSolenoid;
-	private static Spark left, right;
+	private static Spark intakeSpark;
 	private static boolean up = true;
 	
 	public static Intake getInstance()
@@ -22,8 +22,7 @@ public class Intake
 	{
 		intakeSolenoid = new DoubleSolenoid(Constants.Pnumatics.INTAKE_FORWARD, Constants.Pnumatics.INTAKE_REVERSE);
 		flapSolenoid = new DoubleSolenoid(Constants.Pnumatics.FLAP_FORWARD, Constants.Pnumatics.FLAP_REVERSE);
-		left = new Spark(Constants.PWM.Sparks.INTAKE_LEFT);
-		right = new Spark(Constants.PWM.Sparks.INTAKE_RIGHT);
+		intakeSpark = new Spark(Constants.PWM.Sparks.INTAKE);
 	}
 	
 	/**
@@ -74,8 +73,7 @@ public class Intake
 	 */
 	public static void setSpeed(double speed)
 	{
-		left.set(speed);
-		right.set(-speed);
+		intakeSpark.set(speed);
 	}
 
 }

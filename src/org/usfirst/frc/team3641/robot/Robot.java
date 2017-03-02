@@ -83,9 +83,11 @@ public class Robot extends IterativeRobot
 			lastMode = mode;
 			lastAllianceIsRed = redAlliance;
 			
-			if(DS.getAlliance() == DriverStation.Alliance.Invalid) underglow.setColor(RGB.Color.OFF);
-			else underglow.setColor((redAlliance) ? RGB.Color.RED : RGB.Color.BLUE);
+			//if(DS.getAlliance() == DriverStation.Alliance.Invalid) underglow.setColor(RGB.Color.OFF);
+			//else underglow.setColor((redAlliance) ? RGB.Color.RED : RGB.Color.BLUE);
 		}
+		
+		if(DriveBase.isLocked()) DriveBase.lockDrivebase();
 	}
 
 	public void disabledInit() //It runs this once the robot connects to the DriverStation too.

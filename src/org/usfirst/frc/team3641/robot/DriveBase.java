@@ -11,8 +11,9 @@ public class DriveBase
 	private static DriveBase instance;
 	public static CANTalon left1, left2, left3, right1, right2, right3;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
-	private static PID rotationPID, drivePID;
-	
+	private static PID rotationPID, drivePID, lockPID;
+	private static double lockTarget;
+	private static boolean locked;
 	private static boolean squaredRotation, squaredPower;
 
 	private static DriveMode mode;
@@ -59,6 +60,9 @@ public class DriveBase
 		drivePID = new PID("DriveBase");
 		drivePID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
 		drivePID.readConfig();
+		
+		lockPID = new PID("LockPTO");
+		lockPID.readConfig();
 		
 		squaredRotation = false;
 		squaredPower = false;
@@ -294,6 +298,36 @@ public class DriveBase
 		double output = drivePID.pid(error);
 		driveArcade(output, 0);
 		return error;
+	}
+	
+	public static boolean isLocked()
+	{
+		return locked;
+	}
+	
+	public static void runLock()
+	{
+		double error = lockTarget - Sensors.getDriveDistance();
+		double power = lockPID.run(error, lockTarget);
+		driveArcade(power,0);
+		System.out.println("Power: " + power);
+		System.out.println("Error: " + error);
+	}
+	
+	public static void lockDrivebase()
+	{
+		locked = true;
+		lockTarget = Sensors.getDriveDistance();
+	}
+	
+	public static void unlockDrivebase()
+	{
+		locked = false;
+	}
+	
+	public static void toggleLock()
+	{
+		locked = !locked;
 	}
 	
 }

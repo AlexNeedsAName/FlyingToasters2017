@@ -12,7 +12,7 @@ public class PropertyReader
 	private Properties config;
 	
 	/**
-	 * Initalizes a new property reader.
+	 * Initializes a new property reader.
 	 * 
 	 * @param name The name of the file.
 	 */

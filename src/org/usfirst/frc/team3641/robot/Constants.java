@@ -17,8 +17,8 @@ public class Constants
 		public static double distanceToBaseline = 2.62;
 		public static double distanceToHopperLine = 2.29;
 		public static double distanceToHopperFromTurn = 1;
-		public static double distanceToGearTurn = 2;
-		public static double distanceToGearFromTurn = 1;
+		public static double distanceToGearTurn = -2;
+		public static double distanceToGearFromTurn = -1;
 		public static double gearTurnAngle = -75;
 		public static double hopperTurnAngle = 90;
 		public static double gearTurnBackAngle = 0;
@@ -111,8 +111,7 @@ public class Constants
 	{
 		public static class Sparks
 		{
-			public static final int INTAKE_LEFT = 1;
-			public static final int INTAKE_RIGHT = 2;
+			public static final int INTAKE = 8;
 			public static final int HOPPER_ADJATATOR = 3;
 			public static final int SHOOTER_ELEVATOR = 4;
 		}
