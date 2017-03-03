@@ -140,6 +140,10 @@ public class Constants
 		public static final int INTAKE_REVERSE = 5;
 		public static final int FLAP_FORWARD = 6;
 		public static final int FLAP_REVERSE = 7;
+		
+		public static final double WORRY_PRESSURE = 50;
+		public static final double PANCAKE_SHIFT_COST = 1;
+		public static final double INTAKE_COST = 2;
 	}
 
 	public static class PID
@@ -174,9 +178,9 @@ public class Constants
 	
 	public static class AnalogIn
 	{
-		public static final int ULTRASONIC_PORT = 0;
 		public static final int ULTRASONIC_ECHO = 0;
 		public static final int ULTRASONIC_TRIGGER = 1;
+		public static final int PRESSURE_SENSOR = 0;
 	}
 	
 	public static class DigitalIO

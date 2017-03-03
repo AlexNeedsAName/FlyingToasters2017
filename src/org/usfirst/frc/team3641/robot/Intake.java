@@ -35,7 +35,7 @@ public class Intake
 			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Intake up");
 			up = true;
 		}
-		intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public class Intake
 			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Intake down");
 			up = false;
 		}
-		intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		intakeSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	/**

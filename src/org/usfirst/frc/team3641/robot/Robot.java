@@ -93,6 +93,7 @@ public class Robot extends IterativeRobot
 	public void disabledInit() //It runs this once the robot connects to the DriverStation too.
 	{
 		Horn.setHorn(false);
+		Intake.intakeUp();
 		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Robot Disabled");
 	}
 

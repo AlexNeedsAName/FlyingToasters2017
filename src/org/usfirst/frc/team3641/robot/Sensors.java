@@ -13,13 +13,15 @@ public class Sensors
 	private static Sensors instance;
 	private static double ultrasonicDistance = 0, shooterRPM, totalDriveDistance, currentDriveDistance, angle, turretAngle;
 	private static boolean isStill;
-	private static boolean doesWeHasGear;
+	private static double pressure;
+	private static boolean weHasGear;
+	private static boolean weHasPressure;
 
-	private static AnalogInput ultrasonic;
 	private static DigitalInput doesWeHasGearSwitch;
 	public static Ultrasonic ultra;
 	private static AHRS gyro;
 	private static ADXRS450_Gyro SPIgyro;
+	private static AnalogInput pressureSensor;
 	
 	public static Sensors getInstance()
 	{
@@ -28,7 +30,7 @@ public class Sensors
 	}
 
 	/**
-	 * Initalize the sensors class and all the sensors it uses.
+	 * Initialize the sensors class and all the sensors it uses.
 	 */
 	private Sensors()
 	{
@@ -40,13 +42,24 @@ public class Sensors
 		else
 		{
 			gyro = new AHRS(SerialPort.Port.kMXP);
-			ultrasonic = new AnalogInput(Constants.AnalogIn.ULTRASONIC_PORT); 
+			pressureSensor = new AnalogInput(Constants.AnalogIn.PRESSURE_SENSOR); 
 			doesWeHasGearSwitch = new DigitalInput(Constants.DigitalIO.DOES_WE_HAS_GEAR_SWITCH);
 		}
 	}
 
 	/**
-	 * Poll all of the sensors on the robot.
+	 * Prints the sensors we care about to the SmartDashboard.
+	 */
+	public static void printAll()
+	{
+		SmartDashboard.putBoolean("Does We Has Gear?", doesWeHasGear());
+		SmartDashboard.putBoolean("Enough Pressure?", doesWeHasEnoughPressure());
+		SmartDashboard.putNumber("Current Pressure", getPressure());
+		SmartDashboard.putNumber("Angle", getAngle());
+	}
+	
+	/**
+	 * Get the current value of all the sensors on the robot so values don't change within a single code loop.
 	 */
 	public static void poll()
 	{
@@ -58,15 +71,16 @@ public class Sensors
 		else
 		{
 			shooterRPM = Shooter.right.getEncVelocity() * Constants.Conversions.ENCODER_TO_METERS;
-			ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.Conversions.VOLTAGE_TO_METERS;
+			//ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.Conversions.VOLTAGE_TO_METERS;
 			currentDriveDistance = (double) DriveBase.left3.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;
 			if(Gearbox.getGear() == Gearbox.Gear.LOW) currentDriveDistance *= Constants.Conversions.LOW_GEAR_RATIO;
 			else currentDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
 			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TO_ANGLE;
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
-			doesWeHasGear = !doesWeHasGearSwitch.get();
-			SmartDashboard.putBoolean("Does We Has Gear?", doesWeHasGear);
+			weHasGear = !doesWeHasGearSwitch.get();
+			pressure = pressureSensor.getAverageVoltage() / (5*0.004) - 25;
+			weHasPressure = (getPressure() >= Constants.Pnumatics.WORRY_PRESSURE);
 		}
 	}
 
@@ -79,6 +93,11 @@ public class Sensors
 		else gyro.reset();
 	}
 	
+	/**
+	 * Set the total encoder distance.
+	 * 
+	 * @param distance The distance in meters you want to set.
+	 */
 	public static void setDriveDistance(double distance)
 	{
 		totalDriveDistance = distance;
@@ -163,13 +182,41 @@ public class Sensors
 	}
 	
 	/**
-	 * Adds the current distance to the total distance and resets the current distance.
-	 * 
-	 * @param gear
+	 * Call this when you shift gears to account for the different gear ratio.
 	 */
 	public static void shiftEncoderGear()
 	{
 		totalDriveDistance += currentDriveDistance;
 		resetCurrentDriveDistance();
+	}
+	
+	/**
+	 * Gets the current pressure in the tank.
+	 * 
+	 * @return The pressure in PSI.
+	 */
+	public static double getPressure()
+	{
+		return pressure;
+	}
+	
+	/**
+	 * Do we have a gear in the robot?
+	 * 
+	 * @return True if we have a gear.
+	 */
+	public static boolean doesWeHasGear()
+	{
+		return weHasGear;
+	}
+	
+	/**
+	 * Do we need to start worrying about the pressure in the robot?
+	 * 
+	 * @return True if we have enough pressure.
+	 */
+	public static boolean doesWeHasEnoughPressure()
+	{
+		return weHasPressure;
 	}
 }

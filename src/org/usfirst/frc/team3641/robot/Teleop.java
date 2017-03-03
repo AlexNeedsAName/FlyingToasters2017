@@ -29,7 +29,7 @@ public class Teleop
 	 * Runs the main teleop code. Should be run from a loop (teleopPerodic)
 	 */
 	public static void run()
-	{
+	{		
 		driver.poll();
 		operator.poll();
 		
@@ -92,6 +92,8 @@ public class Teleop
 		}
 		
 		if(operator.isReleased(E3D.Button.TRIGGER) || driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();
+		
+		Sensors.printAll();
 	}
 
 	/**
