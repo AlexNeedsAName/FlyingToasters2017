@@ -166,8 +166,8 @@ public class PS4
 		axes.put(Axis.LEFT_X, rawJoystick.getRawAxis(0));
 		axes.put(Axis.LEFT_Y, -rawJoystick.getRawAxis(1));
 		axes.put(Axis.RIGHT_X, rawJoystick.getRawAxis(2));
-		axes.put(Axis.LEFT_TRIGGER, (rawJoystick.getRawAxis(3) + .5) / 2);
-		axes.put(Axis.RIGHT_TRIGGER, (rawJoystick.getRawAxis(4) + .5) / 2);
+		axes.put(Axis.LEFT_TRIGGER, rawJoystick.getRawAxis(3)/2 + .5);
+		axes.put(Axis.RIGHT_TRIGGER, rawJoystick.getRawAxis(4)/2 +.5);
 		axes.put(Axis.RIGHT_Y, -rawJoystick.getRawAxis(5));
 
 		current.put(Button.SQUARE, rawJoystick.getRawButton(1));

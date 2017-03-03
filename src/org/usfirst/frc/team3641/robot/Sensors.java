@@ -1,8 +1,11 @@
 package org.usfirst.frc.team3641.robot;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.kauailabs.navx.frc.AHRS;
 
 public class Sensors
@@ -10,15 +13,16 @@ public class Sensors
 	private static Sensors instance;
 	private static double ultrasonicDistance = 0, shooterRPM, totalDriveDistance, currentDriveDistance, angle, turretAngle;
 	private static boolean isStill;
+	private static boolean doesWeHasGear;
 
 	private static AnalogInput ultrasonic;
+	private static DigitalInput doesWeHasGearSwitch;
 	public static Ultrasonic ultra;
 	private static AHRS gyro;
 	private static ADXRS450_Gyro SPIgyro;
 	
 	public static Sensors getInstance()
 	{
-		gyro = new AHRS(SerialPort.Port.kMXP);
 		if(instance == null) instance = new Sensors();
 		return instance;
 	}
@@ -35,7 +39,9 @@ public class Sensors
 		}
 		else
 		{
+			gyro = new AHRS(SerialPort.Port.kMXP);
 			ultrasonic = new AnalogInput(Constants.AnalogIn.ULTRASONIC_PORT); 
+			doesWeHasGearSwitch = new DigitalInput(Constants.DigitalIO.DOES_WE_HAS_GEAR_SWITCH);
 		}
 	}
 
@@ -59,6 +65,8 @@ public class Sensors
 			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TO_ANGLE;
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
+			doesWeHasGear = !doesWeHasGearSwitch.get();
+			SmartDashboard.putBoolean("Does We Has Gear?", doesWeHasGear);
 		}
 	}
 

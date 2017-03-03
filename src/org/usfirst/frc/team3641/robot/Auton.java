@@ -45,7 +45,8 @@ public class Auton
 		BACK_AWAY_FROM_GEAR,
 		TURN_FROM_GEAR_TO_NORMAL,
 		DRIVE_FROM_GEAR_TURN_TO_HOPPER_LINE,
-		CALM_DOWN;
+		CALM_DOWN,
+		DRIVE_TO_GEAR;
 	}
 	
 	/**
@@ -59,7 +60,8 @@ public class Auton
 		GEAR_AUTON,
 		COMBO_AUTON,
 		LINE_ALIGN,
-		LINE_FOLLOW;
+		LINE_FOLLOW,
+		CENTER_GEAR;
 		
 		private static final modes[] values = modes.values(); //We cache the value array for preformance
 
@@ -106,7 +108,7 @@ public class Auton
 	 */
 	public static void setup(modes mode, boolean redAlliance)
 	{
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Starting Auton:\n");
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Starting Auton: " + mode.toString() + "\n");
 		readConfig();
 		autonState = states.START;
 		alreadyRunning = false;
@@ -154,6 +156,9 @@ public class Auton
 		case LINE_FOLLOW:
 			lineFollow();
 			break;
+			
+		case CENTER_GEAR:
+			centerGear();
 		}
 	}
 	
@@ -310,6 +315,22 @@ public class Auton
 			Shooter.fire();
 			break;
 		}
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	public static void centerGear()
+	{
+		switch(autonState)
+		{
+		case START:
+			increment(states.DRIVE_TO_GEAR);
+			break;
+			
+		case DRIVE_TO_GEAR:
+			boolean done = driveBy(-1.45);
+			if(done) increment(states.DONE);
+		}
+			
 	}
 	
 	/**
@@ -595,6 +616,7 @@ public class Auton
 	 */
 	private static void readConfig()
 	{
+		/*
 		config.reloadFile();
 		Constants.Auton.distanceToBaseline = config.readDouble("distanceToBaseline", Constants.Auton.distanceToBaseline);
 		Constants.Auton.distanceToHopperLine = config.readDouble("distanceToHopperLine", Constants.Auton.distanceToHopperLine);
@@ -607,5 +629,6 @@ public class Auton
 		Constants.Auton.gearTurnBackDistance = config.readDouble("gearTurnBackDistance", Constants.Auton.gearTurnBackDistance);
 		Constants.Auton.gearTurnBackToHopper = config.readDouble("gearTurnBackToHopper", Constants.Auton.gearTurnBackToHopper);
 		usingHorn = config.readBoolean("usingHorn", usingHorn);
+		*/
 	}
 }

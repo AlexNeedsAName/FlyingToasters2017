@@ -10,7 +10,7 @@ public class Constants
 		
 	public static final boolean disableAutonTimeouts = false;
 
-	public static final double ADJATATOR_SPEED = .5;
+	public static final double ADJATATOR_SPEED = -1;
 
 	public static class Auton
 	{
@@ -111,9 +111,9 @@ public class Constants
 	{
 		public static class Sparks
 		{
-			public static final int INTAKE = 8;
-			public static final int HOPPER_ADJATATOR = 3;
-			public static final int SHOOTER_ELEVATOR = 4;
+			public static final int INTAKE = 0;
+			public static final int HOPPER_ADJATATOR = 1;
+			public static final int SHOOTER_ELEVATOR = 2;
 		}
 		
 		public static class Victors
@@ -177,6 +177,11 @@ public class Constants
 		public static final int ULTRASONIC_PORT = 0;
 		public static final int ULTRASONIC_ECHO = 0;
 		public static final int ULTRASONIC_TRIGGER = 1;
+	}
+	
+	public static class DigitalIO
+	{
+		public static final int DOES_WE_HAS_GEAR_SWITCH = 0;
 	}
 
 	public static class Thresholds

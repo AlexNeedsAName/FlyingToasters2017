@@ -75,5 +75,10 @@ public class Intake
 	{
 		intakeSpark.set(speed);
 	}
+	
+	public static void eject()
+	{
+		setSpeed(-1);
+	}
 
 }

@@ -67,10 +67,14 @@ public class Teleop
 		//Intake Stuff
 		if(driver.isPressed(PS4.Button.LEFT_STICK_BUTTON)) Intake.intakeDown();
 		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
-		if(driver.getAxis(PS4.Axis.LEFT_TRIGGER) > .5) Intake.setFlapDown();
-		else Intake.setFlapUp();
-		Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
-
+		if(driver.isPressed(PS4.Button.LEFT_TRIGGER_BUTTON)) Intake.setFlapDown();
+		else if(driver.isReleased(PS4.Button.LEFT_TRIGGER_BUTTON)) Intake.setFlapDown();
+		if(driver.isDown(PS4.Button.X)) Intake.eject();
+		else Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
+		
+		if(driver.isDown(PS4.Button.SQUARE)) Hopper.adjatate();
+		else if(driver.isReleased(PS4.Button.SQUARE)) Hopper.stopAdjatating();
+		
 		//Shooter Stuff
 		if(!operator.isDown(E3D.Button.THUMB)) //Autonomous Subsystem Mode
 		{
