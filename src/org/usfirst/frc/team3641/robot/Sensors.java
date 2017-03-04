@@ -70,16 +70,22 @@ public class Sensors
 		}
 		else
 		{
+			//Shooter Stuff
 			shooterRPM = Shooter.right.getEncVelocity() * Constants.Conversions.ENCODER_TO_METERS;
-			//ultrasonicDistance = ultrasonic.getAverageVoltage() * Constants.Conversions.VOLTAGE_TO_METERS;
+			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TO_ANGLE;
+
+			//DriveBase Stuff
+			angle = gyro.getAngle();
+			isStill = !gyro.isMoving();
 			currentDriveDistance = (double) DriveBase.left3.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;
 			if(Gearbox.getGear() == Gearbox.Gear.LOW) currentDriveDistance *= Constants.Conversions.LOW_GEAR_RATIO;
 			else currentDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
-			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TO_ANGLE;
-			angle = gyro.getAngle();
-			isStill = !gyro.isMoving();
+	
+			//Gear Sensor
 			weHasGear = !doesWeHasGearSwitch.get();
-			pressure = pressureSensor.getAverageVoltage() / (5*0.004) - 25;
+			
+			//Pnumatics
+			pressure = Constants.Conversions.PRESSURE_MULTIPLIER * pressureSensor.getAverageVoltage()/Constants.Conversions.VCC - Constants.Conversions.PRESSURE_ZERO_VALUE;
 			weHasPressure = (getPressure() >= Constants.Pnumatics.WORRY_PRESSURE);
 		}
 	}

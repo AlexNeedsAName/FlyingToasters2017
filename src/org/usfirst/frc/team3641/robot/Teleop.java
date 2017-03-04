@@ -41,7 +41,8 @@ public class Teleop
 		if(driver.isPressed(PS4.Button.DPAD_UP)) arcadeMode = true;
 		else if(driver.isPressed(PS4.Button.DPAD_DOWN)) arcadeMode = false;
 						
-		if(driver.isPressed(PS4.Button.TRIANGLE)) DriveBase.toggleLock();
+		if(driver.isPressed(PS4.Button.TRIANGLE) && Gearbox.inPTOMode()) DriveBase.lockDrivebase();
+		else if(driver.isReleased(PS4.Button.TRIANGLE)) DriveBase.unlockDrivebase();
 		
 		if(DriveBase.isLocked()) DriveBase.runLock();
 		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);

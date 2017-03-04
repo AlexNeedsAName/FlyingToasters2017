@@ -33,7 +33,7 @@ public class DriveBase
 	}
 		
 	/**
-	 * Initalizes the Drive Base with its Talon and PID classes.
+	 * Initializes the Drive Base with its Talon and PID classes.
 	 */
 	private DriveBase()
 	{
@@ -159,10 +159,10 @@ public class DriveBase
 		else
 		{
 			if(mode == DriveMode.REVERSE) rotation = -rotation;
-			if(squaredRotation) rotation = Math.signum(rotation) * (rotation*rotation);
+			if(squaredRotation) rotation = rotation*rotation*rotation;
 		}
 		
-		if(squaredPower) power = Math.signum(power) * (power*power);
+		if(squaredPower) power = power*power*power;
 		
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
@@ -310,14 +310,13 @@ public class DriveBase
 		double error = lockTarget - Sensors.getDriveDistance();
 		double power = lockPID.run(error, lockTarget);
 		driveArcade(power,0);
-		System.out.println("Power: " + power);
-		System.out.println("Error: " + error);
 	}
 	
 	public static void lockDrivebase()
 	{
 		locked = true;
 		lockTarget = Sensors.getDriveDistance();
+		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Lock Target: " + lockTarget);
 	}
 	
 	public static void unlockDrivebase()
@@ -327,7 +326,8 @@ public class DriveBase
 	
 	public static void toggleLock()
 	{
-		locked = !locked;
+		if(!locked) lockDrivebase();
+		else unlockDrivebase();
 	}
 	
 }

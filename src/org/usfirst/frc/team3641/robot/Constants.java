@@ -216,6 +216,10 @@ public class Constants
 		public static final double ENCODER_TO_METERS = 0; //TODO: Build Robot and find Value
 		public static final double DRIVE_ENCODER_TO_METERS = -0.000623409726; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
 		public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
+		
+		public static final double PRESSURE_MULTIPLIER = 250.0;
+		public static final double PRESSURE_ZERO_VALUE = 25.0;
+		public static final double VCC = 5;
 	}
 		
 	public static void reloadConfig()
