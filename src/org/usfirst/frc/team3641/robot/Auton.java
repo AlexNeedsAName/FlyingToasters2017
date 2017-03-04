@@ -108,7 +108,7 @@ public class Auton
 	 */
 	public static void setup(modes mode, boolean redAlliance)
 	{
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Starting Auton: " + mode.toString() + "\n");
+		Console.print("Starting Auton: " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance\n", Constants.Verbosity.Level.LOW);
 		readConfig();
 		autonState = states.START;
 		alreadyRunning = false;
@@ -210,7 +210,7 @@ public class Auton
 		case DRIVE_TO_HOPPER:
 			doneDriving = driveBy(Constants.Auton.distanceToHopperFromTurn, 1);
 			hitTheWall = didWeHitSomething(.5);
-			if(hitTheWall && Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Ouch!");
+			if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
 			if(doneDriving || hitTheWall) increment(states.TARGET_BOILER);
 			break;
 
@@ -356,7 +356,7 @@ public class Auton
 			String[] parts = receivedData.split(" ");
 			String part1 = parts[0];
 			double part1_double = Double.parseDouble(part1);
-			System.out.println("RECEIVED: " + part1);
+			Console.print("RECEIVED: " + part1);
 
 			DriveBase.turnDegrees(part1_double, 2);
 		}
@@ -383,7 +383,7 @@ public class Auton
 				String[] parts = receivedData.split(" ");
 				String part1 = parts[0];
 				double part1_double = Double.parseDouble(part1);
-				System.out.println("RECEIVED: " + part1);
+				Console.print("RECEIVED: " + part1);
 
 				if (part1_double == 999) 
 				{
@@ -411,7 +411,7 @@ public class Auton
 				String[] parts = receivedData.split(" ");
 				String part1 = parts[0];
 				double part1_double = Double.parseDouble(part1);
-				System.out.println("RECEIVED: " + part1);
+				Console.print("RECEIVED: " + part1);
 
 				if (part1_double != 999)
 				{
@@ -434,7 +434,7 @@ public class Auton
 				}
 
 				double range = Sensors.getDistance();
-				System.out.println(range);
+				Console.print("" + range);
 
 				if (range < 0.2) 
 				{
@@ -461,11 +461,11 @@ public class Auton
 			initalDistance = Sensors.getDriveDistance();
 			negativeErrorWhenDone = (distance < Sensors.getDriveDistance());
 			if(usingHorn) Horn.setHorn(true);
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Starting to drive by " + distance + "m in state " + autonState);
+			Console.print("Starting to drive by " + distance + "m in state " + autonState, Constants.Verbosity.Level.LOW);
 			alreadyRunning = true;
 		}
 		String currentDistance = String.format("%.2f", Sensors.getDriveDistance()-initalDistance);
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.HIGH)) System.out.println( currentDistance + "m out of " + distance + "m");
+		Console.print(currentDistance + "m out of " + distance + "m", Constants.Verbosity.Level.HIGH);
 		double error = DriveBase.driveTo(initalDistance  + distance);
 		//boolean crossedLine = (negativeErrorWhenDone) ? (error > 0) : (error < 0);
 		boolean  withinThreshold = (Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
@@ -495,13 +495,13 @@ public class Auton
 	{
 		if(!alreadyRunning)
 		{
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Starting to turn by " + angle + "° in state " + autonState);
+			Console.print("Starting to turn by " + angle + "° in state " + autonState, Constants.Verbosity.Level.LOW);
 			initTimeout(timeout);
 			Sensors.resetGyro();
 			alreadyRunning = true;
 			doneTurning = new boolean[Constants.Thresholds.NUMBER_OF_TURNING_CHECKS];
 		}
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.HIGH)) System.out.println(Sensors.getAngle() + "° out of " + angle + "°");
+		Console.print(Sensors.getAngle() + "° out of " + angle + "°", Constants.Verbosity.Level.HIGH);
 		boolean done = DriveBase.turnTo(angle, 1);
 		doneTurning[index] = done;
 		index++;
@@ -544,7 +544,7 @@ public class Auton
 	 */
 	private static void initTimeout(double Timeout)
 	{
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW) && Timeout != 0) System.out.println("Starting a " + Timeout + "s Timer");
+		if(Timeout != 0) Console.print("Starting a " + Timeout + "s Timer", Constants.Verbosity.Level.LOW);
 		timeoutTimer.reset();
 		timeoutTimer.start();
 	}
@@ -563,9 +563,9 @@ public class Auton
 			return false;
 		}
 		double time = timeoutTimer.get();
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.HIGH)) System.out.println(time + "s out of " + timeout + "s");
+		Console.print(time + "s out of " + timeout + "s", Constants.Verbosity.Level.HIGH);
 		boolean done = (time >= timeout);
-		if(done && Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("\nScrew it, it's close enough. We're out of time");
+		Console.print("\nScrew it, it's close enough. We're out of time", Constants.Verbosity.Level.LOW);
 		return done;
 	}
 	
@@ -589,8 +589,8 @@ public class Auton
 	 */
 	private static void increment(states state)
 	{
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Took " + timeoutTimer.get() + "s to complete " + autonState.toString());
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("\nIncrementing from state " + autonState.toString() + " to state " + state.toString());
+		Console.print("Took " + timeoutTimer.get() + "s to complete " + autonState.toString(), Constants.Verbosity.Level.MID);
+		Console.print("\nIncrementing from state " + autonState.toString() + " to state " + state.toString(), Constants.Verbosity.Level.LOW);
 		autonState = state;
 		DriveBase.driveArcade(0, 0); //Stop Driving!
 		initTimeout(0);

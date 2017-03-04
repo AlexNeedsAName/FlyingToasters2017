@@ -195,7 +195,7 @@ public class DriveBase
 			rightPower*= -1;
 		}
 		
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.INSANITY)) System.out.println("Left Power: " + leftPower + "; Right Power: " + rightPower);
+		Console.print("Left Power: " + leftPower + "; Right Power: " + rightPower, Constants.Verbosity.Level.INSANITY);
 
 		if(Constants.runningAleksBot)
 		{
@@ -225,7 +225,7 @@ public class DriveBase
 		if(mode != Mode)
 		{
 			mode = Mode;
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Switching to " + mode.toString() + " mode.");
+			Console.print("Switching to " + mode.toString() + " mode.");
 		}
 	}
 
@@ -316,7 +316,7 @@ public class DriveBase
 	{
 		locked = true;
 		lockTarget = Sensors.getDriveDistance();
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Lock Target: " + lockTarget);
+		Console.print("Lock Target: " + lockTarget, Constants.Verbosity.Level.LOW);
 	}
 	
 	public static void unlockDrivebase()

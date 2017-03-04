@@ -117,7 +117,7 @@ public class Shooter
 	 */
 	public static void reset()
 	{
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Reset Shooter");
+		Console.print("Reset Shooter", Constants.Verbosity.Level.LOW);
 		SmartDashboard.putNumber("Target RPM", 0);
 		set(0);
 		error = 0;
@@ -151,7 +151,7 @@ public class Shooter
 	 */
 	public static void stopFiring()
 	{
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Stopped Firing Shooter");
+		Console.print("Stopped Firing Shooter", Constants.Verbosity.Level.MID);
 		elevator.set(0);
 		Hopper.stopAdjatating();
 	}

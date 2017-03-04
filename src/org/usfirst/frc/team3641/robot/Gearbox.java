@@ -45,7 +45,7 @@ public class Gearbox
 	{
 		if(gear != currentGear)
 		{
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Shifting to " + gear.toString() + " gear.");
+			Console.print("Shifting to " + gear.toString() + " gear.", Constants.Verbosity.Level.LOW);
 			if(!Constants.runningAleksBot) shifter.set((gear == Gear.LOW) ? (DoubleSolenoid.Value.kReverse) : (DoubleSolenoid.Value.kForward));
 			currentGear = gear;
 			Sensors.shiftEncoderGear();
@@ -68,7 +68,7 @@ public class Gearbox
 	public static void setPTO(boolean on)
 	{
 		inPTOMode = on;
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println(((inPTOMode) ? "Engaging" : "Disengaging") + " PTO");
+		Console.print(((inPTOMode) ? "Engaging" : "Disengaging") + " PTO", Constants.Verbosity.Level.LOW);
 		PTO.set(inPTOMode ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 	}
 	

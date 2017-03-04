@@ -57,7 +57,7 @@ public class Tracking
 			Turret.reset();
 			if(mode == Mode.FUEL_MODE) Serial.sendData("1");
 			else Serial.sendData("3");
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Tracking: Sent Request");
+			Console.print("[Tracking] Sent Request", Constants.Verbosity.Level.MID);
 			visionState = State.GET_RESPONSE;
 			break;
 
@@ -67,7 +67,7 @@ public class Tracking
 			{
 				if(response.contains("None"))
 				{
-					System.out.println("Targeting: Goal not found");
+					Console.print("[Tracking] Goal not found", Constants.Verbosity.Level.MID);
 					visionState = State.SEND_REQUEST;
 				}
 				else
@@ -77,13 +77,13 @@ public class Tracking
 					{
 						angle = Double.parseDouble(strings[0]);
 						if(mode == Mode.GEAR_MODE) angle += Sensors.getAngle();
-						if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Tracking: Angle is " + angle + "°");
+						Console.print("[Tracking] Angle is " + angle + "°", Constants.Verbosity.Level.MID);
 						if(mode == Mode.FUEL_MODE) visionState = State.TURN_TURRET_TO_TARGET;
 						else if(mode == Mode.GEAR_MODE) visionState = State.ROTATE_DRIVEBASE;
 					}
 					catch(NumberFormatException e)
 					{
-						System.out.println("Targeting: Invalid String: " + strings[0]);
+						Console.print("[Tracking] Invalid String: " + strings[0], Constants.Verbosity.Level.LOW);
 						visionState = State.SEND_REQUEST;
 					}
 				}
@@ -95,7 +95,7 @@ public class Tracking
 			SmartDashboard.putBoolean("Turret Tracked", tracked);
 			if(tracked)
 			{
-				if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Tracking: Done turning... Verifying angle.");
+				Console.print("[Tracking] Done turning... Verifying angle.", Constants.Verbosity.Level.LOW);
 				Turret.reset();
 				visionState = State.VERIFY_REQUEST;
 			}
@@ -106,7 +106,7 @@ public class Tracking
 			SmartDashboard.putBoolean("Gear Tracked", tracked);
 			if(tracked)
 			{
-				if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Tracking: Done turning drivebase... Verifying angle.");
+				Console.print("[Tracking] Done turning drivebase... Verifying angle.", Constants.Verbosity.Level.LOW);
 				Turret.reset();
 				visionState = State.VERIFY_REQUEST;
 			}
@@ -125,7 +125,7 @@ public class Tracking
 			{
 				if(response.contains("None"))
 				{
-					System.out.println("Targeting: Goal not found");
+					Console.print("[Tracking] Goal not found", Constants.Verbosity.Level.MID);
 					visionState = State.VERIFY_REQUEST;
 				}
 				else
@@ -139,7 +139,7 @@ public class Tracking
 						{
 							if(Math.abs(angle) < Constants.Thresholds.ACCEPTABLE_FUEL_ERROR)
 							{
-								if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Tracking: Tracked. FIRE!");
+								Console.print("[Tracking] Tracked. FIRE!", Constants.Verbosity.Level.LOW);
 								visionState = State.TRACKED_FUEL;
 							}
 							else resetState();
@@ -148,7 +148,7 @@ public class Tracking
 						{
 							if(Math.abs(angle) < Constants.Thresholds.ACCEPTABLE_GEAR_ERROR + 2)
 							{
-								if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Tracking: Tracked Gear!");
+								Console.print("[Tracking] Tracked Gear!", Constants.Verbosity.Level.LOW);
 								visionState = State.TRACKED_GEAR;
 							}
 							else resetState();
@@ -156,7 +156,7 @@ public class Tracking
 					}
 					catch(NumberFormatException e)
 					{
-						System.out.println("Targeting: Invalid String: " + strings[0]);
+						Console.print("[Tracking]: Invalid String: " + strings[0], Constants.Verbosity.Level.MID);
 						visionState = State.SEND_REQUEST;
 					}
 				}

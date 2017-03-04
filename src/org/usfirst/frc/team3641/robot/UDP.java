@@ -97,7 +97,8 @@ public class UDP
 		}
 		catch (Exception e)
 		{
-			System.out.println("WARNING: " + e.getMessage());
+			Console.printWarning(e.getMessage());
+			Console.printWarning("UDP Error.");
 			return null;
 		}	
 	}

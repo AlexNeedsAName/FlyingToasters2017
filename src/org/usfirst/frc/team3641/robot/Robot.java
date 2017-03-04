@@ -15,6 +15,7 @@ public class Robot extends IterativeRobot
 	
 	public void robotInit()
 	{	
+		Console.getInstance();
 		Constants.runningAleksBot = SmartDashboard.getBoolean("Running Alek's Bot?", false);
 		Constants.readConfig();
 		DriveBase.getInstance();
@@ -44,7 +45,6 @@ public class Robot extends IterativeRobot
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		Auton.setup(mode, redAlliance);
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Starting Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance");
 	}
 
 	public void autonomousPeriodic()
@@ -94,7 +94,7 @@ public class Robot extends IterativeRobot
 	{
 		Horn.setHorn(false);
 		Intake.intakeUp();
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Robot Disabled");
+		Console.print("Robot Disabled", Constants.Verbosity.Level.LOW);
 	}
 
 }

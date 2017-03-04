@@ -32,7 +32,7 @@ public class Intake
 	{
 		if(!up)
 		{
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Intake up");
+			Console.print("Intake up", Constants.Verbosity.Level.LOW);
 			up = true;
 		}
 		intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
@@ -45,7 +45,7 @@ public class Intake
 	{
 		if(up)
 		{
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Intake down");
+			Console.print("Intake down", Constants.Verbosity.Level.LOW);
 			up = false;
 		}
 		intakeSolenoid.set(DoubleSolenoid.Value.kForward);

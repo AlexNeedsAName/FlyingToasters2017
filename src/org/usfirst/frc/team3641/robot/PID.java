@@ -125,7 +125,7 @@ public class PID
 			else if(output < 0) output -= kFF;
 		}
 
-		if(name != null && Constants.Verbosity.PRINT_PID) System.out.println(name + " PID: { P:" + error * kP + ", I:" + errorRefresh * kI + ", D:" + lastError * kD + "; Output: " + output + " }");
+		if(name != null && Constants.Verbosity.PRINT_PID) Console.print(name + " PID: { P:" + error * kP + ", I:" + errorRefresh * kI + ", D:" + lastError * kD + "; Output: " + output + " }");
 
 		SmartDashboard.putNumber(name + " P", error * kP);
 		SmartDashboard.putNumber(name + " I", errorRefresh * kI);
@@ -162,7 +162,7 @@ public class PID
 	public static void reloadAllConfigs()
 	{
 		for(PID instance : instances) instance.readConfig();
-		System.out.println("Finished Reading Config files");
+		Console.print("Finished Reading Config files", Constants.Verbosity.Level.LOW);
 	}
 
 }

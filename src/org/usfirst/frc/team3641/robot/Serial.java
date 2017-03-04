@@ -23,8 +23,8 @@ public class Serial
 		}
 		catch(Exception e)
 		{
-			System.err.println("WARNING: Could not initalize Serial Port");
-			System.out.println(e.toString());
+			Console.printWarning(e.getMessage());
+			Console.printWarning("Could not initalize Serial Port");
 		}
 	}
 

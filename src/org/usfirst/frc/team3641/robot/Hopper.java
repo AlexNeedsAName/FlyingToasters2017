@@ -29,7 +29,7 @@ public class Hopper
 	{
 		if(!alreadyAdjatating)
 		{
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Now adjetating hopper");
+			Console.print("Now adjetating hopper", Constants.Verbosity.Level.LOW);
 			alreadyAdjatating = true;
 		}
 		adjatator.set(Constants.ADJATATOR_SPEED);
@@ -42,7 +42,7 @@ public class Hopper
 	{
 		if(alreadyAdjatating)
 		{
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("No longer adjetating hopper");
+			Console.print("No longer adjetating hopper", Constants.Verbosity.Level.LOW);
 			alreadyAdjatating = false;
 		}
 		adjatator.set(0);
