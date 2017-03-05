@@ -57,7 +57,7 @@ public class Robot extends IterativeRobot
 	{
 		DriveBase.setSquaredControls(true);
 		Constants.reloadConfig();
-		if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.MID)) System.out.println("Teleop Started");
+		Console.print("Teleop Started", Constants.Verbosity.Level.LOW);
 		DriveBase.setBreakMode(true);
 	}
 	

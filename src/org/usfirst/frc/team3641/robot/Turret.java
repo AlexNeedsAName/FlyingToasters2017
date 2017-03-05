@@ -47,7 +47,7 @@ public class Turret
 			double initalAngle = Sensors.getTurretAngle();
 			finalAngle = initalAngle + angle;
 			alreadyRotating = true;
-			if(Constants.Verbosity.isAbove(Constants.Verbosity.Level.LOW)) System.out.println("Turret Rotating " + angle + "°");
+			Console.print("Turret Rotating " + angle + "°", Constants.Verbosity.Level.LOW);
 		}
 
 		SmartDashboard.putNumber("Target", finalAngle);
