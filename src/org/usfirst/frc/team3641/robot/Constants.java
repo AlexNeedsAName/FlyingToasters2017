@@ -94,13 +94,16 @@ public class Constants
 	public static class CAN
 	{
 		public static class Talons
-		{
+		{			
 			public static final int DRIVEBASE_LEFT_1 = 12;
 			public static final int DRIVEBASE_LEFT_2 = 13;
 			public static final int DRIVEBASE_LEFT_3 = 14;
+			public static final int LEFT_ENCODER_TALON = DRIVEBASE_LEFT_3;
+			
 			public static final int DRIVEBASE_RIGHT_1 = 1;
 			public static final int DRIVEBASE_RIGHT_2 = 2;
 			public static final int DRIVEBASE_RIGHT_3 = 3;
+			
 			public static final int SHOOTER_RIGHT = 10;
 			public static final int SHOOTER_LEFT= 11;
 			public static final int TURRET = 0;

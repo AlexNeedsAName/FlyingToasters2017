@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveBase
 {
 	private static DriveBase instance;
-	public static CANTalon left1, left2, left3, right1, right2, right3;
+	public static LinkedTalons left, right;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
 	private static PID rotationPID, drivePID, lockPID;
 	private static double lockTarget;
@@ -17,7 +17,7 @@ public class DriveBase
 	private static boolean squaredRotation, squaredPower;
 
 	private static DriveMode mode;
-
+	
 	public static DriveBase getInstance()
 	{
 		if(instance == null) instance = new DriveBase();
@@ -30,6 +30,80 @@ public class DriveBase
 	public enum DriveMode
 	{
 		NORMAL, REVERSE
+	}
+	
+	public class LinkedTalons
+	{
+		private int numberOfTalons;
+		private CANTalon[] talons;
+		private CANTalon feedbackTalon = null;
+		
+		/**
+		 * Creates a new set of linked talons.
+		 * 
+		 * @param talonIDs Each of the IDs you want to control.
+		 */
+		public LinkedTalons(int... talonIDs)
+		{
+			numberOfTalons = talonIDs.length;
+			talons = new CANTalon[numberOfTalons];
+
+			for(int i = 0; i<numberOfTalons; i++) talons[i] = new CANTalon(talonIDs[i]);
+		}
+		
+		/**
+		 * Set output power of all of the talons.
+		 * 
+		 * @param power The power to set each of the talons to.
+		 */
+		public void set(double power)
+		{
+			for(CANTalon talon : talons) talon.set(power);
+		}
+		
+		/**
+		 * Add a feedback device.
+		 * 
+		 * @param TalonID The ID of the talon you connect the feedback device to.
+		 * @param device The type of feedback device to use.
+		 */
+		public void setFeedbackDevice(int TalonID, FeedbackDevice device)
+		{
+			feedbackTalon = null;
+			for(CANTalon talon : talons) if(talon.getDeviceID() == TalonID) feedbackTalon = talon;
+			if(feedbackTalon == null) throw new IllegalArgumentException("There is not Talon with an ID of " + TalonID + " in this object.");
+			else feedbackTalon.setFeedbackDevice(device);
+		}
+		
+		/**
+		 * Get the encoder position from the feedback talon.
+		 * 
+		 * @return The encoder position in ticks.
+		 */
+		public int getEncPosition()
+		{
+			return feedbackTalon.getEncPosition();
+		}
+		
+		/**
+		 * Set the current position.
+		 * 
+		 * @param position The number of ticks to set the encoder to.
+		 */
+		public void setEncPosition(int position)
+		{
+			feedbackTalon.setEncPosition(position);
+		}
+		
+		/**
+		 * Turns on or off break mode for all the talons.
+		 * 
+		 * @param on True for on, false for off.
+		 */
+		public void setBreakMode(boolean on)
+		{
+			for(CANTalon talon : talons) talon.enableBrakeMode(on);
+		}
 	}
 		
 	/**
@@ -45,13 +119,10 @@ public class DriveBase
 			PWMrightSlave = new Victor(Constants.PWM.Victors.RIGHT_SLAVE);
 		}
 		
-		left1 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_LEFT_1);
-		left2 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_LEFT_2);
-		left3 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_LEFT_3);
-		right1 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_1);
-		right2 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_2);
-		right3 = new CANTalon(Constants.CAN.Talons.DRIVEBASE_RIGHT_3);
-		left3.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		left = new LinkedTalons(Constants.CAN.Talons.DRIVEBASE_LEFT_1, Constants.CAN.Talons.DRIVEBASE_LEFT_2, Constants.CAN.Talons.DRIVEBASE_LEFT_3);
+		left.setFeedbackDevice(Constants.CAN.Talons.LEFT_ENCODER_TALON, FeedbackDevice.CtreMagEncoder_Absolute);
+		
+		right = new LinkedTalons(Constants.CAN.Talons.DRIVEBASE_RIGHT_1, Constants.CAN.Talons.DRIVEBASE_RIGHT_2, Constants.CAN.Talons.DRIVEBASE_RIGHT_3);
 		
 		rotationPID = new PID("DriveBaseRotation");
 		rotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KD, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
@@ -75,12 +146,8 @@ public class DriveBase
 	 */
 	public static void setBreakMode(boolean on)
 	{
-		left1.enableBrakeMode(on);
-		left2.enableBrakeMode(on);
-		left3.enableBrakeMode(on);
-		right1.enableBrakeMode(on);
-		right2.enableBrakeMode(on);
-		right3.enableBrakeMode(on);
+		left.setBreakMode(on);
+		right.setBreakMode(on);
 	}
 
 	/**
@@ -106,7 +173,7 @@ public class DriveBase
 	}
 	
 	/**
-	 * Toggle squared power control.
+	 * Toggle squared rotation.
 	 * 
 	 * @param on True for on, False for off.
 	 */
@@ -159,10 +226,10 @@ public class DriveBase
 		else
 		{
 			if(mode == DriveMode.REVERSE) rotation = -rotation;
-			if(squaredRotation) rotation = rotation*rotation*rotation;
+			if(squaredRotation && rotation != 0) rotation = rotation*rotation*Math.abs(rotation)/rotation;
 		}
 		
-		if(squaredPower) power = power*power*power;
+		if(squaredPower && power != 0) power = power*power*Math.abs(power)/power;
 		
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
@@ -206,12 +273,8 @@ public class DriveBase
 		}
 		else
 		{
-			left1.set(leftPower);
-			left2.set(leftPower);
-			left3.set(leftPower);
-			right1.set(-rightPower);
-			right2.set(-rightPower);
-			right3.set(-rightPower);
+			left.set(leftPower);
+			right.set(-rightPower);
 		}
 	}
 
@@ -255,7 +318,7 @@ public class DriveBase
 
 	/**
 	 * Turns by an absolute angle.
-	 * 
+	 *
 	 * @param inputDegrees The angle in degrees to turn to.
 	 * @param errorMargin How accurate you want to be.
 	 * 
@@ -300,11 +363,19 @@ public class DriveBase
 		return error;
 	}
 	
+	/**
+	 * Check if the PTO is locked.
+	 * 
+	 * @return True if locked.
+	 */
 	public static boolean isLocked()
 	{
 		return locked;
 	}
 	
+	/**
+	 * Run the lock PID loop.
+	 */
 	public static void runLock()
 	{
 		double error = lockTarget - Sensors.getDriveDistance();
@@ -312,6 +383,9 @@ public class DriveBase
 		driveArcade(power,0);
 	}
 	
+	/**
+	 * Lock the PTO.
+	 */
 	public static void lockDrivebase()
 	{
 		locked = true;
@@ -319,11 +393,17 @@ public class DriveBase
 		Console.print("Lock Target: " + lockTarget, Constants.Verbosity.Level.LOW);
 	}
 	
+	/**
+	 * Unlock the PTO lock.
+	 */
 	public static void unlockDrivebase()
 	{
 		locked = false;
 	}
 	
+	/**
+	 * Toggle the PTO Lock
+	 */
 	public static void toggleLock()
 	{
 		if(!locked) lockDrivebase();

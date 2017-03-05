@@ -77,7 +77,7 @@ public class Sensors
 			//DriveBase Stuff
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
-			currentDriveDistance = (double) DriveBase.left3.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;
+			currentDriveDistance = (double) DriveBase.left.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;
 			if(Gearbox.getGear() == Gearbox.Gear.LOW) currentDriveDistance *= Constants.Conversions.LOW_GEAR_RATIO;
 			else currentDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
 	
@@ -124,7 +124,7 @@ public class Sensors
 	private static void resetCurrentDriveDistance()
 	{
 		currentDriveDistance = 0;
-		DriveBase.left3.setEncPosition(0);
+		DriveBase.left.setEncPosition(0);
 	}
 
 	/**
