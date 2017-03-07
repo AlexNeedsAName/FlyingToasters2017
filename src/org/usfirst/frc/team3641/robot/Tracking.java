@@ -79,7 +79,13 @@ public class Tracking
 						if(mode == Mode.GEAR_MODE) angle += Sensors.getAngle();
 						Console.print("[Tracking] Angle is " + angle + "°", Constants.Verbosity.Level.MID);
 						if(mode == Mode.FUEL_MODE) visionState = State.TURN_TURRET_TO_TARGET;
-						else if(mode == Mode.GEAR_MODE) visionState = State.ROTATE_DRIVEBASE;
+						else if(mode == Mode.GEAR_MODE)
+						{
+							double separation = Double.parseDouble(strings[1]);
+							double dist = 0.1055 * Math.sin(Math.toRadians(180 - angle - Sensors.getAngle()))/Math.sin(Math.toRadians(separation));
+							angle = Math.asin(dist * Math.sin(Math.toRadians(angle))) / Math.sqrt(Math.pow(0.3937,2) + Math.pow(dist, 2) - 2.0 * dist * 0.3937 * Math.cos(Math.toRadians(angle + 90)));
+							visionState = State.ROTATE_DRIVEBASE;
+						}
 					}
 					catch(NumberFormatException e)
 					{

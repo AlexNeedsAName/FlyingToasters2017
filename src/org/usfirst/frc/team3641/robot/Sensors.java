@@ -56,6 +56,7 @@ public class Sensors
 		SmartDashboard.putBoolean("Enough Pressure?", doesWeHasEnoughPressure());
 		SmartDashboard.putNumber("Current Pressure", getPressure());
 		SmartDashboard.putNumber("Angle", getAngle());
+		SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
 	}
 	
 	/**
@@ -71,8 +72,8 @@ public class Sensors
 		else
 		{
 			//Shooter Stuff
-			shooterRPM = Shooter.right.getEncVelocity() * Constants.Conversions.ENCODER_TO_METERS;
-			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TO_ANGLE;
+			shooterRPM = Shooter.right.getEncVelocity() * Constants.Conversions.SHOOTER_ENCODER_TO_RPM;
+			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TICKS_PER_DEGREE * Constants.Conversions.TURRET_GEAR_RATIO;
 
 			//DriveBase Stuff
 			angle = gyro.getAngle();

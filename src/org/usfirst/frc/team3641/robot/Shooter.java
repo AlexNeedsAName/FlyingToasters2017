@@ -25,7 +25,7 @@ public class Shooter
 	{
 		left = new CANTalon(Constants.CAN.Talons.SHOOTER_LEFT);
 		right = new CANTalon(Constants.CAN.Talons.SHOOTER_RIGHT);
-		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		elevator = new Spark(Constants.PWM.Sparks.SHOOTER_ELEVATOR);
 		
 		flywheelPID = new PID("ShooterFlywheel");
@@ -44,9 +44,9 @@ public class Shooter
 	{
 		double x = distance;
 		double y = Constants.Shooter.TARGET_HEIGHT-Constants.Shooter.HEIGHT;
-		double θ = Constants.Shooter.ANGLE;
+		double 𝜽 = Constants.Shooter.ANGLE;
 		double g = Constants.Shooter.GRAVITY + Constants.Shooter.LIFT;
-		double v = calcVelocity(x,y,θ,g);
+		double v = calcVelocity(x,y,𝜽,g);
 		return setSpeed(v);
 	}
 	
@@ -55,15 +55,15 @@ public class Shooter
 	 * 
 	 * @param x The distance to the target.
 	 * @param y The height to the target.
-	 * @param θ The launch angle.
+	 * @param 𝜽 The launch angle.
 	 * @param g The y acceleration. Normally gravity, but any lift from the backspin would be added here too.
 	 * @return The ideal velocity to hit the target.
 	 */
-	public static double calcVelocity(double x, double y, double θ, double g)
+	public static double calcVelocity(double x, double y, double 𝜽, double g)
 	{
-		θ = Math.toRadians(θ);
-		return Math.sqrt( (g*x*x) / (2*Math.cos(θ)*Math.cos(θ) * (y-(x*Math.tan(θ))) ) );
-		/* 
+		𝜽 = Math.toRadians(𝜽);
+		return Math.sqrt( (g*x*x) / (2*Math.cos(𝜽)*Math.cos(𝜽) * (y-(x*Math.tan(𝜽))) ) );
+		/*
 		 * https://www.desmos.com/calculator/zzrzc66pur
 		 * This took way too long. It's derived from the kinematic equations. We solved
 		 * x for time, then plugged it into the y equation and solved for velocity.
@@ -108,6 +108,7 @@ public class Shooter
 		SmartDashboard.putNumber("Power Out", power);
 		SmartDashboard.putNumber("RPM", Sensors.getShooterRPM());
 		SmartDashboard.putNumber("RPM over Time", Sensors.getShooterRPM());
+		Console.print("Set Shooter to " + power);
 		right.set(power);
 		left.set(-power);
 	}

@@ -34,7 +34,11 @@ public class Teleop
 		operator.poll();
 		
 		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
-				
+		
+		if(driver.isDown(PS4.Button.OPTIONS)) Hopper.runReverse();
+		else if(driver.isReleased(PS4.Button.OPTIONS)) Hopper.stopAdjatating();
+		if(driver.isDown(PS4.Button.PLAYSTATION_BUTTON)) Shooter.setRPM(3650);
+		else if(driver.isReleased(PS4.Button.PLAYSTATION_BUTTON)) Shooter.set(0);
 		//Change Settings with D-Pad
 		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(DriveBase.DriveMode.NORMAL);
 		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(DriveBase.DriveMode.REVERSE);
@@ -88,8 +92,6 @@ public class Teleop
 			
 			if(operator.isDown(E3D.Button.TRIGGER)) Shooter.forceFire();
 			else if(operator.isReleased(E3D.Button.TRIGGER)) Shooter.stopFiring();
-			
-			Shooter.setRPM(Constants.Shooter.MAX_RPM * operator.getAxis(E3D.Axis.THROTTLE));
 		}
 		
 		if(operator.isReleased(E3D.Button.TRIGGER) || driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();

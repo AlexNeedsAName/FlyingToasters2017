@@ -14,6 +14,7 @@ public class DriveBase
 	private static PID rotationPID, drivePID, lockPID;
 	private static double lockTarget;
 	private static boolean locked;
+	private static boolean inClimbingMode;
 	private static boolean squaredRotation, squaredPower;
 
 	private static DriveMode mode;
@@ -111,6 +112,8 @@ public class DriveBase
 	 */
 	private DriveBase()
 	{
+		inClimbingMode = false;
+		
 		if(Constants.runningAleksBot)
 		{
 			PWMleft = new Victor(PWM.Victors.LEFT);
@@ -137,6 +140,80 @@ public class DriveBase
 		
 		squaredRotation = false;
 		squaredPower = false;
+	}
+
+	/**
+	 * Drives the robot with arcade drive.
+	 * 
+	 * @param power The speed forwards/backwards
+	 * @param rotation The rotation clockwise/counterclockwise
+	 */
+	public static void driveArcade(double power, double rotation)
+	{
+		if(inClimbingMode)
+		{
+			if(Gearbox.inPTOMode())
+			{
+				if(rotation >= .25) Gearbox.setPTO(false);
+			}
+			else if(power >= .25) Gearbox.setPTO(true);
+		}
+		else if(Gearbox.inPTOMode()) Gearbox.setPTO(false);
+	
+		if(Gearbox.inPTOMode()) rotation = 0;
+		else
+		{
+			if(mode == DriveMode.REVERSE) rotation = -rotation;
+			if(squaredRotation && rotation != 0) rotation = rotation*rotation*Math.abs(rotation)/rotation;
+		}
+		
+		if(squaredPower && power != 0) power = power*power*Math.abs(power)/power;
+		
+		double leftPower = power + rotation;
+		double rightPower = power - rotation;
+		
+		driveTank(leftPower, rightPower);
+	}
+		
+	/**
+	 * Drives The robot with tank drive.
+	 * 
+	 * @param leftPower Power for the left half of the drive train (your left stick)
+	 * @param rightPower Power for the right half of the drive train (your right stick)
+	 */
+	public static void driveTank(double leftPower, double rightPower)
+	{
+
+		double maxPower;
+		if(leftPower > rightPower) maxPower = leftPower;
+		else maxPower = rightPower;
+
+		if(maxPower > 1)
+		{
+			leftPower/= maxPower;
+			rightPower/= maxPower;
+		}
+
+		if(mode == DriveMode.REVERSE)
+		{
+			leftPower*= -1;
+			rightPower*= -1;
+		}
+		
+		Console.print("Left Power: " + leftPower + "; Right Power: " + rightPower, Constants.Verbosity.Level.INSANITY);
+
+		if(Constants.runningAleksBot)
+		{
+			PWMleft.set(leftPower);
+			PWMleftSlave.set(leftPower);
+			PWMright.set(-rightPower);
+			PWMrightSlave.set(-rightPower);
+		}
+		else
+		{
+			left.set(leftPower);
+			right.set(-rightPower);
+		}
 	}
 
 	/**
@@ -213,71 +290,7 @@ public class DriveBase
 		toggleSquaredRotation();
 		toggleSquaredPower();
 	}
-
-	/**
-	 * Drives the robot with arcade drive.
-	 * 
-	 * @param power The speed forwards/backwards
-	 * @param rotation The rotation clockwise/counterclockwise
-	 */
-	public static void driveArcade(double power, double rotation)
-	{
-		if(Gearbox.inPTOMode()) rotation = 0;
-		else
-		{
-			if(mode == DriveMode.REVERSE) rotation = -rotation;
-			if(squaredRotation && rotation != 0) rotation = rotation*rotation*Math.abs(rotation)/rotation;
-		}
-		
-		if(squaredPower && power != 0) power = power*power*Math.abs(power)/power;
-		
-		double leftPower = power + rotation;
-		double rightPower = power - rotation;
-		
-		driveTank(leftPower, rightPower);
-	}
-		
-	/**
-	 * Drives The robot with tank drive.
-	 * 
-	 * @param leftPower Power for the left half of the drive train (your left stick)
-	 * @param rightPower Power for the right half of the drive train (your right stick)
-	 */
-	public static void driveTank(double leftPower, double rightPower)
-	{
-
-		double maxPower;
-		if(leftPower > rightPower) maxPower = leftPower;
-		else maxPower = rightPower;
-
-		if(maxPower > 1)
-		{
-			leftPower/= maxPower;
-			rightPower/= maxPower;
-		}
-
-		if(mode == DriveMode.REVERSE)
-		{
-			leftPower*= -1;
-			rightPower*= -1;
-		}
-		
-		Console.print("Left Power: " + leftPower + "; Right Power: " + rightPower, Constants.Verbosity.Level.INSANITY);
-
-		if(Constants.runningAleksBot)
-		{
-			PWMleft.set(leftPower);
-			PWMleftSlave.set(leftPower);
-			PWMright.set(-rightPower);
-			PWMrightSlave.set(-rightPower);
-		}
-		else
-		{
-			left.set(leftPower);
-			right.set(-rightPower);
-		}
-	}
-
+	
 	/**
 	 * Switch between normal and reverse mode.
 	 * 
@@ -408,6 +421,22 @@ public class DriveBase
 	{
 		if(!locked) lockDrivebase();
 		else unlockDrivebase();
+	}
+	
+	/**
+	 * Turns on climbing mode.
+	 */
+	public static void enableClimbingMode()
+	{
+		inClimbingMode = true;
+	}
+	
+	/**
+	 * Turns off climbing mode.
+	 */
+	public static void disableClimbingMode()
+	{
+		inClimbingMode = false;
 	}
 	
 }

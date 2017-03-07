@@ -36,10 +36,10 @@ public class Constants
 		public static final double GRAVITY = -9.81; // m/s/s
 		public static final double LIFT = 0;       // m/s/s
 		public static final double HEIGHT = 0.57; //Meters
-		public static final double ANGLE = 70;   //Degrees
+		public static final double ANGLE = 60;   //Degrees
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
-		public static final double MAX_RPM = 0; //TODO: Run at full speed and measure value.
+		public static final double MAX_RPM = 5800; //TODO: Run at full speed and measure value.
 	}
 	
 	public static class Verbosity
@@ -104,8 +104,8 @@ public class Constants
 			public static final int DRIVEBASE_RIGHT_2 = 2;
 			public static final int DRIVEBASE_RIGHT_3 = 3;
 			
-			public static final int SHOOTER_RIGHT = 10;
-			public static final int SHOOTER_LEFT= 11;
+			public static final int SHOOTER_RIGHT = 11;
+			public static final int SHOOTER_LEFT= 10;
 			public static final int TURRET = 0;
 		}
 	}
@@ -206,17 +206,22 @@ public class Constants
 
 	public class Conversions
 	{
+		public static final double DISTANCE_TO_GOAL = 3.66;
 		public static final double DRIVE_WHEEL_DIAMETER = .1;
 		public static final double DRIVE_WHEEL_CIRCUMFERENCE = Math.PI*DRIVE_WHEEL_DIAMETER;
 		public static final double DRIVE_ENCODER_TICKS_PER_TURN = -4096.0;
-		public static final double LOW_GEAR_RATIO = 2.0/5.0;
-		public static final double HIGH_GEAR_RATIO = 3.0/4.0;
+		public static final double LOW_GEAR_RATIO = 20.0/50.0;
+		public static final double HIGH_GEAR_RATIO = 30.0/40.0;
+		
+		public static final double TURRET_ENCODER_TICKS_PER_DEGREE = 4096.0 / 360.0;
+		public static final double TURRET_GEAR_RATIO = 90.0 / 18.0;
 		
 		public static final double SPEED_TO_RPM = (60 / (2*Math.PI*Shooter.WHEEL_RADIUS/2)) * 2;
-		public static final double ENCODER_TO_RPM = -7.5; // ticks/s * 60s/min * 1rev/8ticks = 7.5 RPM 
+		public static final double SHOOTER_ENCODER_TICKS_PER_REV = -4096.0;
+		public static final double SECONDS_PER_MINUTE = 600;
+		public static final double SHOOTER_ENCODER_TO_RPM = SECONDS_PER_MINUTE / SHOOTER_ENCODER_TICKS_PER_REV; // ticks/s * 60s/min * 1rev/8ticks = 7.5 RPM 
 		public static final double DISTANCE_TO_RPM = 750; //TODO: Build Robot and find Value
 		public static final double VOLTAGE_TO_METERS = 1;
-		public static final double ENCODER_TO_METERS = 0; //TODO: Build Robot and find Value
 		public static final double DRIVE_ENCODER_TO_METERS = -0.000623409726; //TODO: Set after we pick encoder, wheel diameter, and gear ratios;
 		public static final double TURRET_ENCODER_TO_ANGLE = 360.0 / 4096.0;
 		

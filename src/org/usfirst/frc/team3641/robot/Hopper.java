@@ -35,6 +35,11 @@ public class Hopper
 		adjatator.set(Constants.ADJATATOR_SPEED);
 	}
 	
+	public static void runReverse()
+	{
+		adjatator.set(-Constants.ADJATATOR_SPEED);
+	}
+	
 	/**
 	 * Stop adjatating the hopper.
 	 */
