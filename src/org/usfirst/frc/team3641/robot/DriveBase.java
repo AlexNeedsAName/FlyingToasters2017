@@ -154,9 +154,9 @@ public class DriveBase
 		{
 			if(Gearbox.inPTOMode())
 			{
-				if(rotation >= .25) Gearbox.setPTO(false);
+				if(Math.abs(rotation) >= .25 && Math.abs(power) <= .25) Gearbox.setPTO(false);
 			}
-			else if(power >= .25) Gearbox.setPTO(true);
+			else if(Math.abs(power) >= .25) Gearbox.setPTO(true);
 		}
 		else if(Gearbox.inPTOMode()) Gearbox.setPTO(false);
 	

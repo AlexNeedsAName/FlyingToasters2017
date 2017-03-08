@@ -32,7 +32,7 @@ public class Teleop
 	{		
 		driver.poll();
 		operator.poll();
-		
+				
 		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
 		
 		if(driver.isDown(PS4.Button.OPTIONS)) Hopper.runReverse();
@@ -68,8 +68,8 @@ public class Teleop
 		//Gearbox Stuff
 		if(driver.isPressed(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.LOW);
 		else if(driver.isReleased(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.HIGH);
-		if(driver.isPressed(PS4.Button.LEFT_BUMPER)) Gearbox.setPTO(true);
-		if(driver.isReleased(PS4.Button.LEFT_BUMPER)) Gearbox.setPTO(false);
+		if(driver.isPressed(PS4.Button.LEFT_BUMPER)) DriveBase.enableClimbingMode();
+		if(driver.isReleased(PS4.Button.LEFT_BUMPER)) DriveBase.disableClimbingMode();
 		
 		//Intake Stuff
 		if(driver.isPressed(PS4.Button.LEFT_STICK_BUTTON)) Intake.intakeDown();
