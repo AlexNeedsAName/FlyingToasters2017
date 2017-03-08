@@ -67,7 +67,7 @@ public class Tracking
 			{
 				if(response.contains("None"))
 				{
-					Console.print("[Tracking] Goal not found", Constants.Verbosity.Level.MID);
+					Console.print("[Tracking] Target not found", Constants.Verbosity.Level.MID);
 					visionState = State.SEND_REQUEST;
 				}
 				else

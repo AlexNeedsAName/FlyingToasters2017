@@ -37,8 +37,10 @@ public class Teleop
 		
 		if(driver.isDown(PS4.Button.OPTIONS)) Hopper.runReverse();
 		else if(driver.isReleased(PS4.Button.OPTIONS)) Hopper.stopAdjatating();
+		
 		if(driver.isDown(PS4.Button.PLAYSTATION_BUTTON)) Shooter.setRPM(3650);
 		else if(driver.isReleased(PS4.Button.PLAYSTATION_BUTTON)) Shooter.set(0);
+		
 		//Change Settings with D-Pad
 		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(DriveBase.DriveMode.NORMAL);
 		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(DriveBase.DriveMode.REVERSE);
