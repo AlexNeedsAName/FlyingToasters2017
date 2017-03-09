@@ -42,6 +42,7 @@ public class Robot extends IterativeRobot
 		DriveBase.setSquaredControls(false);
 		Constants.reloadConfig();
 		DriveBase.setBreakMode(true);
+		DriveBase.shift(Gearbox.Gear.LOW);
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		Auton.setup(mode, redAlliance);
@@ -82,7 +83,7 @@ public class Robot extends IterativeRobot
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		if(mode != lastMode || redAlliance != lastAllianceIsRed)
 		{
-			System.err.println("WARNING: Switched to Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance"); //Prints it as a warning so it is visible by default. We don't want to ever run the wrong auton.
+			Console.printWarning("Switched to Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance"); //Prints it as a warning so it is visible by default. We don't want to ever run the wrong auton.
 			lastMode = mode;
 			lastAllianceIsRed = redAlliance;
 			
@@ -97,6 +98,7 @@ public class Robot extends IterativeRobot
 	{
 		Horn.setHorn(false);
 		Intake.intakeUp();
+		Intake.setFlapDown();
 		Console.print("Robot Disabled", Constants.Verbosity.Level.LOW);
 	}
 

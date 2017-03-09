@@ -24,7 +24,7 @@ public class MotionProfile
 	
 	public void setup(double distance, double maxAccel)
 	{
-		startDistance = Sensors.getDriveDistance();
+		startDistance = Sensors.getLeftDriveDistance();
 		
 		D = distance;
 		M = maxAccel;
@@ -47,7 +47,7 @@ public class MotionProfile
 	public boolean run(double threshold)
 	{
 		double target = getCurrentTarget() + startDistance;
-		double current = Sensors.getDriveDistance();
+		double current = Sensors.getLeftDriveDistance();
 		double error = target - current;
 		pid.run(error, target);
 		return (Math.abs(error) < threshold);

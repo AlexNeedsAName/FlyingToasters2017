@@ -13,8 +13,7 @@ public class Auton
 	private static boolean[] doneTurning;
 	private static int index;
 	
-	private static boolean negativeErrorWhenDone;
-	private static double initalDistance;
+	private static double initalLeftDistance, initalRightDistance;
 	
 	private static boolean lineFound = false;
 	private static boolean endOfLine = false;
@@ -57,7 +56,8 @@ public class Auton
 		DO_NOTHING,
 		CROSS_LINE,
 		HOPPER_AUTON,
-		GEAR_AUTON,
+		SIDE_GEAR_AUTON,
+		MIDDLE_GEAR_AUTON,
 		COMBO_AUTON,
 		LINE_ALIGN,
 		LINE_FOLLOW,
@@ -75,7 +75,7 @@ public class Auton
 		{
 			if(i >= values.length || i<0)
 			{
-				System.err.println("WARNING: Auton " + i + " out of range. Defaulting to " + values[0].toString());
+				Console.printWarning("Auton " + i + " out of range. Defaulting to " + values[0].toString());
 				i = 0;
 			}
 			return values[i];
@@ -116,7 +116,7 @@ public class Auton
 		onRedAlliance = redAlliance;
 		Tracking.resetState();
 		Gearbox.shift(Gearbox.Gear.LOW);
-		Sensors.resetDriveDistance();
+//		Sensors.resetDriveDistance();
 		Intake.setFlapDown();
 		initTimeout(0);
 		autonTimer.reset();
@@ -128,6 +128,7 @@ public class Auton
 	 */
 	public static void run()
 	{
+		Sensors.printAll();
 		switch(autonMode)
 		{
 		case DO_NOTHING:
@@ -141,8 +142,12 @@ public class Auton
 			hopperAuton();
 			break;
 			
-		case GEAR_AUTON:
-			gearAuton();
+		case SIDE_GEAR_AUTON:
+			sideGearAuton();
+			break;
+			
+		case MIDDLE_GEAR_AUTON:
+			middleGearAuton();
 			break;
 			
 		case COMBO_AUTON:
@@ -230,7 +235,7 @@ public class Auton
 	 * Drives to the gear loading station and places the gear.
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static void gearAuton() //TODO: Add support for each of the three stations with different starting points.
+	private static void sideGearAuton() //TODO: Add support for each of the three stations with different starting points.
 	{
 		switch(autonState)
 		{
@@ -252,6 +257,23 @@ public class Auton
 		case PLACE_GEAR:
 			boolean reachedHopper = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
 			boolean hitTheWall = didWeHitSomething(.1);
+			if(reachedHopper || hitTheWall) increment(states.DONE);
+			break;
+		}		
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	public static void middleGearAuton()
+	{
+		switch(autonState)
+		{
+		case START:
+			increment(states.PLACE_GEAR);
+			break;
+			
+		case PLACE_GEAR:
+			boolean reachedHopper = driveBy(Constants.Auton.middleGearDistance, true, 0);
+			boolean hitTheWall = false;//didWeHitSomething(.1);
 			if(reachedHopper || hitTheWall) increment(states.DONE);
 			break;
 		}
@@ -452,25 +474,41 @@ public class Auton
 	 * @param timeout The number of seconds to try driving before timing out.
 	 * @return True once done driving or when the timeout is up.
 	 */
-	public static boolean driveBy(double distance, double timeout)
+	public static boolean driveBy(double distance, boolean tank, double timeout)
 	{
 		if(!alreadyRunning)
 		{
 			initTimeout(timeout);
-			Sensors.resetDriveDistance();
-			initalDistance = Sensors.getDriveDistance();
-			negativeErrorWhenDone = (distance < Sensors.getDriveDistance());
+			Console.print("iLD: " + initalLeftDistance);
+			Console.print("iRD: " + initalRightDistance);
+			initalLeftDistance = Sensors.getLeftDriveDistance();
+			initalRightDistance = Sensors.getRightDriveDistance();
+			Console.print("niLD: " + initalLeftDistance);
+			Console.print("niRD: " + initalRightDistance);
+
 			if(usingHorn) Horn.setHorn(true);
 			Console.print("Starting to drive by " + distance + "m in state " + autonState, Constants.Verbosity.Level.LOW);
 			alreadyRunning = true;
 		}
-		String currentDistance = String.format("%.2f", Sensors.getDriveDistance()-initalDistance);
+		String currentDistance = String.format("%.2f", Sensors.getLeftDriveDistance()-initalLeftDistance);
 		Console.print(currentDistance + "m out of " + distance + "m", Constants.Verbosity.Level.HIGH);
-		double error = DriveBase.driveTo(initalDistance  + distance);
-		//boolean crossedLine = (negativeErrorWhenDone) ? (error > 0) : (error < 0);
+		double error;
+		if(tank) error = DriveBase.driveTankTo(initalLeftDistance  + distance, initalRightDistance + distance);
+		else error = DriveBase.driveTo(initalLeftDistance  + distance);
+		//Console.print("Error: " + error);
 		boolean  withinThreshold = (Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
 		
 		return (withinThreshold || timeoutUp(timeout));
+	}
+	
+	public static boolean driveBy(double distance, double timeout)
+	{
+		return driveBy(distance, false, timeout);
+	}
+	
+	public static boolean driveBy(double distance, boolean tank)
+	{
+		return driveBy(distance, tank, 0);
 	}
 	
 	/**
@@ -483,7 +521,7 @@ public class Auton
 	{
 		return driveBy(distance, 0);
 	}
-
+	
 	/**
 	 * Turns a specified number of degrees with a timeout.
 	 * 
@@ -593,6 +631,7 @@ public class Auton
 		Console.print("\nIncrementing from state " + autonState.toString() + " to state " + state.toString(), Constants.Verbosity.Level.LOW);
 		autonState = state;
 		DriveBase.driveArcade(0, 0); //Stop Driving!
+		DriveBase.resetPID();
 		initTimeout(0);
 		alreadyRunning = false;
 		Horn.setHorn(false);
@@ -616,7 +655,6 @@ public class Auton
 	 */
 	private static void readConfig()
 	{
-		/*
 		config.reloadFile();
 		Constants.Auton.distanceToBaseline = config.readDouble("distanceToBaseline", Constants.Auton.distanceToBaseline);
 		Constants.Auton.distanceToHopperLine = config.readDouble("distanceToHopperLine", Constants.Auton.distanceToHopperLine);
@@ -629,6 +667,7 @@ public class Auton
 		Constants.Auton.gearTurnBackDistance = config.readDouble("gearTurnBackDistance", Constants.Auton.gearTurnBackDistance);
 		Constants.Auton.gearTurnBackToHopper = config.readDouble("gearTurnBackToHopper", Constants.Auton.gearTurnBackToHopper);
 		usingHorn = config.readBoolean("usingHorn", usingHorn);
-		*/
+		
+		Constants.Auton.middleGearDistance = config.readDouble("middleGearDistance", Constants.Auton.middleGearDistance);
 	}
 }

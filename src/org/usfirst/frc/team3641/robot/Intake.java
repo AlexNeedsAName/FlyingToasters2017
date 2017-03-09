@@ -1,11 +1,11 @@
 package org.usfirst.frc.team3641.robot;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Intake
 {
 	private static Intake instance;
-	private static DoubleSolenoid intakeSolenoid, flapSolenoid;
+	private static Solenoid intakeSolenoid, flapSolenoid;
 	private static Spark intakeSpark;
 	private static boolean up = true;
 	
@@ -20,8 +20,8 @@ public class Intake
 	 */
 	private Intake()
 	{
-		intakeSolenoid = new DoubleSolenoid(Constants.Pnumatics.INTAKE_FORWARD, Constants.Pnumatics.INTAKE_REVERSE);
-		flapSolenoid = new DoubleSolenoid(Constants.Pnumatics.FLAP_FORWARD, Constants.Pnumatics.FLAP_REVERSE);
+		intakeSolenoid = new Solenoid(Constants.Pnumatics.INTAKE);
+		flapSolenoid = new Solenoid(Constants.Pnumatics.FLAP);
 		intakeSpark = new Spark(Constants.PWM.Sparks.INTAKE);
 	}
 	
@@ -35,7 +35,7 @@ public class Intake
 			Console.print("Intake up", Constants.Verbosity.Level.LOW);
 			up = true;
 		}
-		intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		intakeSolenoid.set(false);
 	}
 	
 	/**
@@ -48,7 +48,13 @@ public class Intake
 			Console.print("Intake down", Constants.Verbosity.Level.LOW);
 			up = false;
 		}
-		intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		intakeSolenoid.set(true);
+	}
+	
+	public static void toggleIntake()
+	{
+		if(up) intakeDown();
+		else intakeUp();
 	}
 	
 	/**
@@ -56,7 +62,7 @@ public class Intake
 	 */
 	public static void setFlapDown()
 	{
-		flapSolenoid.set(DoubleSolenoid.Value.kForward);
+		flapSolenoid.set(false);
 	}
 	
 	/**
@@ -64,7 +70,7 @@ public class Intake
 	 */
 	public static void setFlapUp()
 	{
-		flapSolenoid.set(DoubleSolenoid.Value.kReverse);
+		flapSolenoid.set(true);
 	}
 
 	/**

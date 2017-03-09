@@ -8,7 +8,7 @@ public class Constants
 	
 	public static boolean GUITAR_MODE;
 		
-	public static final boolean disableAutonTimeouts = false;
+	public static final boolean disableAutonTimeouts = true;
 
 	public static final double ADJATATOR_SPEED = -1;
 
@@ -24,6 +24,8 @@ public class Constants
 		public static double gearTurnBackAngle = 0;
 		public static double gearTurnBackToHopper = 1;
 		public static double gearTurnBackDistance = 1;
+		
+		public static double middleGearDistance = -1.81;
 	}
 	
 	public static class DriveBase
@@ -103,10 +105,11 @@ public class Constants
 			public static final int DRIVEBASE_RIGHT_1 = 1;
 			public static final int DRIVEBASE_RIGHT_2 = 2;
 			public static final int DRIVEBASE_RIGHT_3 = 3;
+			public static final int RIGHT_ENCODER_TALON = DRIVEBASE_RIGHT_3;
 			
 			public static final int SHOOTER_RIGHT = 11;
 			public static final int SHOOTER_LEFT= 10;
-			public static final int TURRET = 0;
+			public static final int TURRET = 9;
 		}
 	}
 	
@@ -114,8 +117,8 @@ public class Constants
 	{
 		public static class Sparks
 		{
-			public static final int INTAKE = 0;
-			public static final int HOPPER_ADJATATOR = 1;
+			public static final int INTAKE = 8;
+			public static final int HOPPER_ADJATATOR = 7;
 			public static final int SHOOTER_ELEVATOR = 2;
 		}
 		
@@ -139,10 +142,8 @@ public class Constants
 		public static final int SHIFTER_REVERSE = 1;
 		public static final int PTO_FORWARD = 2;
 		public static final int PTO_REVERSE = 3;
-		public static final int INTAKE_FORWARD = 4;
-		public static final int INTAKE_REVERSE = 5;
-		public static final int FLAP_FORWARD = 6;
-		public static final int FLAP_REVERSE = 7;
+		public static final int INTAKE = 4;
+		public static final int FLAP = 5;
 		
 		public static final double WORRY_PRESSURE = 50;
 		public static final double PANCAKE_SHIFT_COST = 1;
@@ -198,7 +199,7 @@ public class Constants
 		
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
 		public static final double SHOOTER_MAX_ERROR = 50; //RPM
-		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
+		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = 0; //Get within 5cm of the target.
 		
 		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 		public static final double ACCEPTABLE_GEAR_ERROR = 2; //Degrees

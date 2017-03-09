@@ -11,7 +11,9 @@ import com.kauailabs.navx.frc.AHRS;
 public class Sensors
 {
 	private static Sensors instance;
-	private static double ultrasonicDistance = 0, shooterRPM, totalDriveDistance, currentDriveDistance, angle, turretAngle;
+	private static double ultrasonicDistance, shooterRPM, angle, turretAngle;
+	private static double totalLeftDriveDistance, currentLeftDriveDistance;
+	private static double totalRightDriveDistance, currentRightDriveDistance;
 	private static boolean isStill;
 	private static double pressure;
 	private static boolean weHasGear;
@@ -57,6 +59,8 @@ public class Sensors
 		SmartDashboard.putNumber("Current Pressure", getPressure());
 		SmartDashboard.putNumber("Angle", getAngle());
 		SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
+		SmartDashboard.putNumber("Left Drive Distance", getLeftDriveDistance());
+		SmartDashboard.putNumber("Right Drive Distance", getRightDriveDistance());
 	}
 	
 	/**
@@ -78,9 +82,21 @@ public class Sensors
 			//DriveBase Stuff
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
-			currentDriveDistance = (double) DriveBase.left.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;
-			if(Gearbox.getGear() == Gearbox.Gear.LOW) currentDriveDistance *= Constants.Conversions.LOW_GEAR_RATIO;
-			else currentDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
+			
+			//Encoder Stuff
+			currentLeftDriveDistance = (double) DriveBase.left.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;
+			currentRightDriveDistance = (double) DriveBase.right.getEncPosition() / -Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;
+			if(Gearbox.getGear() == Gearbox.Gear.LOW)
+			{
+				currentLeftDriveDistance *= Constants.Conversions.LOW_GEAR_RATIO;
+				currentRightDriveDistance *= Constants.Conversions.LOW_GEAR_RATIO;
+
+			}
+			else
+			{
+				currentLeftDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
+				currentRightDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
+			}
 	
 			//Gear Sensor
 			weHasGear = !doesWeHasGearSwitch.get();
@@ -107,25 +123,28 @@ public class Sensors
 	 */
 	public static void setDriveDistance(double distance)
 	{
-		totalDriveDistance = distance;
+		totalLeftDriveDistance = distance;
 		resetCurrentDriveDistance();
 	}
 
 	/**
 	 * Reset the drive distance to 0.
 	 */
-	public static void resetDriveDistance()
+	/*public static void resetDriveDistance()
 	{
 		setDriveDistance(0);
-	}
+	}*/
 	
 	/**
 	 * Resets the distance driven in the current gear.
 	 */
 	private static void resetCurrentDriveDistance()
 	{
-		currentDriveDistance = 0;
+		currentLeftDriveDistance = 0;
+		currentRightDriveDistance = 0;
+		
 		DriveBase.left.setEncPosition(0);
+		DriveBase.right.setEncPosition(0);
 	}
 
 	/**
@@ -153,9 +172,14 @@ public class Sensors
 	 * 
 	 * @return The drive distance in meters.
 	 */
-	public static double getDriveDistance()
+	public static double getLeftDriveDistance()
 	{
-		return currentDriveDistance + totalDriveDistance;
+		return currentLeftDriveDistance + totalLeftDriveDistance;
+	}
+	
+	public static double getRightDriveDistance()
+	{
+		return currentRightDriveDistance + totalRightDriveDistance;
 	}
 
 	/**
@@ -193,7 +217,8 @@ public class Sensors
 	 */
 	public static void shiftEncoderGear()
 	{
-		totalDriveDistance += currentDriveDistance;
+		totalLeftDriveDistance += currentLeftDriveDistance;
+		totalRightDriveDistance += currentRightDriveDistance;
 		resetCurrentDriveDistance();
 	}
 	

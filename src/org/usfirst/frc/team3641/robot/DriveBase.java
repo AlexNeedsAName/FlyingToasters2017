@@ -11,7 +11,7 @@ public class DriveBase
 	private static DriveBase instance;
 	public static LinkedTalons left, right;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
-	private static PID rotationPID, drivePID, lockPID;
+	private static PID rotationPID, driveLeftPID, driveRightPID, lockPID;
 	private static double lockTarget;
 	private static boolean locked;
 	private static boolean inClimbingMode;
@@ -126,14 +126,19 @@ public class DriveBase
 		left.setFeedbackDevice(Constants.CAN.Talons.LEFT_ENCODER_TALON, FeedbackDevice.CtreMagEncoder_Absolute);
 		
 		right = new LinkedTalons(Constants.CAN.Talons.DRIVEBASE_RIGHT_1, Constants.CAN.Talons.DRIVEBASE_RIGHT_2, Constants.CAN.Talons.DRIVEBASE_RIGHT_3);
-		
+		right.setFeedbackDevice(Constants.CAN.Talons.RIGHT_ENCODER_TALON, FeedbackDevice.CtreMagEncoder_Absolute);
+
 		rotationPID = new PID("DriveBaseRotation");
 		rotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KD, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
 		rotationPID.readConfig();
 		
-		drivePID = new PID("DriveBase");
-		drivePID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
-		drivePID.readConfig();
+		driveLeftPID = new PID("DriveBase");
+		driveLeftPID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
+		driveLeftPID.readConfig();
+		
+		driveRightPID = new PID("DriveBase");
+		driveRightPID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
+		driveRightPID.readConfig();
 		
 		lockPID = new PID("LockPTO");
 		lockPID.readConfig();
@@ -370,10 +375,27 @@ public class DriveBase
 	 */
 	public static double driveTo(double distance)
 	{
-		double error = distance - Sensors.getDriveDistance();
-		double output = drivePID.pid(error);
+		double error = distance - Sensors.getLeftDriveDistance();
+		double output = driveLeftPID.pid(error);
 		driveArcade(output, 0);
 		return error;
+	}
+	
+	public static double driveTankTo(double distanceLeft, double distanceRight)
+	{
+		double errorLeft = distanceLeft - Sensors.getLeftDriveDistance();
+		double errorRight = distanceRight - Sensors.getRightDriveDistance();
+		double outputLeft = driveLeftPID.pid(errorLeft);
+		double outputRight = driveRightPID.pid(errorRight);
+		//Console.print("Right Error: " + errorRight + "; Left Error: " + errorLeft);
+		driveTank(outputLeft, outputRight);
+		return Math.abs(errorLeft) + Math.abs(errorRight);
+	}
+	
+	public static void resetPID()
+	{
+		driveLeftPID.reset();
+		driveRightPID.reset();
 	}
 	
 	/**
@@ -391,7 +413,7 @@ public class DriveBase
 	 */
 	public static void runLock()
 	{
-		double error = lockTarget - Sensors.getDriveDistance();
+		double error = lockTarget - Sensors.getLeftDriveDistance();
 		double power = lockPID.run(error, lockTarget);
 		driveArcade(power,0);
 	}
@@ -402,7 +424,7 @@ public class DriveBase
 	public static void lockDrivebase()
 	{
 		locked = true;
-		lockTarget = Sensors.getDriveDistance();
+		lockTarget = Sensors.getLeftDriveDistance();
 		Console.print("Lock Target: " + lockTarget, Constants.Verbosity.Level.LOW);
 	}
 	

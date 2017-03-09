@@ -33,7 +33,7 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 				
-		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
+		//if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
 		
 		if(driver.isDown(PS4.Button.OPTIONS)) Hopper.runReverse();
 		else if(driver.isReleased(PS4.Button.OPTIONS)) Hopper.stopAdjatating();
@@ -74,7 +74,7 @@ public class Teleop
 		//Intake Stuff
 		if(driver.isPressed(PS4.Button.LEFT_STICK_BUTTON)) Intake.intakeDown();
 		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
-		if(driver.isPressed(PS4.Button.LEFT_TRIGGER_BUTTON)) Intake.setFlapDown();
+		if(driver.isPressed(PS4.Button.LEFT_TRIGGER_BUTTON)) Intake.setFlapUp();
 		else if(driver.isReleased(PS4.Button.LEFT_TRIGGER_BUTTON)) Intake.setFlapDown();
 		if(driver.isDown(PS4.Button.X)) Intake.eject();
 		else Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
@@ -108,5 +108,13 @@ public class Teleop
 	{
 		guitar.poll();
 		DriveBase.driveArcade(guitar.getAxis(Harmonix.Axis.WHAMMY_BAR) * guitar.getAxis(Harmonix.Axis.STRUM), guitar.getAxis(Harmonix.Axis.BUTTONS));
+	}
+	
+	public static void runTest()
+	{
+		driver.poll();
+		operator.poll();
+		
+		//Test Code Here.
 	}
 }
