@@ -33,7 +33,7 @@ public class Tracking
 	}
 
 	/**
-	 * Initalizes the Tracking class.
+	 * Initializes the Tracking class.
 	 */
 	private Tracking()
 	{

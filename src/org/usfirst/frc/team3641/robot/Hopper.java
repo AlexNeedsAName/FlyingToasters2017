@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Spark;
 public class Hopper
 {
 	private static Hopper instance;
-	private static Spark adjatator;
+	private static Spark centerAgitator, leftAgitator, rightAgitator;
 	private static boolean alreadyAdjatating = false;
 		
 	public static Hopper getInstance()
@@ -15,15 +15,17 @@ public class Hopper
 	}
 	
 	/**
-	 * Initalize the Hopper (just the spark for the adjatator right now)
+	 * Initialize the Hopper (just the spark for the agitator right now)
 	 */
 	private Hopper()
 	{
-		adjatator = new Spark(Constants.PWM.Sparks.HOPPER_ADJATATOR);
+		centerAgitator = new Spark(Constants.PWM.Sparks.CENTER_ADJATATOR);
+		leftAgitator = new Spark(Constants.PWM.Sparks.LEFT_ADJATATOR);
+		rightAgitator = new Spark(Constants.PWM.Sparks.RIGHT_ADJATATOR);
 	}
 
 	/**
-	 * Start adjatating the hopper so we can feed the shooter.
+	 * Start agitating the hopper so we can feed the shooter.
 	 */
 	public static void adjatate()
 	{
@@ -32,12 +34,16 @@ public class Hopper
 			Console.print("Now adjetating hopper", Constants.Verbosity.Level.LOW);
 			alreadyAdjatating = true;
 		}
-		adjatator.set(Constants.ADJATATOR_SPEED);
+		centerAgitator.set(Constants.Hopper.CENTER_AGITATOR_SPEED);
+		leftAgitator.set(Constants.Hopper.LEFT_AGITATOR_SPEED);
+		rightAgitator.set(Constants.Hopper.RIGHT_AGITATOR_SPEED);
 	}
 	
 	public static void runReverse()
 	{
-		adjatator.set(-Constants.ADJATATOR_SPEED);
+		centerAgitator.set(-Constants.Hopper.CENTER_AGITATOR_SPEED);
+		leftAgitator.set(-Constants.Hopper.LEFT_AGITATOR_SPEED);
+		rightAgitator.set(-Constants.Hopper.RIGHT_AGITATOR_SPEED);
 	}
 	
 	/**
@@ -50,6 +56,8 @@ public class Hopper
 			Console.print("No longer adjetating hopper", Constants.Verbosity.Level.LOW);
 			alreadyAdjatating = false;
 		}
-		adjatator.set(0);
+		centerAgitator.set(0);
+		leftAgitator.set(0);
+		rightAgitator.set(0);
 	}
 }

@@ -15,7 +15,7 @@ public class Teleop
 	}
 
 	/**
-	 * Initalizes Teleop and its controllers.
+	 * Initializes Teleop and its controllers.
 	 */
 	private Teleop()
 	{
@@ -34,7 +34,7 @@ public class Teleop
 		operator.poll();
 				
 		//if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
-		
+		//Jack was here!
 		if(driver.isDown(PS4.Button.OPTIONS)) Hopper.runReverse();
 		else if(driver.isReleased(PS4.Button.OPTIONS)) Hopper.stopAdjatating();
 		

@@ -24,7 +24,7 @@ public class Serial
 		catch(Exception e)
 		{
 			Console.printWarning(e.getMessage());
-			Console.printWarning("Could not initalize Serial Port");
+			Console.printWarning("Could not initialize Serial Port");
 		}
 	}
 

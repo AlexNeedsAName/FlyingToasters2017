@@ -11,7 +11,7 @@ public class RGB
 	}
 	
 	/**
-	 * Initalize the spike to control the RGB strip
+	 * Initialize the spike to control the RGB strip
 	 * 
 	 * @param port
 	 */

@@ -19,7 +19,7 @@ public class Shooter
 	}
 
 	/**
-	 * Initalize the shooter and its motor controllers.
+	 * Initialize the shooter and its motor controllers.
 	 */
 	public Shooter()
 	{

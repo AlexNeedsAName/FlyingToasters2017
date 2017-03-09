@@ -19,7 +19,7 @@ public class Turret
 	}
 
 	/**
-	 * Initalizes the turret, its Talon, and its PID.
+	 * Initializes the turret, its Talon, and its PID.
 	 */
 	private Turret()
 	{

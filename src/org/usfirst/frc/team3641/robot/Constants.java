@@ -10,8 +10,6 @@ public class Constants
 		
 	public static final boolean disableAutonTimeouts = true;
 
-	public static final double ADJATATOR_SPEED = -1;
-
 	public static class Auton
 	{
 		public static double distanceToBaseline = 2.62;
@@ -42,6 +40,13 @@ public class Constants
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 		public static final double MAX_RPM = 5800; //TODO: Run at full speed and measure value.
+	}
+	
+	public static class Hopper
+	{
+		public static final double CENTER_AGITATOR_SPEED = -1;
+		public static final double LEFT_AGITATOR_SPEED = 1;
+		public static final double RIGHT_AGITATOR_SPEED = -LEFT_AGITATOR_SPEED;
 	}
 	
 	public static class Verbosity
@@ -118,7 +123,9 @@ public class Constants
 		public static class Sparks
 		{
 			public static final int INTAKE = 8;
-			public static final int HOPPER_ADJATATOR = 7;
+			public static final int CENTER_ADJATATOR = 7;
+			public static final int LEFT_ADJATATOR = 6;
+			public static final int RIGHT_ADJATATOR = 5;
 			public static final int SHOOTER_ELEVATOR = 2;
 		}
 		
