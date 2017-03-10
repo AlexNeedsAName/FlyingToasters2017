@@ -263,7 +263,7 @@ public class Auton
 		case DRIVE_TO_GEAR:
 			boolean reachedHopper = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
 			boolean hitTheWall = didWeHitSomething(.1);
-			if(reachedHopper || hitTheWall) increment(states.PLACE_GEAR);
+			if(reachedHopper || hitTheWall) increment(states.DONE);
 			break;
 			
 		case PLACE_GEAR:
