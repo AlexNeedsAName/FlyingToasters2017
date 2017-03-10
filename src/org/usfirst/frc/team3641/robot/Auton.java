@@ -40,12 +40,12 @@ public class Auton
 		SCORE_RANKING_POINT,
 		DRIVE_TO_GEAR_TURN,
 		TURN_TO_GEAR,
+		DRIVE_TO_GEAR,
 		PLACE_GEAR,
 		BACK_AWAY_FROM_GEAR,
 		TURN_FROM_GEAR_TO_NORMAL,
 		DRIVE_FROM_GEAR_TURN_TO_HOPPER_LINE,
-		CALM_DOWN,
-		DRIVE_TO_GEAR;
+		CALM_DOWN;
 	}
 	
 	/**
@@ -257,13 +257,18 @@ public class Auton
 			double angle = Constants.Auton.gearTurnAngle;
 			angle = (left) ? angle : -angle;	//We don't care about the fact that red and blue are mirrored, just left or right
 			boolean doneTurning = turnBy(angle, 1);
-			if(doneTurning) increment(states.PLACE_GEAR);
+			if(doneTurning) increment(states.DRIVE_TO_GEAR);
+			break;
+			
+		case DRIVE_TO_GEAR:
+			boolean reachedHopper = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
+			boolean hitTheWall = didWeHitSomething(.1);
+			if(reachedHopper || hitTheWall) increment(states.PLACE_GEAR);
 			break;
 			
 		case PLACE_GEAR:
-			boolean reachedHopper = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
-			boolean hitTheWall = didWeHitSomething(.1);
-			if(reachedHopper || hitTheWall) increment(states.DONE);
+			GearThingy.extend();
+			increment(states.DONE);
 			break;
 		}		
 	}
@@ -274,13 +279,18 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
-			increment(states.PLACE_GEAR);
+			increment(states.DRIVE_TO_GEAR);
+			break;
+			
+		case DRIVE_TO_GEAR:
+			boolean reachedHopper = driveBy(Constants.Auton.middleGearDistance, true, 0);
+			boolean hitTheWall = didWeHitSomething(.1);
+			if(reachedHopper || hitTheWall) increment(states.DONE);
 			break;
 			
 		case PLACE_GEAR:
-			boolean reachedHopper = driveBy(Constants.Auton.middleGearDistance, true, 0);
-			boolean hitTheWall = false;//didWeHitSomething(.1);
-			if(reachedHopper || hitTheWall) increment(states.DONE);
+			GearThingy.extend();
+			increment(states.DONE);
 			break;
 		}
 	}
@@ -308,10 +318,10 @@ public class Auton
 		case TURN_TO_GEAR:
 			angle = (onRedAlliance) ? Constants.Auton.gearTurnAngle : -Constants.Auton.gearTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			doneTurning = turnBy(angle);
-			if(doneTurning) increment(states.PLACE_GEAR);
+			if(doneTurning) increment(states.DRIVE_TO_GEAR);
 			break;
 			
-		case PLACE_GEAR:
+		case DRIVE_TO_GEAR:
 			doneDriving = driveBy(Constants.Auton.distanceToGearFromTurn);
 			if(doneDriving) increment(states.BACK_AWAY_FROM_GEAR);
 			break;
@@ -357,8 +367,8 @@ public class Auton
 		case DRIVE_TO_GEAR:
 			boolean done = driveBy(-1.45);
 			if(done) increment(states.DONE);
+			break;
 		}
-			
 	}
 	
 	/**
