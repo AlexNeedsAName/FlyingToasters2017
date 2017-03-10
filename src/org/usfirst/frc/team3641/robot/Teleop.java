@@ -33,7 +33,7 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 				
-		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.setDriveDistance(0);
+		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
 		
 		if(driver.isDown(PS4.Button.OPTIONS)) Hopper.runReverse();
 		else if(driver.isReleased(PS4.Button.OPTIONS)) Hopper.stopAdjatating();
@@ -53,7 +53,7 @@ public class Teleop
 		if(DriveBase.isLocked()) DriveBase.runLock();
 		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
 		else if(driver.isPressed(PS4.Button.SHARE)) SubAuton.resetDriveBy();
-		else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.04); //cm
+		else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.055); //cm
 		else
 		{
 			if(arcadeMode)
@@ -76,8 +76,8 @@ public class Teleop
 		//Intake Stuff
 		if(driver.isPressed(PS4.Button.LEFT_STICK_BUTTON)) Intake.intakeDown();
 		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
-		if(driver.isPressed(PS4.Button.LEFT_TRIGGER_BUTTON)) Intake.setFlapUp();
-		else if(driver.isReleased(PS4.Button.LEFT_TRIGGER_BUTTON)) Intake.setFlapDown();
+		if(operator.isPressed(11)) Intake.setFlapUp();
+		else if(operator.isReleased(11)) Intake.setFlapDown();
 		if(driver.isDown(PS4.Button.X)) Intake.eject();
 		else Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 		

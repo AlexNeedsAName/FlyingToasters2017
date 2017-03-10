@@ -124,7 +124,13 @@ public class Sensors
 	public static void setDriveDistance(double distance)
 	{
 		totalLeftDriveDistance = distance;
+		totalRightDriveDistance = distance;
 		resetCurrentDriveDistance();
+	}
+	
+	public static void resetDriveDistance()
+	{
+		setDriveDistance(0);
 	}
 
 	/**

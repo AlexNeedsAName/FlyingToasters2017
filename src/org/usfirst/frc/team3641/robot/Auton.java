@@ -245,19 +245,28 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
+			Gearbox.setPTO(true);
 			increment(states.DRIVE_TO_GEAR_TURN);
 			break;
 			
 		case DRIVE_TO_GEAR_TURN:
 			boolean reachedLine = driveBy(Constants.Auton.distanceToGearTurn);
-			if(reachedLine) increment(states.TURN_TO_GEAR);
+			if(reachedLine)
+			{
+				Gearbox.setPTO(false);
+				increment(states.TURN_TO_GEAR);
+			}
 			break;
 
 		case TURN_TO_GEAR:
 			double angle = Constants.Auton.gearTurnAngle;
 			angle = (left) ? angle : -angle;	//We don't care about the fact that red and blue are mirrored, just left or right
 			boolean doneTurning = turnBy(angle, 1);
-			if(doneTurning) increment(states.DRIVE_TO_GEAR);
+			if(doneTurning)
+			{
+				Gearbox.setPTO(true);
+				increment(states.DRIVE_TO_GEAR);
+			}
 			break;
 			
 		case DRIVE_TO_GEAR:
@@ -267,7 +276,7 @@ public class Auton
 			break;
 			
 		case PLACE_GEAR:
-			GearThingy.extend();
+			Gearbox.setPTO(false);
 			increment(states.DONE);
 			break;
 		}		
@@ -279,6 +288,7 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
+			Gearbox.setPTO(true);
 			increment(states.DRIVE_TO_GEAR);
 			break;
 			
@@ -289,7 +299,7 @@ public class Auton
 			break;
 			
 		case PLACE_GEAR:
-			GearThingy.extend();
+			Gearbox.setPTO(false);
 			increment(states.DONE);
 			break;
 		}

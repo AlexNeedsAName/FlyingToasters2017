@@ -132,11 +132,11 @@ public class DriveBase
 		rotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KD, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
 		rotationPID.readConfig();
 		
-		driveLeftPID = new PID("DriveBase");
+		driveLeftPID = new PID("DriveBaseLeft");
 		driveLeftPID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
 		driveLeftPID.readConfig();
 		
-		driveRightPID = new PID("DriveBase");
+		driveRightPID = new PID("DriveBaseRight");
 		driveRightPID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
 		driveRightPID.readConfig();
 		
