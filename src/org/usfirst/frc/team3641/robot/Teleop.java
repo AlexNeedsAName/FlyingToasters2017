@@ -98,6 +98,9 @@ public class Teleop
 		
 		if(operator.isReleased(E3D.Button.TRIGGER) || driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();
 		
+		if(operator.isPressed(12)) GearThingy.extend();
+		else if(operator.isReleased(12)) GearThingy.retract();
+
 		Sensors.printAll();
 	}
 

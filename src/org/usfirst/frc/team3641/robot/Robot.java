@@ -23,6 +23,7 @@ public class Robot extends IterativeRobot
 		Turret.getInstance();
 		Hopper.getInstance();
 		Intake.getInstance();
+		GearThingy.getInstance();
 		Gearbox.getInstance();
 		PDP.getInstance();
 		Horn.getInstance();
