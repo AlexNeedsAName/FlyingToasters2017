@@ -33,8 +33,8 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 				
-		//if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
-		//Jack was here!
+		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.setDriveDistance(0);
+		
 		if(driver.isDown(PS4.Button.OPTIONS)) Hopper.runReverse();
 		else if(driver.isReleased(PS4.Button.OPTIONS)) Hopper.stopAdjatating();
 		
@@ -52,6 +52,8 @@ public class Teleop
 		
 		if(DriveBase.isLocked()) DriveBase.runLock();
 		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
+		else if(driver.isPressed(PS4.Button.SHARE)) SubAuton.resetDriveBy();
+		else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(-.4); //cm
 		else
 		{
 			if(arcadeMode)
