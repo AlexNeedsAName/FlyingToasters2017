@@ -19,9 +19,9 @@ public class Hopper
 	 */
 	private Hopper()
 	{
-		centerAgitator = new Spark(Constants.PWM.Sparks.CENTER_ADJATATOR);
-		leftAgitator = new Spark(Constants.PWM.Sparks.LEFT_ADJATATOR);
-		rightAgitator = new Spark(Constants.PWM.Sparks.RIGHT_ADJATATOR);
+		centerAgitator = new Spark(Constants.PWM.Sparks.CENTER_AGITATOR);
+		leftAgitator = new Spark(Constants.PWM.Sparks.LEFT_AGITATOR);
+		rightAgitator = new Spark(Constants.PWM.Sparks.RIGHT_AGITATOR);
 	}
 
 	/**

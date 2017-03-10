@@ -56,8 +56,9 @@ public class Auton
 		DO_NOTHING,
 		CROSS_LINE,
 		HOPPER_AUTON,
-		SIDE_GEAR_AUTON,
+		LEFT_GEAR_AUTON,
 		MIDDLE_GEAR_AUTON,
+		RIGHT_GEAR_AUTON,
 		COMBO_AUTON,
 		LINE_ALIGN,
 		LINE_FOLLOW,
@@ -142,8 +143,12 @@ public class Auton
 			hopperAuton();
 			break;
 			
-		case SIDE_GEAR_AUTON:
-			sideGearAuton();
+		case LEFT_GEAR_AUTON:
+			sideGearAuton(true);
+			break;
+			
+		case RIGHT_GEAR_AUTON:
+			sideGearAuton(false);
 			break;
 			
 		case MIDDLE_GEAR_AUTON:
@@ -235,7 +240,7 @@ public class Auton
 	 * Drives to the gear loading station and places the gear.
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static void sideGearAuton() //TODO: Add support for each of the three stations with different starting points.
+	private static void sideGearAuton(boolean left) //TODO: Add support for each of the three stations with different starting points.
 	{
 		switch(autonState)
 		{
@@ -249,7 +254,8 @@ public class Auton
 			break;
 
 		case TURN_TO_GEAR:
-			double angle = (onRedAlliance) ? Constants.Auton.gearTurnAngle : -Constants.Auton.gearTurnAngle; //If on red alliance, turn right. If on blue, turn left.
+			double angle = Constants.Auton.gearTurnAngle;
+			angle = (left) ? angle : -angle;	//We don't care about the fact that red and blue are mirrored, just left or right
 			boolean doneTurning = turnBy(angle, 1);
 			if(doneTurning) increment(states.PLACE_GEAR);
 			break;
