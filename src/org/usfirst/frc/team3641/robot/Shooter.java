@@ -28,8 +28,8 @@ public class Shooter
 		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		elevator = new Spark(Constants.PWM.Sparks.SHOOTER_ELEVATOR);
 		
-		flywheelPID = new PID("ShooterFlywheel");
-		flywheelPID.setBackupValues(Constants.PID.SHOOTER_KP, Constants.PID.SHOOTER_KI, Constants.PID.SHOOTER_KD, Constants.PID.SHOOTER_FF, PID.PROPORTIONAL);
+		flywheelPID = new PID("ShooterFlywheelFoo");
+		flywheelPID.setBackupValues(Constants.PID.SHOOTER_KP, Constants.PID.SHOOTER_KI, Constants.PID.SHOOTER_KD, Constants.PID.SHOOTER_FF, PID.PROPORTIONAL, Constants.PID.SHOOTER_DEADBAND);
 		flywheelPID.readConfig();
 	}
 
@@ -37,7 +37,6 @@ public class Shooter
 	/**
 	 * Set the shooter speed *automagically* based on the distance to the target
 	 * 
-	 * @param distance The distance to your target.
 	 * @return The error in RPM.
 	 */
 	public static double setDistance(double distance)
@@ -105,10 +104,11 @@ public class Shooter
 	public static void set(double power)
 	{
 		if(power > 1) power = 1;
+		if(power == 1) Console.print("Power is 0 o_O");
 		SmartDashboard.putNumber("Power Out", power);
 		SmartDashboard.putNumber("RPM", Sensors.getShooterRPM());
 		SmartDashboard.putNumber("RPM over Time", Sensors.getShooterRPM());
-		Console.print("Set Shooter to " + power);
+		Console.print("Set Shooter to " + power, Constants.Verbosity.Level.HIGH);
 		right.set(power);
 		left.set(-power);
 	}

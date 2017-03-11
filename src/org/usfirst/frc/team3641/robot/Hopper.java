@@ -31,7 +31,7 @@ public class Hopper
 	{
 		if(!alreadyAdjatating)
 		{
-			Console.print("Now adjetating hopper", Constants.Verbosity.Level.LOW);
+			Console.print("Now adjetating hopper", Constants.Verbosity.Level.MID);
 			alreadyAdjatating = true;
 		}
 		centerAgitator.set(Constants.Hopper.CENTER_AGITATOR_SPEED);
@@ -53,7 +53,7 @@ public class Hopper
 	{
 		if(alreadyAdjatating)
 		{
-			Console.print("No longer adjetating hopper", Constants.Verbosity.Level.LOW);
+			Console.print("No longer adjetating hopper", Constants.Verbosity.Level.MID);
 			alreadyAdjatating = false;
 		}
 		centerAgitator.set(0);

@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3641.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Teleop
 {
 	private static Teleop instance;
@@ -80,20 +82,27 @@ public class Teleop
 		else if(operator.isReleased(11)) Intake.setFlapDown();
 //		if(driver.isDown(PS4.Button.X)) Intake.eject();
 		else Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
-		
-		if(driver.isDown(PS4.Button.SQUARE)) Hopper.adjatate();
-		else if(driver.isReleased(PS4.Button.SQUARE)) Hopper.stopAdjatating();
-		
+				
 		//Shooter Stuff
 		double shooterSpeed = operator.getAxis(E3D.Axis.THROTTLE);
 		       shooterSpeed -= 1.0;
 		       shooterSpeed /= -2.0;
-		if(operator.isDown(E3D.Button.TRIGGER)) Shooter.setRPM(shooterSpeed * 4550.0);
-		else if(operator.isDown(9)) Shooter.set(.777);
-		else if(operator.isReleased(E3D.Button.TRIGGER) || operator.isReleased(9)) Shooter.set(0);
+		if(operator.isDown(8)) Shooter.set(1);
+		else Shooter.set(0);
+		       
+		if(operator.isDown(10)) Constants.Shooter.TARGET_RPM += Constants.Shooter.ADJUSTMENT_MULTIPLIER;
+		if(operator.isDown(9)) Constants.Shooter.TARGET_RPM -= Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		
-		if(operator.isPressed(E3D.Button.THUMB)) Hopper.adjatate();
-		else if(operator.isReleased(E3D.Button.THUMB)) Hopper.stopAdjatating();
+		else if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(10) || operator.isDown(9)) Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+		else if(!operator.isDown(8)) Shooter.set(0);
+		
+		double error = Constants.Shooter.TARGET_RPM - Sensors.getShooterRPM();
+		if(operator.isDown(5)) Hopper.runReverse();
+		else if(operator.isDown(7)) Hopper.adjatate();
+		else if(operator.isDown(E3D.Button.TRIGGER) &&  Math.abs(error) <=50) Hopper.adjatate();
+		else Hopper.stopAdjatating();
+		
+		SmartDashboard.putNumber("RPM Error", Math.abs(error));
 		
 		/*
 		if(!operator.isDown(E3D.Button.THUMB)) //Autonomous Subsystem Mode
@@ -115,8 +124,8 @@ public class Teleop
 		if(operator.isPressed(12)) GearThingy.extend();
 		else if(operator.isReleased(12)) GearThingy.retract();
 		
-		if(operator.isPressed(10)) GearThingy.shake();
-		else if(operator.isReleased(10)) GearThingy.resetShake();
+		//if(operator.isPressed(10)) GearThingy.shake();
+		//else if(operator.isReleased(10)) GearThingy.resetShake();
 
 		Sensors.printAll();
 	}

@@ -23,7 +23,7 @@ public class Constants
 		public static double gearTurnBackToHopper = 1;
 		public static double gearTurnBackDistance = 1;
 		
-		public static double middleGearDistance = -1.81;
+		public static double middleGearDistance = -1.75;
 	}
 	
 	public static class DriveBase
@@ -39,7 +39,9 @@ public class Constants
 		public static final double ANGLE = 60;   //Degrees
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
-		public static final double MAX_RPM = 5000.0; //TODO: Run at full speed and measure value.
+		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
+		public static double TARGET_RPM = 3037.5;
+		public static final double ADJUSTMENT_MULTIPLIER = 2;
 	}
 	
 	public static class Hopper
@@ -170,10 +172,11 @@ public class Constants
 		public static final double DRIVEBASE_KD = 0.004;
 		public static final double DRIVEBASE_FF = 0.12;
 	
-		public static final double SHOOTER_KP = 0.00006;
-		public static final double SHOOTER_KI = 0.000005;
-		public static final double SHOOTER_KD = 0.00000025;
-		public static final double SHOOTER_FF = 5800;
+		public static final double SHOOTER_KP = 0.000005;//0.00005;
+		public static final double SHOOTER_KI = 0.000008;//0.000005;
+		public static final double SHOOTER_KD = 0;//0.0000005;//.00000025;
+		public static final double SHOOTER_DEADBAND = 200;
+		public static final double SHOOTER_FF = 4750;
 	
 		public static final double TURRET_KP = 0.01;
 		public static final double TURRET_KI = 0.001;
@@ -249,8 +252,9 @@ public class Constants
 	{
 		config.reloadFile();
 		//Verbosity.VERBOSE = Verbosity.Level.fromInt(config.readInt("VERBOSE", Verbosity.Level.LOW.getLevel()));
-		Verbosity.VERBOSE= Verbosity.Level.HIGH;
-		Verbosity.PRINT_PID = config.readBoolean("PRINT_PID", false);
+		Verbosity.VERBOSE= Verbosity.Level.LOW;
+		//Verbosity.PRINT_PID = config.readBoolean("PRINT_PID", false);
+		Verbosity.PRINT_PID = true;
 		GUITAR_MODE = config.readBoolean("GUITAR_MODE", false);
 	}
 }

@@ -259,9 +259,10 @@ public class Auton
 			break;
 
 		case TURN_TO_GEAR:
-			double angle = Constants.Auton.gearTurnAngle;
-			angle = (left) ? angle : -angle;	//We don't care about the fact that red and blue are mirrored, just left or right
-			boolean doneTurning = turnBy(angle, 1);
+			//double angle = Constants.Auton.gearTurnAngle;
+			//angle = (left) ? angle : -angle;	//We don't care about the fact that red and blue are mirrored, just left or right
+			//boolean doneTurning = turnBy(angle, 1);
+			boolean doneTurning = driveTank(.2, -.4, 3);
 			if(doneTurning)
 			{
 				Gearbox.setPTO(true);
