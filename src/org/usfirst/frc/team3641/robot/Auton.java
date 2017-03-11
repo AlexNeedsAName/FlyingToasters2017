@@ -294,11 +294,12 @@ public class Auton
 			
 		case DRIVE_TO_GEAR:
 			boolean reachedHopper = driveBy(Constants.Auton.middleGearDistance, true, 0);
-			boolean hitTheWall = didWeHitSomething(.1);
+			boolean hitTheWall = false;//didWeHitSomething(.1);
 			if(reachedHopper || hitTheWall) increment(states.DONE);
 			break;
 			
 		case PLACE_GEAR:
+			GearThingy.extend();
 			Gearbox.setPTO(false);
 			increment(states.DONE);
 			break;
@@ -505,13 +506,8 @@ public class Auton
 		if(!alreadyRunning)
 		{
 			initTimeout(timeout);
-			Console.print("iLD: " + initalLeftDistance);
-			Console.print("iRD: " + initalRightDistance);
 			initalLeftDistance = Sensors.getLeftDriveDistance();
 			initalRightDistance = Sensors.getRightDriveDistance();
-			Console.print("niLD: " + initalLeftDistance);
-			Console.print("niRD: " + initalRightDistance);
-
 			if(usingHorn) Horn.setHorn(true);
 			Console.print("Starting to drive by " + distance + "m in state " + autonState, Constants.Verbosity.Level.LOW);
 			alreadyRunning = true;
@@ -546,6 +542,26 @@ public class Auton
 	public static boolean driveBy(double distance)
 	{
 		return driveBy(distance, 0);
+	}
+	
+	public static boolean driveTank(double leftDistance, double rightDistance, double timeout)
+	{
+		if(!alreadyRunning)
+		{
+			initTimeout(timeout);
+			initalLeftDistance = Sensors.getLeftDriveDistance();
+			initalRightDistance = Sensors.getRightDriveDistance();
+			if(usingHorn) Horn.setHorn(true);
+			Console.print("Startng to in state " + autonState, Constants.Verbosity.Level.LOW);
+			alreadyRunning = true;
+		}
+		String currentDistance = String.format("%.2f", Sensors.getLeftDriveDistance()-initalLeftDistance);
+		double error;
+		error = DriveBase.driveTankTo(initalLeftDistance  + leftDistance, initalRightDistance + rightDistance);
+		Console.print("Tank Error: " + error);
+		boolean  withinThreshold = (Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
+		
+		return (withinThreshold || timeoutUp(timeout));
 	}
 	
 	/**
@@ -680,7 +696,7 @@ public class Auton
 	 * value
 	 */
 	private static void readConfig()
-	{
+	{/*
 		config.reloadFile();
 		Constants.Auton.distanceToBaseline = config.readDouble("distanceToBaseline", Constants.Auton.distanceToBaseline);
 		Constants.Auton.distanceToHopperLine = config.readDouble("distanceToHopperLine", Constants.Auton.distanceToHopperLine);
@@ -694,6 +710,6 @@ public class Auton
 		Constants.Auton.gearTurnBackToHopper = config.readDouble("gearTurnBackToHopper", Constants.Auton.gearTurnBackToHopper);
 		usingHorn = config.readBoolean("usingHorn", usingHorn);
 		
-		Constants.Auton.middleGearDistance = config.readDouble("middleGearDistance", Constants.Auton.middleGearDistance);
+		Constants.Auton.middleGearDistance = config.readDouble("middleGearDistance", Constants.Auton.middleGearDistance);*/
 	}
 }

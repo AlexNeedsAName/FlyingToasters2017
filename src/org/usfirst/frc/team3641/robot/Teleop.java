@@ -53,7 +53,7 @@ public class Teleop
 		if(DriveBase.isLocked()) DriveBase.runLock();
 		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
 		else if(driver.isPressed(PS4.Button.SHARE)) SubAuton.resetDriveBy();
-		else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.055); //cm
+		else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.03); //cm
 		else
 		{
 			if(arcadeMode)
@@ -78,13 +78,24 @@ public class Teleop
 		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
-		if(driver.isDown(PS4.Button.X)) Intake.eject();
+//		if(driver.isDown(PS4.Button.X)) Intake.eject();
 		else Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 		
 		if(driver.isDown(PS4.Button.SQUARE)) Hopper.adjatate();
 		else if(driver.isReleased(PS4.Button.SQUARE)) Hopper.stopAdjatating();
 		
 		//Shooter Stuff
+		double shooterSpeed = operator.getAxis(E3D.Axis.THROTTLE);
+		       shooterSpeed -= 1.0;
+		       shooterSpeed /= -2.0;
+		if(operator.isDown(E3D.Button.TRIGGER)) Shooter.setRPM(shooterSpeed * 4550.0);
+		else if(operator.isDown(9)) Shooter.set(.777);
+		else if(operator.isReleased(E3D.Button.TRIGGER) || operator.isReleased(9)) Shooter.set(0);
+		
+		if(operator.isPressed(E3D.Button.THUMB)) Hopper.adjatate();
+		else if(operator.isReleased(E3D.Button.THUMB)) Hopper.stopAdjatating();
+		
+		/*
 		if(!operator.isDown(E3D.Button.THUMB)) //Autonomous Subsystem Mode
 		{
 			if(operator.isReleased(E3D.Button.THUMB)) Turret.set(0);
@@ -99,9 +110,13 @@ public class Teleop
 		}
 		
 		if(operator.isReleased(E3D.Button.TRIGGER) || driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();
+		*/
 		
 		if(operator.isPressed(12)) GearThingy.extend();
 		else if(operator.isReleased(12)) GearThingy.retract();
+		
+		if(operator.isPressed(10)) GearThingy.shake();
+		else if(operator.isReleased(10)) GearThingy.resetShake();
 
 		Sensors.printAll();
 	}

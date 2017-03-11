@@ -17,7 +17,7 @@ public class Constants
 		public static double distanceToHopperFromTurn = 1;
 		public static double distanceToGearTurn = -2;
 		public static double distanceToGearFromTurn = -1;
-		public static double gearTurnAngle = -75;
+		public static double gearTurnAngle = 60;
 		public static double hopperTurnAngle = 90;
 		public static double gearTurnBackAngle = 0;
 		public static double gearTurnBackToHopper = 1;
@@ -39,13 +39,13 @@ public class Constants
 		public static final double ANGLE = 60;   //Degrees
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
-		public static final double MAX_RPM = 5800; //TODO: Run at full speed and measure value.
+		public static final double MAX_RPM = 5000.0; //TODO: Run at full speed and measure value.
 	}
 	
 	public static class Hopper
 	{
-		public static final double CENTER_AGITATOR_SPEED = -1;
-		public static final double LEFT_AGITATOR_SPEED = -1;
+		public static double CENTER_AGITATOR_SPEED = -1;
+		public static final double LEFT_AGITATOR_SPEED = 1;
 		public static final double RIGHT_AGITATOR_SPEED = -LEFT_AGITATOR_SPEED;
 	}
 	
@@ -112,9 +112,9 @@ public class Constants
 			public static final int DRIVEBASE_RIGHT_3 = 3;
 			public static final int RIGHT_ENCODER_TALON = DRIVEBASE_RIGHT_3;
 			
-			public static final int SHOOTER_RIGHT = 11;
+			public static final int SHOOTER_RIGHT = 9;
 			public static final int SHOOTER_LEFT= 10;
-			public static final int TURRET = 9;
+			public static final int TURRET = 11;
 		}
 	}
 	
@@ -207,7 +207,7 @@ public class Constants
 		
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
 		public static final double SHOOTER_MAX_ERROR = 50; //RPM
-		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = 0; //Get within 5cm of the target.
+		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .1; //Get within 5cm of the target.
 		
 		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 		public static final double ACCEPTABLE_GEAR_ERROR = 2; //Degrees
@@ -248,7 +248,8 @@ public class Constants
 	public static void readConfig()
 	{
 		config.reloadFile();
-		Verbosity.VERBOSE = Verbosity.Level.fromInt(config.readInt("VERBOSE", Verbosity.Level.LOW.getLevel()));
+		//Verbosity.VERBOSE = Verbosity.Level.fromInt(config.readInt("VERBOSE", Verbosity.Level.LOW.getLevel()));
+		Verbosity.VERBOSE= Verbosity.Level.HIGH;
 		Verbosity.PRINT_PID = config.readBoolean("PRINT_PID", false);
 		GUITAR_MODE = config.readBoolean("GUITAR_MODE", false);
 	}

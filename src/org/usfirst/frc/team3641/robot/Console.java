@@ -66,4 +66,12 @@ public class Console
 		return mode + time;
 	}
 	
+	public static void restartTimer()
+	{
+		print("Restarting Match Timer");
+		uptime.reset();
+		uptime.start();
+		print("Match Started");
+	}
+	
 }

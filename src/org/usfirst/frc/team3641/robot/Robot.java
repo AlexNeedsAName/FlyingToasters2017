@@ -41,6 +41,7 @@ public class Robot extends IterativeRobot
 
 	public void autonomousInit()
 	{
+		Console.restartTimer();
 		DriveBase.setSquaredControls(false);
 		Constants.reloadConfig();
 		DriveBase.setBreakMode(true);
@@ -81,6 +82,7 @@ public class Robot extends IterativeRobot
 	
 	public void disabledPeriodic()
 	{
+		Sensors.printAll();
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red);
 		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		if(mode != lastMode || redAlliance != lastAllianceIsRed)
