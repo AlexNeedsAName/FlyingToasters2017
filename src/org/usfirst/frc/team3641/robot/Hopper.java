@@ -47,7 +47,7 @@ public class Hopper
 	}
 	
 	/**
-	 * Stop adjatating the hopper.
+	 * Stop agitating the hopper.
 	 */
 	public static void stopAdjatating()
 	{

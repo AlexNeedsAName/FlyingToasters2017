@@ -33,6 +33,9 @@ public class DriveBase
 		NORMAL, REVERSE
 	}
 	
+	/**
+	 * A class for mechanically linked Talons.
+	 */
 	public class LinkedTalons
 	{
 		private int numberOfTalons;
@@ -381,6 +384,13 @@ public class DriveBase
 		return error;
 	}
 	
+	/**
+	 * PIDs the left and right sides of the drivebase separately.
+	 * 
+	 * @param distanceLeft Left Target Distance
+	 * @param distanceRight Right Target Distance
+	 * @return The sum of the absolute error of the left and right sides.
+	 */
 	public static double driveTankTo(double distanceLeft, double distanceRight)
 	{
 		double errorLeft = distanceLeft - Sensors.getLeftDriveDistance();
@@ -392,6 +402,9 @@ public class DriveBase
 		return Math.abs(errorLeft) + Math.abs(errorRight);
 	}
 		
+	/**
+	 * Resets all of the drivebase PIDs
+	 */
 	public static void resetPID()
 	{
 		driveLeftPID.reset();

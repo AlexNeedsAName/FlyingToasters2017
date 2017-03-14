@@ -23,19 +23,28 @@ public class GearThingy
 		shakeTimer.start();
 	}
 	
+	/**
+	 * Extends the gear placer/intake with pneumatics.
+	 */
 	public static void extend()
 	{
 		Console.print("Extending Gear Thingy", Constants.Verbosity.Level.LOW);
 		actuator.set(true);
 	}
 	
+	/**
+	 * Retracts the gear placer/intake with pneumatics.
+	 */
 	public static void retract()
 	{
 		Console.print("Retracting Gear Thingy", Constants.Verbosity.Level.LOW);
 		actuator.set(false);
 	}
 	
-	public static void shake()
+	/**
+	 * Shakes the gear thingy twice a second.
+	 */
+	public static void shake() //TODO: Make it actually work.
 	{
 		if(!alreadyShaking)
 		{
@@ -49,6 +58,9 @@ public class GearThingy
 		else retract();
 	}
 	
+	/**
+	 * Stop shaking the gear thingy.
+	 */
 	public static void resetShake()
 	{
 		retract();

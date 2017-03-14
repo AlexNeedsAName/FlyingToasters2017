@@ -61,8 +61,7 @@ public class Auton
 		RIGHT_GEAR_AUTON,
 		COMBO_AUTON,
 		LINE_ALIGN,
-		LINE_FOLLOW,
-		CENTER_GEAR;
+		LINE_FOLLOW;
 		
 		private static final modes[] values = modes.values(); //We cache the value array for preformance
 
@@ -117,7 +116,6 @@ public class Auton
 		onRedAlliance = redAlliance;
 		Tracking.resetState();
 		Gearbox.shift(Gearbox.Gear.LOW);
-//		Sensors.resetDriveDistance();
 		Intake.setFlapDown();
 		initTimeout(0);
 		autonTimer.reset();
@@ -144,15 +142,17 @@ public class Auton
 			break;
 			
 		case LEFT_GEAR_AUTON:
-			sideGearAuton(true);
+			if(onRedAlliance) gearAuton(1);
+			else gearAuton(3);
+			break;
+						
+		case MIDDLE_GEAR_AUTON:
+			gearAuton(2);
 			break;
 			
 		case RIGHT_GEAR_AUTON:
-			sideGearAuton(false);
-			break;
-			
-		case MIDDLE_GEAR_AUTON:
-			middleGearAuton();
+			if(onRedAlliance) gearAuton(3);
+			else gearAuton(1);
 			break;
 			
 		case COMBO_AUTON:
@@ -166,9 +166,6 @@ public class Auton
 		case LINE_FOLLOW:
 			lineFollow();
 			break;
-			
-		case CENTER_GEAR:
-			centerGear();
 		}
 	}
 	
@@ -237,76 +234,57 @@ public class Auton
 	}
 
 	/**
-	 * Drives to the gear loading station and places the gear.
+	 * Drives to the specified gear and places it. On the red alliance, left is 1, middle is 2, and right is 3.
+	 * On the blue alliance, left is 3, middle is 2, and right is 1. This allows us to use the same points to
+	 * line up on both sides of the field.
+	 * 
+	 * @param gearNumber Gear number one, two, or three.
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static void sideGearAuton(boolean left) //TODO: Add support for each of the three stations with different starting points.
+	private static void gearAuton(int gearNumber)
 	{
+		double distance = 0;
+		double angle = 0;
+		boolean done = false;
 		switch(autonState)
 		{
 		case START:
-			Gearbox.setPTO(true);
-			increment(states.DRIVE_TO_GEAR_TURN);
+			if(gearNumber == 2) increment(states.DRIVE_TO_GEAR);
+			else increment(states.DRIVE_TO_GEAR_TURN);
 			break;
 			
 		case DRIVE_TO_GEAR_TURN:
-			boolean reachedLine = driveBy(Constants.Auton.distanceToGearTurn);
-			if(reachedLine)
-			{
-				Gearbox.setPTO(false);
-				increment(states.TURN_TO_GEAR);
-			}
+			if(gearNumber == 1) distance = Constants.Auton.gearOneDistanceToTurn;
+			else if(gearNumber == 3) distance = Constants.Auton.gearThreeDistanceToTurn;
+			
+			done = driveBy(distance);
+			if(done) increment(states.TURN_TO_GEAR);
 			break;
 
 		case TURN_TO_GEAR:
-			//double angle = Constants.Auton.gearTurnAngle;
-			//angle = (left) ? angle : -angle;	//We don't care about the fact that red and blue are mirrored, just left or right
-			//boolean doneTurning = turnBy(angle, 1);
-			boolean doneTurning = driveTank(.2, -.4, 3);
-			if(doneTurning)
-			{
-				Gearbox.setPTO(true);
-				increment(states.DRIVE_TO_GEAR);
-			}
+			if(gearNumber == 1) angle = Constants.Auton.gearOneTurnAngle;
+			else if(gearNumber == 3) angle = Constants.Auton.gearThreeTurnAngle;
+
+			done = turnBy(angle);
+			if(done) increment(states.DRIVE_TO_GEAR);
 			break;
 			
 		case DRIVE_TO_GEAR:
-			boolean reachedHopper = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
-			boolean hitTheWall = didWeHitSomething(.1);
-			if(reachedHopper || hitTheWall) increment(states.DONE);
-			break;
+			if(gearNumber == 1) distance = Constants.Auton.gearOneDistanceToGear;
+			else if(gearNumber == 2) distance = Constants.Auton.gearTwoDistanceToGear;
+			else if (gearNumber == 3) distance = Constants.Auton.gearThreeDistanceToGear;
 			
-		case PLACE_GEAR:
-			Gearbox.setPTO(false);
-			increment(states.DONE);
-			break;
-		}		
-	}
-	
-	@SuppressWarnings("incomplete-switch")
-	public static void middleGearAuton()
-	{
-		switch(autonState)
-		{
-		case START:
-			Gearbox.setPTO(true);
-			increment(states.DRIVE_TO_GEAR);
-			break;
-			
-		case DRIVE_TO_GEAR:
-			boolean reachedHopper = driveBy(Constants.Auton.middleGearDistance, true, 0);
-			boolean hitTheWall = false;//didWeHitSomething(.1);
-			if(reachedHopper || hitTheWall) increment(states.DONE);
+			done = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
+			if(done) increment(states.PLACE_GEAR);
 			break;
 			
 		case PLACE_GEAR:
 			GearThingy.extend();
-			Gearbox.setPTO(false);
 			increment(states.DONE);
 			break;
-		}
+		}		
 	}
-	
+		
 	/**
 	 * Drives to the gear station, places the gear, then backs into hopper, tracks, and fires.
 	 */
@@ -366,23 +344,7 @@ public class Auton
 			break;
 		}
 	}
-	
-	@SuppressWarnings("incomplete-switch")
-	public static void centerGear()
-	{
-		switch(autonState)
-		{
-		case START:
-			increment(states.DRIVE_TO_GEAR);
-			break;
-			
-		case DRIVE_TO_GEAR:
-			boolean done = driveBy(-1.45);
-			if(done) increment(states.DONE);
-			break;
-		}
-	}
-	
+		
 	/**
 	 * Aligns with a line using vision on a beagle bone.
 	 */

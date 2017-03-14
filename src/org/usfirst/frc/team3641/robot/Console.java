@@ -23,49 +23,91 @@ public class Console
 		DS = DriverStation.getInstance();
 	}
 	
+	/**
+	 * Print a message to the console with the current mode and uptime.
+	 * 
+	 * @param msg The message to print.
+	 */
 	public static void print(String msg)
 	{
 		String prefix = getPrefix();
 		System.out.println(prefix + msg);
 	}
 	
+	/**
+	 * Print a message to the console with the current mode and uptime if the verbosity level is above a given level.
+	 *
+	 * @param msg The message to print.
+	 * @param level The minimum verbosity level required to print the message.
+	 */
 	public static void print(String msg, Constants.Verbosity.Level level)
 	{
 		if(Constants.Verbosity.isAbove(level)) print(msg);
 	}
 	
+	/**
+	 * Print a warning message to the console with the current mode and uptime. Shows up even if prints are disabled.
+	 * 
+	 * @param msg The warning message to print.
+	 */
 	public static void printWarning(String msg)
 	{
 		print("WARNING: " + msg);
 	}
 	
+	/**
+	 * Print a warning message to the console with the current mode and uptime. Shows up even if prints are disabled.
+	 * 
+	 * @param msg The warning message to print.
+	 * @param level The minimum verbosity level required to print the warning.
+	 */
 	public static void printWarning(String msg, Constants.Verbosity.Level level)
 	{
 		if(Constants.Verbosity.isAbove(level)) printWarning(msg);
 	}
 	
+	/**
+	 * Print an error message to the console with the current mode and uptime. Shows up even if prints are disabled.
+	 * 
+	 * @param msg The error message to print.
+	 */
 	public static void printError(String msg)
 	{
 		print("ERROR: " + msg);
 	}
 	
+	/**
+	 * Print an error message to the console with the current mode and uptime. Shows up even if prints are disabled.
+	 * 
+	 * @param msg The error message to print.
+	 * @param level The minimum verbosity level required to print the error.
+	 */
 	public static void printError(String msg, Constants.Verbosity.Level level)
 	{
 		if(Constants.Verbosity.isAbove(level)) printError(msg);
 	}
 	
+	/**
+	 * Gets the current mode and time stamp.
+	 * 
+	 * @return A string in the format: "[Mode] [Time] "
+	 */
 	private static String getPrefix()
 	{
-		String mode =                "[Teleop] ";
-		if(DS.isAutonomous()) mode = "[Auton]  ";
-		else if(DS.isTest()) mode =  "[Test]   ";
+		String mode =                   "  [Teleop]";
+		if(DS.isAutonomous()) mode =    "   [Auton]";
+		else if(DS.isTest()) mode =     "    [Test]";
+		else if(DS.isDisabled()) mode = "[Disabled]";
 		
 		String time = String.format("%.2f", uptime.get());
-		time = "[" + time + "] ";
+		time = " [" + time + "] ";
 		
 		return mode + time;
 	}
 	
+	/**
+	 * Reset the timer for prints.
+	 */
 	public static void restartTimer()
 	{
 		print("Restarting Match Timer");
