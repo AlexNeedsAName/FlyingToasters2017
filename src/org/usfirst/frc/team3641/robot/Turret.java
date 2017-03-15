@@ -54,7 +54,7 @@ public class Turret
 		SmartDashboard.putNumber("Raw Encoder", turretTalon.getPosition());
 		
 		double error = finalAngle - Sensors.getTurretAngle();
-		double output = turretPID.pid(error);
+		double output = turretPID.run(error);
 
 		set(output);
 

@@ -84,9 +84,6 @@ public class Teleop
 		else Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 				
 		//Shooter Stuff
-		double shooterSpeed = operator.getAxis(E3D.Axis.THROTTLE);
-		       shooterSpeed -= 1.0;
-		       shooterSpeed /= -2.0;
 		if(operator.isDown(8)) Shooter.set(1);
 		else Shooter.set(0);
 		       

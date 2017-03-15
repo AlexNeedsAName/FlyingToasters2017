@@ -13,7 +13,7 @@ public class Auton
 	private static boolean[] doneTurning;
 	private static int index;
 	
-	private static double initalLeftDistance, initalRightDistance;
+	private static double initalLeftDistance, initalRightDistance, initalAngle;
 	
 	private static boolean lineFound = false;
 	private static boolean endOfLine = false;
@@ -464,13 +464,14 @@ public class Auton
 	 * @param timeout The number of seconds to try driving before timing out.
 	 * @return True once done driving or when the timeout is up.
 	 */
-	public static boolean driveBy(double distance, boolean tank, double timeout)
+	public static boolean driveBy(double distance, double timeout)
 	{
 		if(!alreadyRunning)
 		{
 			initTimeout(timeout);
 			initalLeftDistance = Sensors.getLeftDriveDistance();
 			initalRightDistance = Sensors.getRightDriveDistance();
+			initalAngle = Sensors.getAngle();
 			if(usingHorn) Horn.setHorn(true);
 			Console.print("Starting to drive by " + distance + "m in state " + autonState, Constants.Verbosity.Level.LOW);
 			alreadyRunning = true;
@@ -478,24 +479,13 @@ public class Auton
 		String currentDistance = String.format("%.2f", Sensors.getLeftDriveDistance()-initalLeftDistance);
 		Console.print(currentDistance + "m out of " + distance + "m", Constants.Verbosity.Level.HIGH);
 		double error;
-		if(tank) error = DriveBase.driveTankTo(initalLeftDistance  + distance, initalRightDistance + distance);
-		else error = DriveBase.driveTo(initalLeftDistance  + distance);
+		error = DriveBase.driveStraightTo(initalLeftDistance + distance, initalAngle);
 		//Console.print("Error: " + error);
 		boolean  withinThreshold = (Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
 		
 		return (withinThreshold || timeoutUp(timeout));
 	}
-	
-	public static boolean driveBy(double distance, double timeout)
-	{
-		return driveBy(distance, false, timeout);
-	}
-	
-	public static boolean driveBy(double distance, boolean tank)
-	{
-		return driveBy(distance, tank, 0);
-	}
-	
+			
 	/**
 	 * Drives for a specified distance.
 	 * 
@@ -505,26 +495,6 @@ public class Auton
 	public static boolean driveBy(double distance)
 	{
 		return driveBy(distance, 0);
-	}
-	
-	public static boolean driveTank(double leftDistance, double rightDistance, double timeout)
-	{
-		if(!alreadyRunning)
-		{
-			initTimeout(timeout);
-			initalLeftDistance = Sensors.getLeftDriveDistance();
-			initalRightDistance = Sensors.getRightDriveDistance();
-			if(usingHorn) Horn.setHorn(true);
-			Console.print("Startng to in state " + autonState, Constants.Verbosity.Level.LOW);
-			alreadyRunning = true;
-		}
-		String currentDistance = String.format("%.2f", Sensors.getLeftDriveDistance()-initalLeftDistance);
-		double error;
-		error = DriveBase.driveTankTo(initalLeftDistance  + leftDistance, initalRightDistance + rightDistance);
-		Console.print("Tank Error: " + error);
-		boolean  withinThreshold = (Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
-		
-		return (withinThreshold || timeoutUp(timeout));
 	}
 	
 	/**
@@ -540,12 +510,12 @@ public class Auton
 		{
 			Console.print("Starting to turn by " + angle + "° in state " + autonState, Constants.Verbosity.Level.LOW);
 			initTimeout(timeout);
-			Sensors.resetGyro();
+			initalAngle = Sensors.getAngle();
 			alreadyRunning = true;
 			doneTurning = new boolean[Constants.Thresholds.NUMBER_OF_TURNING_CHECKS];
 		}
-		Console.print(Sensors.getAngle() + "° out of " + angle + "°", Constants.Verbosity.Level.HIGH);
-		boolean done = DriveBase.turnTo(angle, 1);
+		//Console.print(Sensors.getAngle() + "° out of " + angle + "°", Constants.Verbosity.Level.HIGH);
+		boolean done = DriveBase.turnTo(angle + initalAngle, 1);
 		doneTurning[index] = done;
 		index++;
 		if(index >= doneTurning.length) index = 0;

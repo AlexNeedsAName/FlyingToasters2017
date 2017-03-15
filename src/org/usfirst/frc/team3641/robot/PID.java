@@ -141,7 +141,7 @@ public class PID
 	 * @param error The error to target.
 	 * @return Motor output power.
 	 */
-	public double pid(double error)
+	public double run(double error)
 	{
 		return run(error, 0);
 	}

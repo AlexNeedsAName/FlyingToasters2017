@@ -224,6 +224,8 @@ public class Constants
 		
 		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 		public static final double ACCEPTABLE_GEAR_ERROR = 2; //Degrees
+		
+		public static final double ANGLE_THRESHOLD = 1;
 	}
 
 	public class Conversions
