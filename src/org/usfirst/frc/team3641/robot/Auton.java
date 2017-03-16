@@ -8,6 +8,7 @@ public class Auton
 	private static PropertyReader config;
 	private static states autonState;
 	private static modes autonMode;
+	private static stages autonStage;
 	private static boolean onRedAlliance;
 	
 	private static boolean[] doneTurning;
@@ -80,6 +81,14 @@ public class Auton
 			}
 			return values[i];
 		}
+	}
+	
+	private static enum stages
+	{
+		START,
+		GEAR,
+		PREP_FOR_SHOOT,
+		SHOOT;
 	}
 	
 	public static Auton getInstance()
@@ -156,7 +165,7 @@ public class Auton
 			break;
 			
 		case COMBO_AUTON:
-			comboAuton();
+			oldComboAuton();
 			break;
 
 		case LINE_ALIGN:
@@ -284,12 +293,38 @@ public class Auton
 			break;
 		}		
 	}
-		
+	
+	private static void comboAuton()
+	{
+		switch(autonStage)
+		{
+		case START:
+			autonStage = stages.GEAR;
+			increment(states.START);
+			break;
+			
+		case GEAR:
+			gearAuton(3);
+			if(autonState == states.DONE) autonStage = stages.PREP_FOR_SHOOT;
+			break;
+			
+		case PREP_FOR_SHOOT:
+			//Back up and turn to be at the same spot you would be at after TURN_TO_HOPPER in hopper auton here.
+			increment(states.DRIVE_TO_HOPPER);
+			autonStage = stages.SHOOT;
+			break;
+			
+		case SHOOT:
+			hopperAuton();
+			break;
+		}
+	}
+	
 	/**
 	 * Drives to the gear station, places the gear, then backs into hopper, tracks, and fires.
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static void comboAuton()
+	private static void oldComboAuton()
 	{
 		double angle;
 		boolean doneTurning, doneDriving, hitTheWall, doneWaiting;
