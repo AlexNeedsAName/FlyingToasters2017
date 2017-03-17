@@ -80,9 +80,16 @@ public class Teleop
 		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
-//		if(driver.isDown(PS4.Button.X)) Intake.eject();
-		else Intake.setSpeed(driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
-				
+		
+		if(!Gearbox.inPTOMode())
+		{
+			double speed = 0;
+			speed += driver.getAxis(PS4.Axis.RIGHT_TRIGGER);
+			speed -= driver.getAxis(PS4.Axis.LEFT_TRIGGER);
+			Intake.setSpeed(speed);
+		}
+		else Intake.setSpeed(0);
+		
 		//Shooter Stuff
 		if(operator.isDown(8)) Shooter.set(1);
 		else Shooter.set(0);

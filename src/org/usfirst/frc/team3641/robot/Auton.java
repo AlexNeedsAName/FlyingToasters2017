@@ -6,9 +6,9 @@ public class Auton
 {
 	private static Auton instance;
 	private static PropertyReader config;
-	private static states autonState;
-	private static modes autonMode;
-	private static stages autonStage;
+	private static States autonState;
+	private static Routines autonMode;
+	private static Stages autonStage;
 	private static boolean onRedAlliance;
 	
 	private static boolean[] doneTurning;
@@ -30,7 +30,7 @@ public class Auton
 	/**
 	 * All the Auton states we can be in. For each state you use in a routine, add it here.
 	 */
-	private enum states
+	private enum States
 	{
 		START, DONE,
 		DRIVE_FORWARDS,
@@ -52,7 +52,7 @@ public class Auton
 	/**
 	 * All the Auton routines.
 	 */
-	public enum modes
+	public enum Routines
 	{
 		DO_NOTHING,
 		CROSS_LINE,
@@ -64,7 +64,7 @@ public class Auton
 		LINE_ALIGN,
 		LINE_FOLLOW;
 		
-		private static final modes[] values = modes.values(); //We cache the value array for preformance
+		private static final Routines[] values = Routines.values(); //We cache the value array for preformance
 
 		/**
 		 * Get an auton mode from an integer.
@@ -72,7 +72,7 @@ public class Auton
 		 * @param i The number of the mode we want to run
 		 * @return The mode with that number
 		 */
-		public static modes fromInt(int i)
+		public static Routines fromInt(int i)
 		{
 			if(i >= values.length || i<0)
 			{
@@ -83,7 +83,7 @@ public class Auton
 		}
 	}
 	
-	private static enum stages
+	private static enum Stages
 	{
 		START,
 		GEAR,
@@ -115,11 +115,11 @@ public class Auton
 	 * @param redAlliance The alliance you are on. This value effects the turns, since the field is
 	 * asymmetrical this year.
 	 */
-	public static void setup(modes mode, boolean redAlliance)
+	public static void setup(Routines mode, boolean redAlliance)
 	{
 		Console.print("Starting Auton: " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance\n", Constants.Verbosity.Level.LOW);
 		readConfig();
-		autonState = states.START;
+		autonState = States.START;
 		alreadyRunning = false;
 		autonMode = mode;
 		onRedAlliance = redAlliance;
@@ -187,12 +187,12 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
-			increment(states.DRIVE_FORWARDS);
+			increment(States.DRIVE_FORWARDS);
 			break;
 
 		case DRIVE_FORWARDS:
 			boolean reachedLine = driveBy(Constants.Auton.distanceToBaseline);
-			if(reachedLine) increment(states.DONE);
+			if(reachedLine) increment(States.DONE);
 			break;
 		}
 	}
@@ -209,30 +209,30 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
-			increment(states.DRIVE_TO_HOPPER_LINE);
+			increment(States.DRIVE_TO_HOPPER_LINE);
 			break;
 			
 		case DRIVE_TO_HOPPER_LINE:
 			doneDriving = driveBy(Constants.Auton.distanceToHopperLine, 2);
-			if(doneDriving) increment(states.TURN_TO_HOPPER);
+			if(doneDriving) increment(States.TURN_TO_HOPPER);
 			break;
 
 		case TURN_TO_HOPPER:
 			angle = (onRedAlliance) ? Constants.Auton.hopperTurnAngle : -Constants.Auton.hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			doneTurning = turnBy(angle, 1.3);
-			if(doneTurning) increment(states.DRIVE_TO_HOPPER);
+			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
 			doneDriving = driveBy(Constants.Auton.distanceToHopperFromTurn, 1);
 			hitTheWall = didWeHitSomething(.5);
 			if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
-			if(doneDriving || hitTheWall) increment(states.TARGET_BOILER);
+			if(doneDriving || hitTheWall) increment(States.TARGET_BOILER);
 			break;
 
 		case TARGET_BOILER:
 			trackingState = Tracking.target(Tracking.Mode.FUEL_MODE);
-			if(trackingState == Tracking.State.TRACKED_FUEL) increment(states.SCORE_RANKING_POINT);
+			if(trackingState == Tracking.State.TRACKED_FUEL) increment(States.SCORE_RANKING_POINT);
 			break;
 			
 		case SCORE_RANKING_POINT:
@@ -258,8 +258,8 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
-			if(gearNumber == 2) increment(states.DRIVE_TO_GEAR);
-			else increment(states.DRIVE_TO_GEAR_TURN);
+			if(gearNumber == 2) increment(States.DRIVE_TO_GEAR);
+			else increment(States.DRIVE_TO_GEAR_TURN);
 			break;
 			
 		case DRIVE_TO_GEAR_TURN:
@@ -267,7 +267,7 @@ public class Auton
 			else if(gearNumber == 3) distance = Constants.Auton.gearThreeDistanceToTurn;
 			
 			done = driveBy(distance);
-			if(done) increment(states.TURN_TO_GEAR);
+			if(done) increment(States.TURN_TO_GEAR);
 			break;
 
 		case TURN_TO_GEAR:
@@ -275,7 +275,7 @@ public class Auton
 			else if(gearNumber == 3) angle = Constants.Auton.gearThreeTurnAngle;
 
 			done = turnBy(angle);
-			if(done) increment(states.DRIVE_TO_GEAR);
+			if(done) increment(States.DRIVE_TO_GEAR);
 			break;
 			
 		case DRIVE_TO_GEAR:
@@ -284,12 +284,12 @@ public class Auton
 			else if (gearNumber == 3) distance = Constants.Auton.gearThreeDistanceToGear;
 			
 			done = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
-			if(done) increment(states.PLACE_GEAR);
+			if(done) increment(States.PLACE_GEAR);
 			break;
 			
 		case PLACE_GEAR:
 			GearThingy.extend();
-			increment(states.DONE);
+			increment(States.DONE);
 			break;
 		}		
 	}
@@ -299,19 +299,19 @@ public class Auton
 		switch(autonStage)
 		{
 		case START:
-			autonStage = stages.GEAR;
-			increment(states.START);
+			autonStage = Stages.GEAR;
+			increment(States.START);
 			break;
 			
 		case GEAR:
 			gearAuton(3);
-			if(autonState == states.DONE) autonStage = stages.PREP_FOR_SHOOT;
+			if(autonState == States.DONE) autonStage = Stages.PREP_FOR_SHOOT;
 			break;
 			
 		case PREP_FOR_SHOOT:
 			//Back up and turn to be at the same spot you would be at after TURN_TO_HOPPER in hopper auton here.
-			increment(states.DRIVE_TO_HOPPER);
-			autonStage = stages.SHOOT;
+			increment(States.DRIVE_TO_HOPPER);
+			autonStage = Stages.SHOOT;
 			break;
 			
 		case SHOOT:
@@ -332,45 +332,45 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
-			increment(states.DRIVE_TO_GEAR_TURN);
+			increment(States.DRIVE_TO_GEAR_TURN);
 			break;
 			
 		case DRIVE_TO_GEAR_TURN:
 			doneDriving = driveBy(Constants.Auton.distanceToGearTurn);
-			if(doneDriving) increment(states.TURN_TO_GEAR);
+			if(doneDriving) increment(States.TURN_TO_GEAR);
 			break;
 
 		case TURN_TO_GEAR:
 			angle = (onRedAlliance) ? Constants.Auton.gearTurnAngle : -Constants.Auton.gearTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			doneTurning = turnBy(angle);
-			if(doneTurning) increment(states.DRIVE_TO_GEAR);
+			if(doneTurning) increment(States.DRIVE_TO_GEAR);
 			break;
 			
 		case DRIVE_TO_GEAR:
 			doneDriving = driveBy(Constants.Auton.distanceToGearFromTurn);
-			if(doneDriving) increment(states.BACK_AWAY_FROM_GEAR);
+			if(doneDriving) increment(States.BACK_AWAY_FROM_GEAR);
 			break;
 						
 		case BACK_AWAY_FROM_GEAR:
 			doneDriving = driveBy(Constants.Auton.gearTurnBackDistance);
-			if(doneDriving) increment(states.TURN_FROM_GEAR_TO_NORMAL);
+			if(doneDriving) increment(States.TURN_FROM_GEAR_TO_NORMAL);
 			break;
 			
 		case TURN_FROM_GEAR_TO_NORMAL:
 			angle = (onRedAlliance) ? Constants.Auton.gearTurnBackAngle : -Constants.Auton.gearTurnBackAngle; //If on red alliance, turn left. If on blue, turn right.
 			doneTurning = turnBy(angle);
-			if(doneTurning) increment(states.DRIVE_TO_HOPPER);
+			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
 			doneDriving = driveBy(Constants.Auton.gearTurnBackToHopper);
 			hitTheWall = didWeHitSomething(.1);
-			if(doneDriving || hitTheWall) increment(states.TARGET_BOILER);
+			if(doneDriving || hitTheWall) increment(States.TARGET_BOILER);
 			break;
 			
 		case TARGET_BOILER:
 			trackingState = Tracking.target(Tracking.Mode.FUEL_MODE);
-			if(trackingState == Tracking.State.TRACKED_FUEL) increment(states.SCORE_RANKING_POINT);
+			if(trackingState == Tracking.State.TRACKED_FUEL) increment(States.SCORE_RANKING_POINT);
 			break;
 			
 		case SCORE_RANKING_POINT:
@@ -635,7 +635,7 @@ public class Auton
 	 * 
 	 * @param state The state to increment to.
 	 */
-	private static void increment(states state)
+	private static void increment(States state)
 	{
 		Console.print("Took " + timeoutTimer.get() + "s to complete " + autonState.toString(), Constants.Verbosity.Level.MID);
 		Console.print("\nIncrementing from state " + autonState.toString() + " to state " + state.toString(), Constants.Verbosity.Level.LOW);

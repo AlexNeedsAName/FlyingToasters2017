@@ -8,7 +8,7 @@ public class Robot extends IterativeRobot
 {
 	DriverStation DS = DriverStation.getInstance();
 	Preferences Prefs = Preferences.getInstance();
-	Auton.modes lastMode;
+	Auton.Routines lastMode;
 	RGB underglow;
 	boolean lastAllianceIsRed;
 	boolean connectedYet;
@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot
 		SubAuton.getInstance();
 		Sensors.getInstance(); //Must be last, it uses things initialized in other classes
 		//underglow = new RGB(Constants.PWM.Spikes.RGB_SPIKE);
-		lastMode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
+		lastMode = Auton.Routines.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		lastAllianceIsRed = (DS.getAlliance() == DriverStation.Alliance.Red);
 		connectedYet = false;
 	}
@@ -47,7 +47,7 @@ public class Robot extends IterativeRobot
 		DriveBase.setBreakMode(true);
 		DriveBase.shift(Gearbox.Gear.LOW);
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red); //If Alliance is Invalid, returns blue because our half-field is blue.
-		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
+		Auton.Routines mode = Auton.Routines.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		Auton.setup(mode, redAlliance);
 	}
 
@@ -84,7 +84,7 @@ public class Robot extends IterativeRobot
 	{
 		Sensors.printAll();
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red);
-		Auton.modes mode = Auton.modes.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
+		Auton.Routines mode = Auton.Routines.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		if(mode != lastMode || redAlliance != lastAllianceIsRed)
 		{
 			Console.printWarning("Switched to Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance"); //Prints it as a warning so it is visible by default. We don't want to ever run the wrong auton.
