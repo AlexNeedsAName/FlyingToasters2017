@@ -273,7 +273,8 @@ public class Auton
 		case TURN_TO_GEAR:
 			if(gearNumber == 1) angle = Constants.Auton.gearOneTurnAngle;
 			else if(gearNumber == 3) angle = Constants.Auton.gearThreeTurnAngle;
-
+			angle = (onRedAlliance) ? angle : -angle;
+			
 			done = turnBy(angle);
 			if(done) increment(States.DRIVE_TO_GEAR);
 			break;
@@ -283,7 +284,7 @@ public class Auton
 			else if(gearNumber == 2) distance = Constants.Auton.gearTwoDistanceToGear;
 			else if (gearNumber == 3) distance = Constants.Auton.gearThreeDistanceToGear;
 			
-			done = driveBy(Constants.Auton.distanceToGearFromTurn, .5);
+			done = driveBy(distance, .5);
 			if(done) increment(States.PLACE_GEAR);
 			break;
 			
@@ -292,6 +293,38 @@ public class Auton
 			increment(States.DONE);
 			break;
 		}		
+	}
+	
+	@SuppressWarnings("incomplete-switch")
+	private static void transitionGearToHopper()
+	{
+		boolean done;
+		double angle, distance;
+		switch(autonState)
+		{
+		case START:
+			GearThingy.retract();
+			increment(States.BACK_AWAY_FROM_GEAR);
+			break;
+			
+		case BACK_AWAY_FROM_GEAR:
+			done = driveBy(-Constants.Auton.distanceToGearFromTurn);
+			if(done) increment(States.TURN_TO_HOPPER);
+			break;
+			
+		case TURN_TO_HOPPER:
+			angle = Constants.Auton.hopperTurnAngle - Constants.Auton.gearThreeTurnAngle;
+			angle = (onRedAlliance) ? angle : -angle;
+			done = turnBy(angle);
+			if(done) increment(States.DRIVE_TO_HOPPER);
+			break;
+			
+		case DRIVE_TO_HOPPER:
+			distance = Constants.Auton.gearTurnToHopperDistance;
+			done = driveBy(distance);
+			if(done) increment(States.DONE);
+			break;
+		}
 	}
 	
 	private static void comboAuton()
@@ -305,13 +338,20 @@ public class Auton
 			
 		case GEAR:
 			gearAuton(3);
-			if(autonState == States.DONE) autonStage = Stages.PREP_FOR_SHOOT;
+			if(autonState == States.DONE)
+			{
+				autonStage = Stages.PREP_FOR_SHOOT;
+				increment(States.START);
+			}
 			break;
 			
 		case PREP_FOR_SHOOT:
-			//Back up and turn to be at the same spot you would be at after TURN_TO_HOPPER in hopper auton here.
-			increment(States.DRIVE_TO_HOPPER);
-			autonStage = Stages.SHOOT;
+			transitionGearToHopper();
+			if(autonState == States.DONE)
+			{
+				increment(States.DRIVE_TO_HOPPER);
+				autonStage = Stages.SHOOT;
+			}
 			break;
 			
 		case SHOOT:

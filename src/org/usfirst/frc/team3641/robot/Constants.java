@@ -22,6 +22,8 @@ public class Constants
 		public static double gearTwoDistanceToGear = 0;
 		public static double gearThreeDistanceToGear = 0;
 		
+		public static double gearTurnToHopperDistance = 0;
+		
 		public static double distanceToBaseline = 2.62;
 		public static double distanceToHopperLine = 2.29;
 		public static double distanceToHopperFromTurn = 1;
