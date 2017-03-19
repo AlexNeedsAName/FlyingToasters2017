@@ -156,4 +156,14 @@ public class Shooter
 		elevator.set(0);
 		Hopper.stopAdjatating();
 	}
+	
+	/**
+	 * Checks if the shooter is at the right speed.
+	 * 
+	 * @return True if the error is within the threshold.
+	 */
+	public static boolean atTarget()
+	{
+		 return (Math.abs(error) < Constants.Shooter.RPM_THRESHOLD);
+	}
 }

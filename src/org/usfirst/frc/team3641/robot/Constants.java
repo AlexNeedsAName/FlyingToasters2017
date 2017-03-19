@@ -45,6 +45,8 @@ public class Constants
 	
 	public static class Shooter
 	{
+		public static final double RPM_THRESHOLD = 50;
+		
 		public static final double GRAVITY = -9.81; // m/s/s
 		public static final double LIFT = 0;       // m/s/s
 		public static final double HEIGHT = 0.57; //Meters
@@ -61,6 +63,11 @@ public class Constants
 		public static double CENTER_AGITATOR_SPEED = -1;
 		public static final double LEFT_AGITATOR_SPEED = 1;
 		public static final double RIGHT_AGITATOR_SPEED = -LEFT_AGITATOR_SPEED;
+	}
+	
+	public static class Gear
+	{
+		public static final double SHAKE_RATE = 3; //Times per second
 	}
 	
 	public static class Verbosity

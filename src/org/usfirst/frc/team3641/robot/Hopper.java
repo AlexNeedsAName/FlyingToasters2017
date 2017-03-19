@@ -39,6 +39,15 @@ public class Hopper
 		rightAgitator.set(Constants.Hopper.RIGHT_AGITATOR_SPEED);
 	}
 	
+	/**
+	 * Runs the hopper if the shooter is at the correct speed.
+	 */
+	public static void autoAdjatate()
+	{
+		if(Shooter.atTarget()) adjatate();
+		else stopAdjatating();
+	}
+	
 	public static void runReverse()
 	{
 		centerAgitator.set(-Constants.Hopper.CENTER_AGITATOR_SPEED);

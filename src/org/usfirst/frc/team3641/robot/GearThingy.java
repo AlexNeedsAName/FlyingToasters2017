@@ -52,9 +52,9 @@ public class GearThingy
 			shakeTimer.start();
 			alreadyShaking = true;
 		}
-		double time = shakeTimer.get();
-		double rounded = Math.round(time);
-		if(time - rounded <= .5) extend();
+		int time = (int) (2*shakeTimer.get()/Constants.Gear.SHAKE_RATE);
+		
+		if(time % 2 == 0) extend();
 		else retract();
 	}
 	
