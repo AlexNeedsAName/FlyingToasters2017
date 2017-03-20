@@ -17,7 +17,7 @@ public class Robot extends IterativeRobot
 	{	
 		Console.getInstance();
 		Constants.runningAleksBot = SmartDashboard.getBoolean("Running Alek's Bot?", false);
-		Constants.readConfig();
+		Constants.reloadConfig();
 		DriveBase.getInstance();
 		Shooter.getInstance();
 		Turret.getInstance();
@@ -73,6 +73,7 @@ public class Robot extends IterativeRobot
 	public void robotPeriodic()
 	{
 		Sensors.poll();
+		Sensors.printAll();
 	}
 
 	public void testPeriodic()
@@ -82,7 +83,6 @@ public class Robot extends IterativeRobot
 	
 	public void disabledPeriodic()
 	{
-		Sensors.printAll();
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red);
 		Auton.Routines mode = Auton.Routines.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		if(mode != lastMode || redAlliance != lastAllianceIsRed)

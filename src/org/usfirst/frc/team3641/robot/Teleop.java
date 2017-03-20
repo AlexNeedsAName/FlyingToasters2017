@@ -100,8 +100,6 @@ public class Teleop
 		//Gear Thingy Stuff. (Hopefully this changes soon with our new floor pickup mechanism)
 		if(operator.isPressed(12)) GearThingy.extend();
 		else if(operator.isReleased(12)) GearThingy.retract();
-
-		Sensors.printAll();
 	}
 
 	/**

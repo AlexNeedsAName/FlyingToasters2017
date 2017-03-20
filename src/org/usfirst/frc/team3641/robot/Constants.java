@@ -1,8 +1,9 @@
 package org.usfirst.frc.team3641.robot;
+import edu.wpi.first.wpilibj.Preferences;
 
 public class Constants
 {
-	private static PropertyReader config = new PropertyReader("Constants");
+	private static Preferences Prefs = Preferences.getInstance();
 	
 	public static boolean runningAleksBot = false;
 	
@@ -30,6 +31,26 @@ public class Constants
 		public static double hopperDistanceAfterTurn = 1;
 		public static double hopperTurnAngle = 90;
 		
+		public static void reloadConfig()
+		{
+			gearOneDistanceToTurn = Prefs.getDouble("gearOneDistanceToTurn", gearOneDistanceToTurn);
+			gearThreeDistanceToTurn = Prefs.getDouble("gearThreeDistanceToTurn", gearThreeDistanceToTurn);
+
+			gearOneTurnAngle = Prefs.getDouble("gearOneTurnAngle", gearOneTurnAngle);
+			gearThreeTurnAngle = Prefs.getDouble("gearThreeTurnAngle", gearThreeTurnAngle);
+
+			gearOneDistanceAfterTurn = Prefs.getDouble("gearOneDistanceAfterTurn", gearOneDistanceAfterTurn);
+			gearTwoDistance = Prefs.getDouble("gearTwoDistance", gearTwoDistance);
+			gearThreeDistanceAfterTurn = Prefs.getDouble("gearThreeDistanceAfterTurn", gearThreeDistanceAfterTurn);
+
+			gearThreeTurnToHopperDistance = Prefs.getDouble("gearThreeTurnToHopperDistance", gearThreeTurnToHopperDistance);
+
+			baselineDistance = Prefs.getDouble("baselineDistance", baselineDistance);
+
+			hopperDistanceToTurn = Prefs.getDouble("hopperDistanceToTurn", hopperDistanceToTurn);
+			hopperDistanceAfterTurn = Prefs.getDouble("hopperDistanceAfterTurn", hopperDistanceAfterTurn);
+			hopperTurnAngle = Prefs.getDouble("hopperTurnAngle", hopperTurnAngle);
+		}
 	}
 	
 	public static class DriveBase
@@ -92,19 +113,24 @@ public class Constants
 			{
 				if(i >= values.length || i<0)
 				{
-					System.err.println("WARNING: Auton " + i + " out of range. Defaulting to " + values[0].toString());
+					System.err.println("WARNING: Verbosity Level " + i + " out of range. Defaulting to " + values[0].toString());
 					i = 0;
 				}
 				return values[i];
 			}
+			
+			public int toInt()
+			{
+				return this.level;
+			}
 		}
 
-		public static Level VERBOSE;
+		public static Level CURRENT_LEVEL;
 		public static boolean PRINT_PID;
 		
 		public static boolean isAbove(Level level)
 		{
-			return (VERBOSE.getLevel() >= level.getLevel());
+			return (CURRENT_LEVEL.getLevel() >= level.getLevel());
 		}	
 	}
 
@@ -260,16 +286,7 @@ public class Constants
 	public static void reloadConfig()
 	{
 		org.usfirst.frc.team3641.robot.PID.reloadAllConfigs();
-		readConfig();
-	}
-
-	public static void readConfig()
-	{
-		config.reloadFile();
-		//Verbosity.VERBOSE = Verbosity.Level.fromInt(config.readInt("VERBOSE", Verbosity.Level.LOW.getLevel()));
-		Verbosity.VERBOSE= Verbosity.Level.LOW;
-		//Verbosity.PRINT_PID = config.readBoolean("PRINT_PID", false);
-		Verbosity.PRINT_PID = true;
-		GUITAR_MODE = config.readBoolean("GUITAR_MODE", false);
+		GUITAR_MODE = Prefs.getBoolean("Guitar Mode?", false);
+		Verbosity.CURRENT_LEVEL = Verbosity.Level.fromInt(Prefs.getInt("Verbosity", Verbosity.CURRENT_LEVEL.toInt()));
 	}
 }

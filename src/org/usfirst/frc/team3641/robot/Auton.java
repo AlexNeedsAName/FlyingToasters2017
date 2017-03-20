@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Timer;
 public class Auton
 {
 	private static Auton instance;
-	private static PropertyReader config;
 	private static States autonState;
 	private static Routines autonMode;
 	private static Stages autonStage;
@@ -104,7 +103,6 @@ public class Auton
 	{
 		timeoutTimer = new Timer();
 		autonTimer = new Timer();
-		config = new PropertyReader("Auton");
 	}
 	
 	/**
@@ -118,7 +116,7 @@ public class Auton
 	public static void setup(Routines mode, boolean redAlliance)
 	{
 		Console.print("Starting Auton: " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance\n", Constants.Verbosity.Level.LOW);
-		readConfig();
+		Constants.Auton.reloadConfig();
 		autonState = States.START;
 		alreadyRunning = false;
 		autonMode = mode;
@@ -136,7 +134,6 @@ public class Auton
 	 */
 	public static void run()
 	{
-		Sensors.printAll();
 		switch(autonMode)
 		{
 		case DO_NOTHING:
@@ -638,27 +635,5 @@ public class Auton
 	{
 		for(boolean b : array) if(b == false) return false;
 		return true;
-	}
-	
-	/**
-	 * Attempts to read values from the config file. If it ever fails, it just uses the previous
-	 * value
-	 */
-	private static void readConfig()
-	{/*
-		config.reloadFile();
-		Constants.Auton.distanceToBaseline = config.readDouble("distanceToBaseline", Constants.Auton.distanceToBaseline);
-		Constants.Auton.distanceToHopperLine = config.readDouble("distanceToHopperLine", Constants.Auton.distanceToHopperLine);
-		Constants.Auton.distanceToHopperFromTurn = config.readDouble("distanceToHopperFromTurn", Constants.Auton.distanceToHopperFromTurn);
-		Constants.Auton.distanceToGearTurn = config.readDouble("distanceToGearTurn", Constants.Auton.distanceToGearTurn);
-		Constants.Auton.distanceToGearFromTurn = config.readDouble("distanceToGearFromTurn", Constants.Auton.distanceToGearFromTurn);
-		Constants.Auton.hopperTurnAngle = config.readDouble("hopperTurnAngle", Constants.Auton.hopperTurnAngle);
-		Constants.Auton.gearTurnAngle = config.readDouble("gearTurnAngle", Constants.Auton.gearTurnAngle);
-		Constants.Auton.gearTurnBackAngle = config.readDouble("gearTurnBackAngle", Constants.Auton.gearTurnBackAngle);
-		Constants.Auton.gearTurnBackDistance = config.readDouble("gearTurnBackDistance", Constants.Auton.gearTurnBackDistance);
-		Constants.Auton.gearTurnBackToHopper = config.readDouble("gearTurnBackToHopper", Constants.Auton.gearTurnBackToHopper);
-		usingHorn = config.readBoolean("usingHorn", usingHorn);
-		
-		Constants.Auton.middleGearDistance = config.readDouble("middleGearDistance", Constants.Auton.middleGearDistance);*/
 	}
 }

@@ -1,14 +1,16 @@
 package org.usfirst.frc.team3641.robot;
 import java.util.ArrayList;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PID
 {
+	private static Preferences Prefs = Preferences.getInstance();
+	
 	public static final int OFF = 0, PROPORTIONAL = 1, CONSTANT = 2;
 	
 	private static ArrayList<PID> instances = new ArrayList<PID>();
 
-	private PropertyReader properties;
 	private double errorRefresh, lastError;
 	private double BkP = 0, BkI = 0, BkD = 0, BkFF = 0, Bdeadband = 0;
 	private double kP, kI, kD, kFF, deadband;
@@ -24,7 +26,6 @@ public class PID
 	 */
 	public PID(String name)
 	{
-		properties = new PropertyReader(name);
 		this.name = name;
 		instances.add(this);
 		reset();
@@ -36,15 +37,14 @@ public class PID
 	 */
 	public void readConfig()
 	{
-		properties.reloadFile();
-		this.kP = properties.readDouble("kP", BkP);
-		this.kI = properties.readDouble("kI", BkI);
-		this.kD = properties.readDouble("kD", BkD);
+		this.kP = Prefs.getDouble(name + " kP", BkP);
+		this.kI = Prefs.getDouble(name + " kI", BkI);
+		this.kD = Prefs.getDouble(name + " kD", BkD);
 		
-		this.kFF = properties.readDouble("kFF", BkFF);
-		this.feedForwardMode = properties.readInt("feedForwardMode", BfeedForwardMode);
+		this.kFF = Prefs.getDouble(name + " kFF", BkFF);
+		this.feedForwardMode = Prefs.getInt(name  + " Feed Forward Mode", BfeedForwardMode);
 		
-		this.deadband = properties.readDouble("deadband", Bdeadband);
+		this.deadband = Prefs.getDouble(name + " Deadband", Bdeadband);
 	}
 	
 	/**
