@@ -135,12 +135,12 @@ public class DriveBase
 		rotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KD, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
 		rotationPID.readConfig();
 		
-		driveDistancePID = new PID("DriveBaseLeft");
-		driveDistancePID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
+		driveDistancePID = new PID("DriveBase");
+		driveDistancePID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_DEADBAND);
 		driveDistancePID.readConfig();
 		
-		driveRotationPID = new PID("DriveBaseRight");
-		driveRotationPID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_FF, PID.CONSTANT);
+		driveRotationPID = new PID("DriveBase Rotation");
+		driveRotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
 		driveRotationPID.readConfig();
 		
 		lockPID = new PID("LockPTO");

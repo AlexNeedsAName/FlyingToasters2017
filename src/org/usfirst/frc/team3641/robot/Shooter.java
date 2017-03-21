@@ -28,7 +28,7 @@ public class Shooter
 		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		elevator = new Spark(Constants.PWM.Sparks.SHOOTER_ELEVATOR);
 		
-		flywheelPID = new PID("ShooterFlywheelFoo");
+		flywheelPID = new PID("Flywheel");
 		flywheelPID.setBackupValues(Constants.PID.SHOOTER_KP, Constants.PID.SHOOTER_KI, Constants.PID.SHOOTER_KD, Constants.PID.SHOOTER_FF, PID.PROPORTIONAL, Constants.PID.SHOOTER_DEADBAND);
 		flywheelPID.readConfig();
 	}
@@ -108,7 +108,7 @@ public class Shooter
 		SmartDashboard.putNumber("Power Out", power);
 		SmartDashboard.putNumber("RPM", Sensors.getShooterRPM());
 		SmartDashboard.putNumber("RPM over Time", Sensors.getShooterRPM());
-		Console.print("Set Shooter to " + power, Constants.Verbosity.Level.HIGH);
+		Console.print("Set Shooter to " + power, Constants.Verbosity.Level.INSANITY);
 		right.set(power);
 		left.set(-power);
 	}

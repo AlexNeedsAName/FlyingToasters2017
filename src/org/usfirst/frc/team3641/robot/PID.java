@@ -45,6 +45,10 @@ public class PID
 		this.feedForwardMode = Prefs.getInt(name  + " Feed Forward Mode", BfeedForwardMode);
 		
 		this.deadband = Prefs.getDouble(name + " Deadband", Bdeadband);
+		
+		if(this.kP != this.BkP) Console.print("Set " + name + "'s kP to " + this.kP);
+		if(this.kI != this.BkI) Console.print("Set " + name + "'s kI to " + this.kI);
+		if(this.kD != this.BkD) Console.print("Set " + name + "'s kD to " + this.kD);
 	}
 	
 	/**

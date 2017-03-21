@@ -91,11 +91,22 @@ public class Teleop
 		else if(operator.isDown(8)) Shooter.set(1);
 		else Shooter.set(0);
 		
+		if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(1);
+		else if(operator.isDown(3)) Intake.setSpeed(-1);
+		else Intake.setSpeed(0);
+		
 		//Run the Hopper
 		if(operator.isDown(5)) Hopper.runReverse();
 		else if(operator.isDown(7)) Hopper.adjatate();
 		else if(operator.isDown(E3D.Button.TRIGGER)) Hopper.autoAdjatate();
 		else Hopper.stopAdjatating();
+		
+		if(operator.isPressed(4)) Serial.sendData("7\n");
+		else if(operator.isDown(4))
+		{
+			String data = Serial.getData();
+			if(data != null) Console.print(data);
+		}
 		
 		//Gear Thingy Stuff. (Hopefully this changes soon with our new floor pickup mechanism)
 		if(operator.isPressed(12)) GearThingy.extend();

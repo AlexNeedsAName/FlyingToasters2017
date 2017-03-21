@@ -60,6 +60,7 @@ public class Auton
 		MIDDLE_GEAR_AUTON,
 		RIGHT_GEAR_AUTON,
 		COMBO_AUTON,
+		DO_NOT_TURN,
 		LINE_ALIGN,
 		LINE_FOLLOW;
 		
@@ -164,6 +165,10 @@ public class Auton
 		case COMBO_AUTON:
 			comboAuton();
 			break;
+			
+		case DO_NOT_TURN:
+			dontTurn();
+			break;
 
 		case LINE_ALIGN:
 			lineAlign();
@@ -171,6 +176,21 @@ public class Auton
 
 		case LINE_FOLLOW:
 			lineFollow();
+			break;
+		}
+	}
+	
+	private static void dontTurn()
+	{
+		switch(autonState)
+		{
+		case START:
+			SubAuton.resetDriveBy();
+			increment(States.DRIVE_FORWARDS);
+			break;
+			
+		case DRIVE_FORWARDS:
+			SubAuton.driveBy(-2);
 			break;
 		}
 	}

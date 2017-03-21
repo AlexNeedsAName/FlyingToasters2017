@@ -104,7 +104,7 @@ public class Constants
 			
 			public int getLevel()
 			{
-				return level;
+				return this.level;
 			}
 			
 			private static final Level[] values = Level.values(); //We cache the value array for preformance
@@ -118,14 +118,9 @@ public class Constants
 				}
 				return values[i];
 			}
-			
-			public int toInt()
-			{
-				return this.level;
-			}
 		}
 
-		public static Level CURRENT_LEVEL;
+		public static Level CURRENT_LEVEL = Level.LOW;
 		public static boolean PRINT_PID;
 		
 		public static boolean isAbove(Level level)
@@ -201,19 +196,20 @@ public class Constants
 
 	public static class PID
 	{
-		public static final double DRIVEBASE_ROTATION_KP = 0.025; //TODO: Build robot, then tune this value
+		public static final double DRIVEBASE_ROTATION_KP = 0.015; //TODO: Build robot, then tune this value
 		public static final double DRIVEBASE_ROTATION_KI = 0.003; //TODO: Build robot, then tune this value
 		public static final double DRIVEBASE_ROTATION_KD = 0.0004; //TODO: Build robot, then tune this value
 		public static final double DRIVEBASE_ROTATION_DEADBAND = 5;
 	
-		public static final double DRIVEBASE_KP = 0.35;
-		public static final double DRIVEBASE_KI = 0.0;
-		public static final double DRIVEBASE_KD = 0.004;
-		public static final double DRIVEBASE_FF = 0.12;
+		public static final double DRIVEBASE_KP = 0.475;
+		public static final double DRIVEBASE_KI = 0.01;
+		public static final double DRIVEBASE_KD = 0.0;
+		public static final double DRIVEBASE_DEADBAND = 0.5;
+		
 	
-		public static final double SHOOTER_KP = 0.000005;//0.00005;
-		public static final double SHOOTER_KI = 0.000008;//0.000005;
-		public static final double SHOOTER_KD = 0;//0.0000005;//.00000025;
+		public static final double SHOOTER_KP = 0.0001;
+		public static final double SHOOTER_KI = 0.000008;
+		public static final double SHOOTER_KD = 0;
 		public static final double SHOOTER_DEADBAND = 200;
 		public static final double SHOOTER_FF = 4750;
 	
@@ -287,6 +283,6 @@ public class Constants
 	{
 		org.usfirst.frc.team3641.robot.PID.reloadAllConfigs();
 		GUITAR_MODE = Prefs.getBoolean("Guitar Mode?", false);
-		Verbosity.CURRENT_LEVEL = Verbosity.Level.fromInt(Prefs.getInt("Verbosity", Verbosity.CURRENT_LEVEL.toInt()));
+		Verbosity.CURRENT_LEVEL = Verbosity.Level.fromInt(Prefs.getInt("Verbosity", 3));
 	}
 }
