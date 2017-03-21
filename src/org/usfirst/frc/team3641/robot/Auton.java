@@ -165,7 +165,7 @@ public class Auton
 			break;
 			
 		case COMBO_AUTON:
-			oldComboAuton();
+			comboAuton();
 			break;
 
 		case LINE_ALIGN:
@@ -191,7 +191,7 @@ public class Auton
 			break;
 
 		case DRIVE_FORWARDS:
-			boolean reachedLine = driveBy(Constants.Auton.distanceToBaseline);
+			boolean reachedLine = driveBy(Constants.Auton.baselineDistance);
 			if(reachedLine) increment(States.DONE);
 			break;
 		}
@@ -213,7 +213,7 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER_LINE:
-			doneDriving = driveBy(Constants.Auton.distanceToHopperLine, 2);
+			doneDriving = driveBy(Constants.Auton.hopperDistanceToTurn, 2);
 			if(doneDriving) increment(States.TURN_TO_HOPPER);
 			break;
 
@@ -224,7 +224,7 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			doneDriving = driveBy(Constants.Auton.distanceToHopperFromTurn, 1);
+			doneDriving = driveBy(Constants.Auton.hopperDistanceAfterTurn, 1);
 			hitTheWall = didWeHitSomething(.5);
 			if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
 			if(doneDriving || hitTheWall) increment(States.TARGET_BOILER);
@@ -236,7 +236,7 @@ public class Auton
 			break;
 			
 		case SCORE_RANKING_POINT:
-			Shooter.setDistance(Constants.Auton.distanceToHopperLine);
+			Shooter.setDistance(Constants.Auton.hopperDistanceToTurn);
 			Shooter.fire();
 			break;
 		}
@@ -280,9 +280,9 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_GEAR:
-			if(gearNumber == 1) distance = Constants.Auton.gearOneDistanceToGear;
-			else if(gearNumber == 2) distance = Constants.Auton.gearTwoDistanceToGear;
-			else if (gearNumber == 3) distance = Constants.Auton.gearThreeDistanceToGear;
+			if(gearNumber == 1) distance = Constants.Auton.gearOneDistanceAfterTurn;
+			else if(gearNumber == 2) distance = Constants.Auton.gearTwoDistance;
+			else if (gearNumber == 3) distance = Constants.Auton.gearThreeDistanceAfterTurn;
 			
 			done = driveBy(distance, .5);
 			if(done) increment(States.PLACE_GEAR);
@@ -308,7 +308,7 @@ public class Auton
 			break;
 			
 		case BACK_AWAY_FROM_GEAR:
-			done = driveBy(-Constants.Auton.distanceToGearFromTurn);
+			done = driveBy(-Constants.Auton.gearThreeDistanceAfterTurn);
 			if(done) increment(States.TURN_TO_HOPPER);
 			break;
 			
@@ -320,7 +320,7 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			distance = Constants.Auton.gearTurnToHopperDistance;
+			distance = Constants.Auton.gearThreeTurnToHopperDistance;
 			done = driveBy(distance);
 			if(done) increment(States.DONE);
 			break;
@@ -360,65 +360,6 @@ public class Auton
 		}
 	}
 	
-	/**
-	 * Drives to the gear station, places the gear, then backs into hopper, tracks, and fires.
-	 */
-	@SuppressWarnings("incomplete-switch")
-	private static void oldComboAuton()
-	{
-		double angle;
-		boolean doneTurning, doneDriving, hitTheWall, doneWaiting;
-		Tracking.State trackingState;
-		switch(autonState)
-		{
-		case START:
-			increment(States.DRIVE_TO_GEAR_TURN);
-			break;
-			
-		case DRIVE_TO_GEAR_TURN:
-			doneDriving = driveBy(Constants.Auton.distanceToGearTurn);
-			if(doneDriving) increment(States.TURN_TO_GEAR);
-			break;
-
-		case TURN_TO_GEAR:
-			angle = (onRedAlliance) ? Constants.Auton.gearTurnAngle : -Constants.Auton.gearTurnAngle; //If on red alliance, turn right. If on blue, turn left.
-			doneTurning = turnBy(angle);
-			if(doneTurning) increment(States.DRIVE_TO_GEAR);
-			break;
-			
-		case DRIVE_TO_GEAR:
-			doneDriving = driveBy(Constants.Auton.distanceToGearFromTurn);
-			if(doneDriving) increment(States.BACK_AWAY_FROM_GEAR);
-			break;
-						
-		case BACK_AWAY_FROM_GEAR:
-			doneDriving = driveBy(Constants.Auton.gearTurnBackDistance);
-			if(doneDriving) increment(States.TURN_FROM_GEAR_TO_NORMAL);
-			break;
-			
-		case TURN_FROM_GEAR_TO_NORMAL:
-			angle = (onRedAlliance) ? Constants.Auton.gearTurnBackAngle : -Constants.Auton.gearTurnBackAngle; //If on red alliance, turn left. If on blue, turn right.
-			doneTurning = turnBy(angle);
-			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
-			break;
-			
-		case DRIVE_TO_HOPPER:
-			doneDriving = driveBy(Constants.Auton.gearTurnBackToHopper);
-			hitTheWall = didWeHitSomething(.1);
-			if(doneDriving || hitTheWall) increment(States.TARGET_BOILER);
-			break;
-			
-		case TARGET_BOILER:
-			trackingState = Tracking.target(Tracking.Mode.FUEL_MODE);
-			if(trackingState == Tracking.State.TRACKED_FUEL) increment(States.SCORE_RANKING_POINT);
-			break;
-			
-		case SCORE_RANKING_POINT:
-			Shooter.setDistance(Constants.Auton.distanceToHopperLine);
-			Shooter.fire();
-			break;
-		}
-	}
 		
 	/**
 	 * Aligns with a line using vision on a beagle bone.

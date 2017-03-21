@@ -18,24 +18,18 @@ public class Constants
 		public static double gearOneTurnAngle = 0;
 		public static double gearThreeTurnAngle = 0;
 		
-		public static double gearOneDistanceToGear = 0;
-		public static double gearTwoDistanceToGear = 0;
-		public static double gearThreeDistanceToGear = 0;
+		public static double gearOneDistanceAfterTurn = 0;
+		public static double gearTwoDistance = 0;
+		public static double gearThreeDistanceAfterTurn = 0;
 		
-		public static double gearTurnToHopperDistance = 0;
+		public static double gearThreeTurnToHopperDistance = 0;
 		
-		public static double distanceToBaseline = 2.62;
-		public static double distanceToHopperLine = 2.29;
-		public static double distanceToHopperFromTurn = 1;
-		public static double distanceToGearTurn = -2;
-		public static double distanceToGearFromTurn = -1;
-		public static double gearTurnAngle = 60;
+		public static double baselineDistance = 2.62;
+		
+		public static double hopperDistanceToTurn = 2.29;
+		public static double hopperDistanceAfterTurn = 1;
 		public static double hopperTurnAngle = 90;
-		public static double gearTurnBackAngle = 0;
-		public static double gearTurnBackToHopper = 1;
-		public static double gearTurnBackDistance = 1;
 		
-		public static double middleGearDistance = -1.75;
 	}
 	
 	public static class DriveBase
