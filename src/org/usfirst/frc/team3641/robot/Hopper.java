@@ -34,6 +34,7 @@ public class Hopper
 			Console.print("Now adjetating hopper", Constants.Verbosity.Level.MID);
 			alreadyAdjatating = true;
 		}
+		Intake.setSpeed(1);
 		centerAgitator.set(Constants.Hopper.CENTER_AGITATOR_SPEED);
 		leftAgitator.set(Constants.Hopper.LEFT_AGITATOR_SPEED);
 		rightAgitator.set(Constants.Hopper.RIGHT_AGITATOR_SPEED);
@@ -65,6 +66,7 @@ public class Hopper
 			Console.print("No longer adjetating hopper", Constants.Verbosity.Level.MID);
 			alreadyAdjatating = false;
 		}
+		Intake.setSpeed(0);
 		centerAgitator.set(0);
 		leftAgitator.set(0);
 		rightAgitator.set(0);

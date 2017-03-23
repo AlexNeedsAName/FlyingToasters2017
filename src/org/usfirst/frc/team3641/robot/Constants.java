@@ -17,11 +17,11 @@ public class Constants
 		public static double gearThreeDistanceToTurn = 0;
 		
 		public static double gearOneTurnAngle = 0;
-		public static double gearThreeTurnAngle = 0;
+		public static double gearThreeTurnAngle = 60;
 		
 		public static double gearOneDistanceAfterTurn = 0;
 		public static double gearTwoDistance = 0;
-		public static double gearThreeDistanceAfterTurn = 0;
+		public static double gearThreeDistanceAfterTurn = -1.64;
 		
 		public static double gearThreeTurnToHopperDistance = 0;
 		
@@ -29,7 +29,7 @@ public class Constants
 		
 		public static double hopperDistanceToTurn = 2.29;
 		public static double hopperDistanceAfterTurn = 1;
-		public static double hopperTurnAngle = 90;
+		public static double hopperTurnAngle = -90;
 		
 		public static void reloadConfig()
 		{
@@ -60,7 +60,7 @@ public class Constants
 	
 	public static class Shooter
 	{
-		public static final double RPM_THRESHOLD = 50;
+		public static final double RPM_THRESHOLD = 25;
 		
 		public static final double GRAVITY = -9.81; // m/s/s
 		public static final double LIFT = 0;       // m/s/s
@@ -69,13 +69,14 @@ public class Constants
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
-		public static double TARGET_RPM = 3037.5;
+		public static double TARGET_RPM = 3700;
+		public static double BATTER_RPM = 3025;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
 	}
 	
 	public static class Hopper
 	{
-		public static double CENTER_AGITATOR_SPEED = -1;
+		public static double CENTER_AGITATOR_SPEED = -.85;
 		public static final double LEFT_AGITATOR_SPEED = 1;
 		public static final double RIGHT_AGITATOR_SPEED = -LEFT_AGITATOR_SPEED;
 	}
@@ -158,7 +159,7 @@ public class Constants
 	{
 		public static class Sparks
 		{
-			public static final int INTAKE = 8;
+			public static final int INTAKE = 4;
 			public static final int CENTER_AGITATOR = 7;
 			public static final int LEFT_AGITATOR = 6;
 			public static final int RIGHT_AGITATOR = 5;

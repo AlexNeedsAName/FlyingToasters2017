@@ -257,4 +257,10 @@ public class Sensors
 	{
 		return weHasPressure;
 	}
+	
+	public static void resetSensors()
+	{
+		resetDriveDistance();
+		resetGyro();
+	}
 }

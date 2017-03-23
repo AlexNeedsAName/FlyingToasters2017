@@ -33,7 +33,7 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 				
-		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetDriveDistance();
+		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetSensors();
 						
 		//Change Settings with D-Pad
 		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(DriveBase.DriveMode.NORMAL);
@@ -74,26 +74,19 @@ public class Teleop
 		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
-		
-		if(!Gearbox.inPTOMode())
-		{
-			double speed = driver.getAxis(PS4.Axis.RIGHT_TRIGGER) - driver.getAxis(PS4.Axis.LEFT_TRIGGER);
-			Intake.setSpeed(speed);
-		}
-		else Intake.setSpeed(0);
-		
+				
 		//Move the Shooter Setpoint.
 		if(operator.isDown(10)) Constants.Shooter.TARGET_RPM += Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		if(operator.isDown(9)) Constants.Shooter.TARGET_RPM -= Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		
 		//Run the flywheel.
-		if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(10) || operator.isDown(9)) Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+		if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(10) || operator.isDown(9)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.TARGET_RPM)) + " RPM");
 		else if(operator.isDown(8)) Shooter.set(1);
 		else Shooter.set(0);
 		
-		if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(1);
+		/*if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(1);
 		else if(operator.isDown(3)) Intake.setSpeed(-1);
-		else Intake.setSpeed(0);
+		else Intake.setSpeed(0);*/
 		
 		//Run the Hopper
 		if(operator.isDown(5)) Hopper.runReverse();
@@ -101,7 +94,7 @@ public class Teleop
 		else if(operator.isDown(E3D.Button.TRIGGER)) Hopper.autoAdjatate();
 		else Hopper.stopAdjatating();
 		
-		if(operator.isPressed(4)) Serial.sendData("7\n");
+		if(operator.isPressed(4)) Serial.sendData("3\n");
 		else if(operator.isDown(4))
 		{
 			String data = Serial.getData();
@@ -127,8 +120,17 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 		
-		//Test Code Here.
-		if(operator.isPressed(10)) GearThingy.shake();
-		else if(operator.isReleased(10)) GearThingy.resetShake();
+		if(operator.isPressed(4) || true)
+		{
+			String data = "3";
+			Serial.sendData(data);
+			Console.print("Sent " + data + " over serial.");
+			
+		}
+		else if(operator.isDown(4))
+		{
+			String data = Serial.getData();
+			if(data != null) Console.print("Got " + data + " from serial.");
+		}
 	}
 }

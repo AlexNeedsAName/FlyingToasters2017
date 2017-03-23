@@ -104,7 +104,6 @@ public class Shooter
 	public static void set(double power)
 	{
 		if(power > 1) power = 1;
-		if(power == 1) Console.print("Power is 0 o_O");
 		SmartDashboard.putNumber("Power Out", power);
 		SmartDashboard.putNumber("RPM", Sensors.getShooterRPM());
 		SmartDashboard.putNumber("RPM over Time", Sensors.getShooterRPM());
