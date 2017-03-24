@@ -29,7 +29,6 @@ public class Robot extends IterativeRobot
 		GearThingy.getInstance();
 		Gearbox.getInstance();
 		PDP.getInstance();
-		Horn.getInstance();
 		Serial.getInstance();
 		Tracking.getInstance();
 		Teleop.getInstance();
@@ -103,7 +102,6 @@ public class Robot extends IterativeRobot
 
 	public void disabledInit() //It runs this once the robot connects to the DriverStation too.
 	{
-		Horn.setHorn(false);
 		Intake.intakeUp();
 		Intake.setFlapDown();
 		Console.print("Robot Disabled", Constants.Verbosity.Level.LOW);
