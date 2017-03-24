@@ -6,7 +6,7 @@ public class Hopper
 {
 	private static Hopper instance;
 	private static Spark centerAgitator, leftAgitator, rightAgitator;
-	private static boolean alreadyAdjatating = false;
+	private static boolean alreadyAgitating = false;
 		
 	public static Hopper getInstance()
 	{
@@ -27,12 +27,12 @@ public class Hopper
 	/**
 	 * Start agitating the hopper so we can feed the shooter.
 	 */
-	public static void adjatate()
+	public static void Agitate()
 	{
-		if(!alreadyAdjatating)
+		if(!alreadyAgitating)
 		{
-			Console.print("Now adjetating hopper", Constants.Verbosity.Level.MID);
-			alreadyAdjatating = true;
+			Console.print("Now agitating hopper", Constants.Verbosity.Level.MID);
+			alreadyAgitating = true;
 		}
 		centerAgitator.set(Constants.Hopper.CENTER_AGITATOR_SPEED);
 		leftAgitator.set(Constants.Hopper.LEFT_AGITATOR_SPEED);
@@ -42,10 +42,10 @@ public class Hopper
 	/**
 	 * Runs the hopper if the shooter is at the correct speed.
 	 */
-	public static void autoAdjatate()
+	public static void autoAgitate()
 	{
-		if(Shooter.atTarget()) adjatate();
-		else stopAdjatating();
+		if(Shooter.atTarget()) Agitate();
+		else stopAgitating();
 	}
 	
 	public static void runReverse()
@@ -58,20 +58,20 @@ public class Hopper
 	/**
 	 * Stop agitating the hopper.
 	 */
-	public static void stopAdjatating()
+	public static void stopAgitating()
 	{
-		if(alreadyAdjatating)
+		if(alreadyAgitating)
 		{
-			Console.print("No longer adjetating hopper", Constants.Verbosity.Level.MID);
-			alreadyAdjatating = false;
+			Console.print("No longer agitating hopper", Constants.Verbosity.Level.MID);
+			alreadyAgitating = false;
 		}
 		centerAgitator.set(0);
 		leftAgitator.set(0);
 		rightAgitator.set(0);
 	}
 	
-	public static boolean isAdjatating()
+	public static boolean isAgitating()
 	{
-		return alreadyAdjatating;
+		return alreadyAgitating;
 	}
 }

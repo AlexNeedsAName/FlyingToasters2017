@@ -140,7 +140,7 @@ public class Shooter
 	public static void forceFire()
 	{
 		elevator.set(1);
-		Hopper.adjatate();
+		Hopper.Agitate();
 	}
 	
 	/**
@@ -153,7 +153,7 @@ public class Shooter
 	{
 		Console.print("Stopped Firing Shooter", Constants.Verbosity.Level.MID);
 		elevator.set(0);
-		Hopper.stopAdjatating();
+		Hopper.stopAgitating();
 	}
 	
 	/**
