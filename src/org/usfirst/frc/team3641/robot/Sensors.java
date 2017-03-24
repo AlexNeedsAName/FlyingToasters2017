@@ -23,7 +23,7 @@ public class Sensors
 	public static Ultrasonic ultra;
 	private static AHRS gyro;
 	private static ADXRS450_Gyro SPIgyro;
-	private static AnalogInput pressureSensor;
+	private static AnalogInput pressureSensor, ultrasonicSensor;
 	
 	public static Sensors getInstance()
 	{
@@ -45,8 +45,14 @@ public class Sensors
 		{
 			gyro = new AHRS(SerialPort.Port.kMXP);
 			pressureSensor = new AnalogInput(Constants.AnalogIn.PRESSURE_SENSOR); 
+			ultrasonicSensor = new AnalogInput(Constants.AnalogIn.ULTRASONIC_SENSOR);
 			doesWeHasGearSwitch = new DigitalInput(Constants.DigitalIO.DOES_WE_HAS_GEAR_SWITCH);
 		}
+	}
+	
+	public static double getUltrasonicDistance()
+	{
+		return ultrasonicDistance;
 	}
 
 	/**
@@ -61,6 +67,7 @@ public class Sensors
 		SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
 		SmartDashboard.putNumber("Left Drive Distance", getLeftDriveDistance());
 		SmartDashboard.putNumber("Right Drive Distance", getRightDriveDistance());
+		SmartDashboard.putNumber("Ultrasonic Distance", getUltrasonicDistance());
 	}
 	
 	/**
@@ -82,6 +89,8 @@ public class Sensors
 			//DriveBase Stuff
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
+			
+			ultrasonicDistance = ultrasonicSensor.getAverageVoltage() * Constants.Conversions.ULTRASONIC_VOLTAGE_TO_M;
 			
 			//Encoder Stuff
 			currentLeftDriveDistance = (double) DriveBase.left.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;

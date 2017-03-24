@@ -7,6 +7,7 @@ public class Teleop
 	public static E3D operator;
 	public static Harmonix guitar;
 	public static boolean arcadeMode;
+	public static boolean b = false;
 
 	public static Teleop getInstance()
 	{
@@ -74,8 +75,10 @@ public class Teleop
 		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
+		
 		if(Hopper.isAdjatating() || operator.isDown(7)) Intake.setSpeed(1);
-		else Intake.setSpeed(driver.getAxis(PS4.Axis.LEFT_TRIGGER));
+		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(operator.getAxis(E3D.Axis.Y));
+		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 				
 		//Move the Shooter Setpoint.
 		if(operator.isDown(10)) Constants.Shooter.TARGET_RPM += Constants.Shooter.ADJUSTMENT_MULTIPLIER;
@@ -99,6 +102,8 @@ public class Teleop
 			if(data != null) Console.print(data);
 		}
 		
+		if(operator.isDown(6)) dumpPnumatics();
+		
 		//Gear Thingy Stuff. (Hopefully this changes soon with our new floor pickup mechanism)
 		if(operator.isPressed(12)) GearThingy.extend();
 		else if(operator.isReleased(12)) GearThingy.retract();
@@ -111,6 +116,24 @@ public class Teleop
 	{
 		guitar.poll();
 		DriveBase.driveArcade(guitar.getAxis(Harmonix.Axis.WHAMMY_BAR) * guitar.getAxis(Harmonix.Axis.STRUM), guitar.getAxis(Harmonix.Axis.BUTTONS));
+	}
+	
+	public static void dumpPnumatics()
+	{
+		b = !b;
+		if(b)
+		{
+			Gearbox.shift(Gearbox.Gear.HIGH);
+			Intake.setFlapUp();
+			Intake.intakeUp();
+		}
+		else
+		{
+			Gearbox.shift(Gearbox.Gear.LOW);
+			Intake.setFlapDown();
+			Intake.intakeDown();
+		}
+		Gearbox.setPTO(b);
 	}
 	
 	public static void runTest()

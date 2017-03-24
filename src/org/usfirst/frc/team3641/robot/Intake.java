@@ -79,6 +79,7 @@ public class Intake
 	 */
 	public static void setSpeed(double speed)
 	{
+		if(Gearbox.inPTOMode()) speed = 0;
 		intakeSpark.set(speed);
 	}
 	

@@ -232,6 +232,7 @@ public class Constants
 		public static final int ULTRASONIC_ECHO = 0;
 		public static final int ULTRASONIC_TRIGGER = 1;
 		public static final int PRESSURE_SENSOR = 0;
+		public static final int ULTRASONIC_SENSOR = 1;
 	}
 	
 	public static class DigitalIO
@@ -256,6 +257,8 @@ public class Constants
 
 	public class Conversions
 	{
+		public static final double ULTRASONIC_VOLTAGE_TO_M = 0.977; 
+		
 		public static final double DISTANCE_TO_GOAL = 3.66;
 		public static final double DRIVE_WHEEL_DIAMETER = .1;
 		public static final double DRIVE_WHEEL_CIRCUMFERENCE = Math.PI*DRIVE_WHEEL_DIAMETER;

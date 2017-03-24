@@ -3,11 +3,13 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.CameraServer;
 
 public class Robot extends IterativeRobot
 {
 	DriverStation DS = DriverStation.getInstance();
 	Preferences Prefs = Preferences.getInstance();
+	CameraServer CS = CameraServer.getInstance();
 	Auton.Routines lastMode;
 	RGB underglow;
 	boolean lastAllianceIsRed;
@@ -15,6 +17,7 @@ public class Robot extends IterativeRobot
 	
 	public void robotInit()
 	{	
+		CS.startAutomaticCapture();
 		Console.getInstance();
 		Constants.runningAleksBot = SmartDashboard.getBoolean("Running Alek's Bot?", false);
 		Constants.reloadConfig();
