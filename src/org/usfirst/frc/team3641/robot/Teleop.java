@@ -74,6 +74,8 @@ public class Teleop
 		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
+		if(Hopper.isAdjatating() || operator.isDown(7)) Intake.setSpeed(1);
+		else Intake.setSpeed(driver.getAxis(PS4.Axis.LEFT_TRIGGER));
 				
 		//Move the Shooter Setpoint.
 		if(operator.isDown(10)) Constants.Shooter.TARGET_RPM += Constants.Shooter.ADJUSTMENT_MULTIPLIER;
@@ -83,11 +85,7 @@ public class Teleop
 		if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(10) || operator.isDown(9)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.TARGET_RPM)) + " RPM");
 		else if(operator.isDown(8)) Shooter.set(1);
 		else Shooter.set(0);
-		
-		/*if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(1);
-		else if(operator.isDown(3)) Intake.setSpeed(-1);
-		else Intake.setSpeed(0);*/
-		
+				
 		//Run the Hopper
 		if(operator.isDown(5)) Hopper.runReverse();
 		else if(operator.isDown(7)) Hopper.adjatate();
@@ -120,7 +118,7 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 		
-		if(operator.isPressed(4) || true)
+		if(operator.isPressed(4))
 		{
 			String data = "3";
 			Serial.sendData(data);

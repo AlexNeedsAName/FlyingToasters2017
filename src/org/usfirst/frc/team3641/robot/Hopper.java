@@ -71,4 +71,9 @@ public class Hopper
 		leftAgitator.set(0);
 		rightAgitator.set(0);
 	}
+	
+	public static boolean isAdjatating()
+	{
+		return alreadyAdjatating;
+	}
 }
