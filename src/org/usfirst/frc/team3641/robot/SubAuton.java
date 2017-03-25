@@ -5,7 +5,7 @@ public class SubAuton
 	public static SubAuton instance;
 	
 	public static boolean alreadyDriving;
-	public static double initialDistance, initialAngle;
+	public static double initialDistance, initialDifference;
 	
 	public static boolean alreadyRotating;
 	public static double initialRotationAngle;
@@ -26,10 +26,10 @@ public class SubAuton
 		if(!alreadyDriving)
 		{
 			initialDistance = Sensors.getLeftDriveDistance();
-			initialAngle = Sensors.getAngle();
+			initialDifference = Sensors.getLeftDriveDistance() - Sensors.getRightDriveDistance();
 			alreadyDriving = true;
 		}
-		DriveBase.driveStraightTo(initialDistance + distance, initialAngle);
+		DriveBase.driveStraightTo(initialDistance + distance, initialDifference);
 	}
 	
 	public static void resetDriveBy()

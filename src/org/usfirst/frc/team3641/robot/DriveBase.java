@@ -11,7 +11,7 @@ public class DriveBase
 	private static DriveBase instance;
 	public static LinkedTalons left, right;
 	private static Victor PWMleft, PWMleftSlave, PWMright, PWMrightSlave;
-	private static PID rotationPID, driveDistancePID, driveRotationPID, lockPID;
+	private static PID encoderCorrectionPID, driveDistancePID, driveRotationPID, lockPID;
 	private static double lockTarget;
 	private static boolean locked;
 	private static boolean inClimbingMode;
@@ -131,9 +131,9 @@ public class DriveBase
 		right = new LinkedTalons(Constants.CAN.Talons.DRIVEBASE_RIGHT_1, Constants.CAN.Talons.DRIVEBASE_RIGHT_2, Constants.CAN.Talons.DRIVEBASE_RIGHT_3);
 		right.setFeedbackDevice(Constants.CAN.Talons.RIGHT_ENCODER_TALON, FeedbackDevice.CtreMagEncoder_Absolute);
 
-		rotationPID = new PID("DriveBaseRotation");
-		rotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KD, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
-		rotationPID.readConfig();
+		encoderCorrectionPID = new PID("DriveBase Correction");
+		encoderCorrectionPID.setBackupValues(Constants.PID.DRIVEBASE_CORRECTION_KP, Constants.PID.DRIVEBASE_CORRECTION_KI, Constants.PID.DRIVEBASE_CORRECTION_KD);
+		encoderCorrectionPID.readConfig();
 		
 		driveDistancePID = new PID("DriveBase");
 		driveDistancePID.setBackupValues(Constants.PID.DRIVEBASE_KP, Constants.PID.DRIVEBASE_KI, Constants.PID.DRIVEBASE_KD, Constants.PID.DRIVEBASE_DEADBAND);
@@ -333,7 +333,7 @@ public class DriveBase
 	public static boolean turnTo(double targetAngle, double threshold)
 	{
 		double error = Coords.calcAngleError(targetAngle, Sensors.getAngle());
-		driveArcade(0, rotationPID.run(error));
+		driveArcade(0, driveRotationPID.run(error));
 		return (Math.abs(error) <= threshold);
 	}
 
@@ -384,13 +384,14 @@ public class DriveBase
 		return error;
 	}
 	
-	public static double driveStraightTo(double distance, double angle)
+	public static double driveStraightTo(double distance, double initialDifference)
 	{
 		double distanceError = distance - Sensors.getLeftDriveDistance();
 		double speed = driveDistancePID.run(distanceError);
 		
-		double rotationError = Coords.calcAngleError(angle, Sensors.getAngle());
-		double rotation = driveRotationPID.run(rotationError);
+		double difference = Sensors.getLeftDriveDistance() - Sensors.getRightDriveDistance();
+		double rotationError = initialDifference - difference;
+		double rotation = encoderCorrectionPID.run(rotationError);
 		
 		driveArcade(speed, rotation);
 		

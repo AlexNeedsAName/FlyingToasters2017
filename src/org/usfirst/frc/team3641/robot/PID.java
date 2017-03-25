@@ -101,6 +101,11 @@ public class PID
 	{
 		setBackupValues(BkP, BkI, BkD, 0, 0, Bdeadband);
 	}
+	
+	public void setBackupValues(double BkP, double BkI, double BkD)
+	{
+		setBackupValues(BkP, BkI, BkD, 0, 0, 0);
+	}
 
 	
 	/**

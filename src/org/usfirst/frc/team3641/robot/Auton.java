@@ -180,6 +180,7 @@ public class Auton
 		}
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	private static void dontTurn()
 	{
 		switch(autonState)
@@ -190,7 +191,7 @@ public class Auton
 			break;
 			
 		case DRIVE_FORWARDS:
-			SubAuton.driveBy(0);
+			SubAuton.driveBy(-2);
 			break;
 		}
 	}

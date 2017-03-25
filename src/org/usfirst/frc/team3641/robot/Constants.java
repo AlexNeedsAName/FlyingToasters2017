@@ -27,7 +27,7 @@ public class Constants
 		
 		public static double baselineDistance = 2.62;
 		
-		public static double hopperDistanceToTurn = 2.29;
+		public static double hopperDistanceToTurn = 1.9;
 		public static double hopperDistanceAfterTurn = 1;
 		public static double hopperTurnAngle = -90;
 		
@@ -121,7 +121,7 @@ public class Constants
 			}
 		}
 
-		public static Level CURRENT_LEVEL = Level.LOW;
+		public static Level CURRENT_LEVEL = Level.HIGH;
 		public static boolean PRINT_PID;
 		
 		public static boolean isAbove(Level level)
@@ -197,11 +197,15 @@ public class Constants
 
 	public static class PID
 	{
-		public static final double DRIVEBASE_ROTATION_KP = 0.015; //TODO: Build robot, then tune this value
-		public static final double DRIVEBASE_ROTATION_KI = 0.003; //TODO: Build robot, then tune this value
-		public static final double DRIVEBASE_ROTATION_KD = 0.0004; //TODO: Build robot, then tune this value
+		public static final double DRIVEBASE_CORRECTION_KP = 0;
+		public static final double DRIVEBASE_CORRECTION_KI = 0;
+		public static final double DRIVEBASE_CORRECTION_KD = 0;	
+
+		public static final double DRIVEBASE_ROTATION_KP = 0.015;
+		public static final double DRIVEBASE_ROTATION_KI = 0.003;
+		public static final double DRIVEBASE_ROTATION_KD = 0.0004;
 		public static final double DRIVEBASE_ROTATION_DEADBAND = 5;
-	
+
 		public static final double DRIVEBASE_KP = 0.475;
 		public static final double DRIVEBASE_KI = 0.01;
 		public static final double DRIVEBASE_KD = 0.0;
