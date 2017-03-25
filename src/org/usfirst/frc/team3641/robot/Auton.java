@@ -318,7 +318,7 @@ public class Auton
 			break;
 			
 		case PLACE_GEAR:
-			GearThingy.extend();
+			GearThingy.setDown();
 			increment(States.DONE);
 			break;
 		}		
@@ -332,7 +332,7 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
-			GearThingy.retract();
+			GearThingy.setUp();
 			increment(States.BACK_AWAY_FROM_GEAR);
 			break;
 			

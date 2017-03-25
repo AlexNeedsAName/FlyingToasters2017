@@ -1,13 +1,16 @@
 package org.usfirst.frc.team3641.robot;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 
 public class GearThingy
 {
 	private static GearThingy instance;
 	private static Solenoid actuator;
-	private static Timer shakeTimer;
-	private static boolean alreadyShaking;
+	private static Spark wheelSpark;
+	
+	private static boolean alreadyPlacingGear = false, alreadyPickingUp = false;
+	private static Timer placerTimer;
 	
 	public static GearThingy getInstance()
 	{
@@ -18,15 +21,14 @@ public class GearThingy
 	private GearThingy()
 	{
 		actuator = new Solenoid(Constants.Pnumatics.GEAR_THINGY);
-		shakeTimer = new Timer();
-		shakeTimer.reset();
-		shakeTimer.start();
+		wheelSpark = new Spark(Constants.PWM.Sparks.GEAR_WHEELS);
+		placerTimer = new Timer();
 	}
 	
 	/**
 	 * Extends the gear placer/intake with pneumatics.
 	 */
-	public static void extend()
+	public static void setDown()
 	{
 		Console.print("Extending Gear Thingy", Constants.Verbosity.Level.LOW);
 		actuator.set(true);
@@ -35,36 +37,59 @@ public class GearThingy
 	/**
 	 * Retracts the gear placer/intake with pneumatics.
 	 */
-	public static void retract()
+	public static void setUp()
 	{
 		Console.print("Retracting Gear Thingy", Constants.Verbosity.Level.LOW);
 		actuator.set(false);
 	}
 	
-	/**
-	 * Shakes the gear thingy twice a second.
-	 */
-	public static void shake() //TODO: Make it actually work.
+	public static void intake()
 	{
-		if(!alreadyShaking)
-		{
-			shakeTimer.reset();
-			shakeTimer.start();
-			alreadyShaking = true;
-		}
-		int time = (int) (2*shakeTimer.get()/Constants.Gear.SHAKE_RATE);
-		
-		if(time % 2 == 0) extend();
-		else retract();
+		wheelSpark.set(1);
 	}
 	
-	/**
-	 * Stop shaking the gear thingy.
-	 */
-	public static void resetShake()
+	public static void stopWheels()
 	{
-		retract();
-		alreadyShaking = false;
+		wheelSpark.set(0);
+	}
+	
+	public static void eject()
+	{
+		wheelSpark.set(-1);
+	}
+	
+	public static void placeGear()
+	{
+		if(!alreadyPlacingGear)
+		{
+			placerTimer.reset();
+			placerTimer.start();
+			setDown();
+			alreadyPlacingGear = true;
+		}
+		if(placerTimer.get() >= 0.5) eject();
+	}
+	
+	public static void resetPlaceGear()
+	{
+		setUp();
+		stopWheels();
+	}
+	
+	public static void pickupGear()
+	{
+		if(!alreadyPickingUp)
+		{
+			setDown();
+			alreadyPickingUp = true;
+		}
+		intake();
+	}
+	
+	public static void resetPickupGear()
+	{
+		setUp();
+		stopWheels();
 	}
 
 }

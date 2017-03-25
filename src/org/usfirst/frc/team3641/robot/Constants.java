@@ -159,11 +159,12 @@ public class Constants
 	{
 		public static class Sparks
 		{
-			public static final int INTAKE = 4;
+			public static final int INTAKE = 8;
 			public static final int CENTER_AGITATOR = 7;
 			public static final int LEFT_AGITATOR = 6;
 			public static final int RIGHT_AGITATOR = 5;
-			public static final int SHOOTER_ELEVATOR = 2;
+			public static final int GEAR_WHEELS = 4;
+			public static final int SHOOTER_ELEVATOR = 9;
 		}
 		
 		public static class Victors

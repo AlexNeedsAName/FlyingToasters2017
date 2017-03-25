@@ -95,18 +95,17 @@ public class Teleop
 		else if(operator.isDown(E3D.Button.TRIGGER)) Hopper.autoAgitate();
 		else Hopper.stopAgitating();
 		
-		if(operator.isPressed(4)) Serial.sendData("3\n");
-		else if(operator.isDown(4))
-		{
-			String data = Serial.getData();
-			if(data != null) Console.print(data);
-		}
+		if(operator.isDown(3)) GearThingy.pickupGear();
+		else if(operator.isReleased(3)) GearThingy.resetPickupGear();
+		
+		if(operator.isDown(4)) GearThingy.placeGear();
+		else if(operator.isReleased(4)) GearThingy.resetPlaceGear();
 		
 		if(operator.isDown(6)) dumpPnumatics();
 		
 		//Gear Thingy Stuff. (Hopefully this changes soon with our new floor pickup mechanism)
-		if(operator.isPressed(12)) GearThingy.extend();
-		else if(operator.isReleased(12)) GearThingy.retract();
+		if(operator.isPressed(12)) GearThingy.setDown();
+		else if(operator.isReleased(12)) GearThingy.setUp();
 	}
 
 	/**
