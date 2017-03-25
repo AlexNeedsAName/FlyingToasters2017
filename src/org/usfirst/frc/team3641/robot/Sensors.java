@@ -23,8 +23,6 @@ public class Sensors
 	private static boolean weHasGear;
 	private static boolean weHasPressure;
 	
-	private static final int n = 3;
-
 	private static DigitalInput doesWeHasGearSwitch;
 	public static Ultrasonic ultrasonicSensor;
 	private static AHRS gyro;

@@ -140,7 +140,7 @@ public class DriveBase
 		driveDistancePID.readConfig();
 		
 		driveRotationPID = new PID("DriveBase Rotation");
-		driveRotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
+		driveRotationPID.setBackupValues(Constants.PID.DRIVEBASE_ROTATION_KP, Constants.PID.DRIVEBASE_ROTATION_KI, Constants.PID.DRIVEBASE_CORRECTION_KD, Constants.PID.DRIVEBASE_ROTATION_KFF, PID.CONSTANT, Constants.PID.DRIVEBASE_ROTATION_DEADBAND);
 		driveRotationPID.readConfig();
 		
 		lockPID = new PID("LockPTO");

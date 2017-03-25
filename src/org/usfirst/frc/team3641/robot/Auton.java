@@ -239,7 +239,6 @@ public class Auton
 		case TURN_TO_HOPPER:
 			angle = (onRedAlliance) ? Constants.Auton.hopperTurnAngle : -Constants.Auton.hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			error = SubAuton.rotateBy(angle);
-			Console.print("Angle Error: " + error);
 			doneTurning = Math.abs(error) < Constants.Thresholds.AUTON_ANGLE_ACCEPTABLE_ERROR;
 			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
 			break;
@@ -280,7 +279,7 @@ public class Auton
 	private static void gearAuton(int gearNumber)
 	{
 		double distance = 0;
-		double angle = 0;
+		double angle = 0, error;
 		boolean done = false;
 		switch(autonState)
 		{
@@ -293,7 +292,7 @@ public class Auton
 			if(gearNumber == 1) distance = Constants.Auton.gearOneDistanceToTurn;
 			else if(gearNumber == 3) distance = Constants.Auton.gearThreeDistanceToTurn;
 			
-			done = driveBy(distance);
+			done = Math.abs(SubAuton.driveBy(distance)) < Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
 			if(done) increment(States.TURN_TO_GEAR);
 			break;
 
@@ -301,8 +300,8 @@ public class Auton
 			if(gearNumber == 1) angle = Constants.Auton.gearOneTurnAngle;
 			else if(gearNumber == 3) angle = Constants.Auton.gearThreeTurnAngle;
 			angle = (onRedAlliance) ? angle : -angle;
-			
-			done = turnBy(angle);
+			error = SubAuton.rotateBy(angle);
+			done = Math.abs(error) < Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
 			if(done) increment(States.DRIVE_TO_GEAR);
 			break;
 			
@@ -311,7 +310,7 @@ public class Auton
 			else if(gearNumber == 2) distance = Constants.Auton.gearTwoDistance;
 			else if (gearNumber == 3) distance = Constants.Auton.gearThreeDistanceAfterTurn;
 			
-			done = driveBy(distance, .5);
+			done = Math.abs(SubAuton.driveBy(distance)) < Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
 			if(done) increment(States.PLACE_GEAR);
 			break;
 			
