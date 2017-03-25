@@ -21,6 +21,8 @@ public class Auton
 	private static boolean alreadyRunning;
 	private static Timer timeoutTimer, autonTimer;
 	
+	private static boolean usingHorn = true;
+
 	public static UDP udp;
 
 	
@@ -178,7 +180,6 @@ public class Auton
 		}
 	}
 	
-	@SuppressWarnings("incomplete-switch")
 	private static void dontTurn()
 	{
 		switch(autonState)
@@ -504,6 +505,7 @@ public class Auton
 			initalLeftDistance = Sensors.getLeftDriveDistance();
 			initalRightDistance = Sensors.getRightDriveDistance();
 			initalAngle = Sensors.getAngle();
+			if(usingHorn) Horn.setHorn(true);
 			Console.print("Starting to drive by " + distance + "m in state " + autonState, Constants.Verbosity.Level.LOW);
 			alreadyRunning = true;
 		}
@@ -640,6 +642,7 @@ public class Auton
 		DriveBase.resetPID();
 		initTimeout(0);
 		alreadyRunning = false;
+		Horn.setHorn(false);
 	}
 	
 	/**
