@@ -130,8 +130,8 @@ public class PID
 		if(feedForwardMode == PROPORTIONAL) output += (target/kFF);
 		else if(feedForwardMode == CONSTANT)
 		{
-			if(output > 0) output += kFF;
-			else if(output < 0) output -= kFF;
+			if(error > 0) output += kFF;
+			else if(error < 0) output -= kFF;
 		}
 
 		if(output == 0) Console.print(name + " PID: { P:" + format(error * kP) + ", I:" + format(errorRefresh * kI) + ", D:" + format(lastError * kD) + "; Output: " + output + " }");

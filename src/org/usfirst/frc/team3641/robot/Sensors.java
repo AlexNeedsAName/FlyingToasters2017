@@ -6,24 +6,30 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.util.Arrays;
+
 import com.kauailabs.navx.frc.AHRS;
 
 public class Sensors
 {
 	private static Sensors instance;
 	private static double ultrasonicDistance, shooterRPM, angle, turretAngle;
+	private static double[] ultrasonicDistances;
+	private static int ultrasonicIndex = 0;
 	private static double totalLeftDriveDistance, currentLeftDriveDistance;
 	private static double totalRightDriveDistance, currentRightDriveDistance;
 	private static boolean isStill;
 	private static double pressure;
 	private static boolean weHasGear;
 	private static boolean weHasPressure;
+	
+	private static final int n = 3;
 
 	private static DigitalInput doesWeHasGearSwitch;
-	public static Ultrasonic ultra;
+	public static Ultrasonic ultrasonicSensor;
 	private static AHRS gyro;
 	private static ADXRS450_Gyro SPIgyro;
-	private static AnalogInput pressureSensor, ultrasonicSensor;
+	private static AnalogInput pressureSensor;
 	
 	public static Sensors getInstance()
 	{
@@ -36,17 +42,15 @@ public class Sensors
 	 */
 	private Sensors()
 	{
-		if(Constants.runningAleksBot)
-		{
-			ultra = new Ultrasonic(Constants.AnalogIn.ULTRASONIC_TRIGGER , Constants.AnalogIn.ULTRASONIC_TRIGGER);
-			ultra.setAutomaticMode(true);
-		}
-		else
+		if(!Constants.runningAleksBot)
 		{
 			gyro = new AHRS(SerialPort.Port.kMXP);
 			pressureSensor = new AnalogInput(Constants.AnalogIn.PRESSURE_SENSOR); 
-			ultrasonicSensor = new AnalogInput(Constants.AnalogIn.ULTRASONIC_SENSOR);
+			ultrasonicSensor = new Ultrasonic(Constants.DigitalIO.ULTRASONIC_TRIGGER, Constants.DigitalIO.ULTRASONIC_ECHO);
+			ultrasonicSensor.setAutomaticMode(true);
+			//ultrasonicSensor = new AnalogInput(Constants.AnalogIn.ULTRASONIC_SENSOR);
 			doesWeHasGearSwitch = new DigitalInput(Constants.DigitalIO.DOES_WE_HAS_GEAR_SWITCH);
+			ultrasonicDistances = new double[10];
 		}
 	}
 	
@@ -68,6 +72,7 @@ public class Sensors
 		SmartDashboard.putNumber("Left Drive Distance", getLeftDriveDistance());
 		SmartDashboard.putNumber("Right Drive Distance", getRightDriveDistance());
 		SmartDashboard.putNumber("Ultrasonic Distance", getUltrasonicDistance());
+		SmartDashboard.putNumber("Raw Ultrasonic Distance", ultrasonicDistances[ultrasonicIndex]);
 	}
 	
 	/**
@@ -78,7 +83,7 @@ public class Sensors
 		if(Constants.runningAleksBot)
 		{
 			angle = SPIgyro.getAngle();
-			ultrasonicDistance = ultra.getRangeMM() * 1000;
+			ultrasonicDistance = ultrasonicSensor.getRangeMM() * 1000;
 		}
 		else
 		{
@@ -90,7 +95,14 @@ public class Sensors
 			angle = gyro.getAngle();
 			isStill = !gyro.isMoving();
 			
-			ultrasonicDistance = ultrasonicSensor.getAverageVoltage() * Constants.Conversions.ULTRASONIC_VOLTAGE_TO_M;
+			//ultrasonicDistance = ultrasonicSensor.getAverageVoltage() * Constants.Conversions.ULTRASONIC_VOLTAGE_TO_M;
+			if(ultrasonicIndex < ultrasonicDistances.length-1) ultrasonicIndex++;
+			else ultrasonicIndex = 0;
+			ultrasonicDistances[ultrasonicIndex]= ultrasonicSensor.getRangeMM() * 0.001;
+			double[] sortedDistances = ultrasonicDistances.clone();
+			Arrays.sort(sortedDistances);
+			ultrasonicDistance = sortedDistances[sortedDistances.length-1];
+			//for(int i = 1; i<=n; i++) ultrasonicDistance += (sortedDistances[sortedDistances.length-i]/(double)n);
 			
 			//Encoder Stuff
 			currentLeftDriveDistance = (double) DriveBase.left.getEncPosition() / Constants.Conversions.DRIVE_ENCODER_TICKS_PER_TURN * Constants.Conversions.DRIVE_WHEEL_CIRCUMFERENCE;

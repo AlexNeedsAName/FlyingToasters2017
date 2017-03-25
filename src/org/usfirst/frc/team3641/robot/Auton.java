@@ -186,7 +186,6 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
-			SubAuton.resetDriveBy();
 			increment(States.DRIVE_FORWARDS);
 			break;
 			
@@ -223,6 +222,7 @@ public class Auton
 	{
 		Tracking.State trackingState;
 		double angle;
+		double error;
 		boolean doneDriving, doneTurning, hitTheWall;
 		switch(autonState)
 		{
@@ -231,21 +231,29 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER_LINE:
-			doneDriving = driveBy(Constants.Auton.hopperDistanceToTurn, 2);
+			error = SubAuton.driveBy(Constants.Auton.hopperDistanceToTurn);
+			doneDriving = error < Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
 			if(doneDriving) increment(States.TURN_TO_HOPPER);
 			break;
 
 		case TURN_TO_HOPPER:
 			angle = (onRedAlliance) ? Constants.Auton.hopperTurnAngle : -Constants.Auton.hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
-			doneTurning = turnBy(angle, 1.3);
+			error = SubAuton.rotateBy(angle);
+			Console.print("Angle Error: " + error);
+			doneTurning = Math.abs(error) < Constants.Thresholds.AUTON_ANGLE_ACCEPTABLE_ERROR;
 			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			doneDriving = driveBy(Constants.Auton.hopperDistanceAfterTurn, 1);
-			hitTheWall = didWeHitSomething(.5);
-			if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
-			if(doneDriving || hitTheWall) increment(States.TARGET_BOILER);
+			
+			boolean timeoutUp = waitFor(1);
+			Intake.setFlapUp();
+			Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+			error = SubAuton.driveBy(Constants.Auton.hopperDistanceAfterTurn);
+			doneDriving = Math.abs(error) < Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
+			//hitTheWall = didWeHitSomething(.5);
+			//if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
+			if(doneDriving || timeoutUp) increment(States.SCORE_RANKING_POINT);
 			break;
 
 		case TARGET_BOILER:
@@ -254,8 +262,9 @@ public class Auton
 			break;
 			
 		case SCORE_RANKING_POINT:
-			Shooter.setDistance(Constants.Auton.hopperDistanceToTurn);
-			Shooter.fire();
+			Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+			Hopper.Agitate();
+			Intake.setSpeed(1);
 			break;
 		}
 	}
@@ -549,7 +558,7 @@ public class Auton
 			doneTurning = new boolean[Constants.Thresholds.NUMBER_OF_TURNING_CHECKS];
 		}
 		//Console.print(Sensors.getAngle() + "° out of " + angle + "°", Constants.Verbosity.Level.HIGH);
-		boolean done = DriveBase.turnTo(angle + initalAngle, 1);
+		boolean done = DriveBase.turnTo(angle + initalAngle) < 1;
 		doneTurning[index] = done;
 		index++;
 		if(index >= doneTurning.length) index = 0;
@@ -636,6 +645,8 @@ public class Auton
 	 */
 	private static void increment(States state)
 	{
+		SubAuton.resetDriveBy();
+		SubAuton.resetRotateBy();
 		Console.print("Took " + timeoutTimer.get() + "s to complete " + autonState.toString(), Constants.Verbosity.Level.MID);
 		Console.print("\nIncrementing from state " + autonState.toString() + " to state " + state.toString(), Constants.Verbosity.Level.LOW);
 		autonState = state;

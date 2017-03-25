@@ -27,9 +27,9 @@ public class Constants
 		
 		public static double baselineDistance = 2.62;
 		
-		public static double hopperDistanceToTurn = 1.9;
-		public static double hopperDistanceAfterTurn = 1;
-		public static double hopperTurnAngle = -90;
+		public static double hopperDistanceToTurn = 0;
+		public static double hopperDistanceAfterTurn = 0;
+		public static double hopperTurnAngle = 0;
 		
 		public static void reloadConfig()
 		{
@@ -69,7 +69,7 @@ public class Constants
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
-		public static double TARGET_RPM = 3700;
+		public static double TARGET_RPM = 3400;
 		public static double BATTER_RPM = 3025;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
 	}
@@ -207,7 +207,7 @@ public class Constants
 		public static final double DRIVEBASE_ROTATION_DEADBAND = 5;
 
 		public static final double DRIVEBASE_KP = 0.475;
-		public static final double DRIVEBASE_KI = 0.01;
+		public static final double DRIVEBASE_KI = 0.04;
 		public static final double DRIVEBASE_KD = 0.0;
 		public static final double DRIVEBASE_DEADBAND = 0.5;
 		
@@ -233,8 +233,6 @@ public class Constants
 	
 	public static class AnalogIn
 	{
-		public static final int ULTRASONIC_ECHO = 0;
-		public static final int ULTRASONIC_TRIGGER = 1;
 		public static final int PRESSURE_SENSOR = 0;
 		public static final int ULTRASONIC_SENSOR = 1;
 	}
@@ -242,6 +240,8 @@ public class Constants
 	public static class DigitalIO
 	{
 		public static final int DOES_WE_HAS_GEAR_SWITCH = 0;
+		public static final int ULTRASONIC_TRIGGER = 1;
+		public static final int ULTRASONIC_ECHO = 2;
 	}
 
 	public static class Thresholds
@@ -252,6 +252,7 @@ public class Constants
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
 		public static final double SHOOTER_MAX_ERROR = 50; //RPM
 		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .1; //Get within 5cm of the target.
+		public static final double AUTON_ANGLE_ACCEPTABLE_ERROR = 1;
 		
 		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 		public static final double ACCEPTABLE_GEAR_ERROR = 2; //Degrees

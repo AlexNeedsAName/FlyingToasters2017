@@ -176,7 +176,7 @@ public class DriveBase
 		}
 		
 		if(squaredPower && power != 0) power = power*power*Math.abs(power)/power;
-		
+				
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
 		
@@ -330,11 +330,11 @@ public class DriveBase
 	 * @param threshold How accurate you want to be.
 	 * @return True if you are within error is within the threshold.
 	 */
-	public static boolean turnTo(double targetAngle, double threshold)
+	public static double turnTo(double targetAngle)
 	{
 		double error = Coords.calcAngleError(targetAngle, Sensors.getAngle());
 		driveArcade(0, driveRotationPID.run(error));
-		return (Math.abs(error) <= threshold);
+		return error;
 	}
 
 	/**
