@@ -21,13 +21,7 @@ public class SubAuton
 		alreadyDriving = false;
 	}
 	
-	public static boolean driveBy(double distance, double threshold)
-	{
-		double error = driveBy(distance);
-		return (error <= threshold);
-	}
-	
-	public static double driveBy(double distance)
+	public static void driveBy(double distance)
 	{
 		if(!alreadyDriving)
 		{
@@ -35,8 +29,7 @@ public class SubAuton
 			initialAngle = Sensors.getAngle();
 			alreadyDriving = true;
 		}
-		double error = DriveBase.driveStraightTo(initialDistance + distance, initialAngle);
-		return error;
+		DriveBase.driveStraightTo(initialDistance + distance, initialAngle);
 	}
 	
 	public static void resetDriveBy()
@@ -45,23 +38,21 @@ public class SubAuton
 		DriveBase.resetPID();
 	}
 	
-	public static boolean rotateBy(double angle, double threshold)
-	{
-		double error = rotateBy(angle);
-		return (error <= threshold);
-	}
-	
-	public static double rotateBy(double angle)
+	public static void rotateBy(double angle, double threshold)
 	{
 		if(!alreadyRotating)
 		{
 			initialRotationAngle = Sensors.getAngle();
 		}
 		double target = initialRotationAngle + angle;
-		double error = DriveBase.turnTo(target);
-		return error;
+		DriveBase.turnTo(target, threshold);
 	}
-		
+	
+	public static void rotateBy(double angle)
+	{
+		rotateBy(angle, Constants.Thresholds.ANGLE_THRESHOLD);
+	}
+	
 	public static void resetRotateBy()
 	{
 		alreadyRotating = false;
