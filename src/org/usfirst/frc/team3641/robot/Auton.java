@@ -1,4 +1,6 @@
 package org.usfirst.frc.team3641.robot;
+import java.lang.invoke.ConstantCallSite;
+
 import edu.wpi.first.wpilibj.Timer;
 
 @SuppressWarnings("unused") //I might not be using those functions now, but they're there to be building blocks for future routines.
@@ -200,6 +202,7 @@ public class Auton
 	@SuppressWarnings("incomplete-switch") //I don't care about the other values, I know they won't be used :P
 	private static void crossBaseline()
 	{
+		boolean done;
 		switch(autonState)
 		{
 		case START:
@@ -207,8 +210,8 @@ public class Auton
 			break;
 
 		case DRIVE_FORWARDS:
-			boolean reachedLine = driveBy(Constants.Auton.baselineDistance);
-			if(reachedLine) increment(States.DONE);
+			done = SubAuton.driveBy(Constants.Auton.baselineDistance, Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
+			if(done) increment(States.DONE);
 			break;
 		}
 	}
@@ -229,18 +232,18 @@ public class Auton
 			break;
 			
 		case DRIVE_TO_HOPPER_LINE:
-			doneDriving = driveBy(Constants.Auton.hopperDistanceToTurn, 2);
+			doneDriving = SubAuton.driveBy(Constants.Auton.hopperDistanceToTurn, Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
 			if(doneDriving) increment(States.TURN_TO_HOPPER);
 			break;
 
 		case TURN_TO_HOPPER:
 			angle = (onRedAlliance) ? Constants.Auton.hopperTurnAngle : -Constants.Auton.hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
-			doneTurning = turnBy(angle, 1.3);
+			doneTurning = SubAuton.rotateBy(angle, Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR);
 			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			doneDriving = driveBy(Constants.Auton.hopperDistanceAfterTurn, 1);
+			doneDriving = SubAuton.driveBy(Constants.Auton.hopperDistanceAfterTurn, Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
 			hitTheWall = didWeHitSomething(.5);
 			if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
 			if(doneDriving || hitTheWall) increment(States.TARGET_BOILER);
@@ -270,7 +273,7 @@ public class Auton
 	{
 		double distance = 0;
 		double angle = 0;
-		boolean done = false;
+		boolean doneRotating, doneDriving;
 		switch(autonState)
 		{
 		case START:
@@ -282,8 +285,8 @@ public class Auton
 			if(gearNumber == 1) distance = Constants.Auton.gearOneDistanceToTurn;
 			else if(gearNumber == 3) distance = Constants.Auton.gearThreeDistanceToTurn;
 			
-			done = driveBy(distance);
-			if(done) increment(States.TURN_TO_GEAR);
+			doneDriving = SubAuton.driveBy(distance, Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
+			if(doneDriving) increment(States.TURN_TO_GEAR);
 			break;
 
 		case TURN_TO_GEAR:
@@ -291,8 +294,8 @@ public class Auton
 			else if(gearNumber == 3) angle = Constants.Auton.gearThreeTurnAngle;
 			angle = (onRedAlliance) ? angle : -angle;
 			
-			done = turnBy(angle);
-			if(done) increment(States.DRIVE_TO_GEAR);
+			doneRotating = SubAuton.rotateBy(angle, Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR);
+			if(doneRotating) increment(States.DRIVE_TO_GEAR);
 			break;
 			
 		case DRIVE_TO_GEAR:
@@ -300,8 +303,8 @@ public class Auton
 			else if(gearNumber == 2) distance = Constants.Auton.gearTwoDistance;
 			else if (gearNumber == 3) distance = Constants.Auton.gearThreeDistanceAfterTurn;
 			
-			done = driveBy(distance, .5);
-			if(done) increment(States.PLACE_GEAR);
+			doneDriving = SubAuton.driveBy(distance, Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
+			if(doneDriving) increment(States.PLACE_GEAR);
 			break;
 			
 		case PLACE_GEAR:
@@ -314,7 +317,7 @@ public class Auton
 	@SuppressWarnings("incomplete-switch")
 	private static void transitionGearToHopper()
 	{
-		boolean done;
+		boolean doneDriving, doneTurning;
 		double angle, distance;
 		switch(autonState)
 		{
@@ -324,21 +327,21 @@ public class Auton
 			break;
 			
 		case BACK_AWAY_FROM_GEAR:
-			done = driveBy(-Constants.Auton.gearThreeDistanceAfterTurn);
-			if(done) increment(States.TURN_TO_HOPPER);
+			doneDriving = SubAuton.driveBy(-Constants.Auton.gearThreeDistanceAfterTurn, Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
+			if(doneDriving) increment(States.TURN_TO_HOPPER);
 			break;
 			
 		case TURN_TO_HOPPER:
 			angle = Constants.Auton.hopperTurnAngle - Constants.Auton.gearThreeTurnAngle;
 			angle = (onRedAlliance) ? angle : -angle;
-			done = turnBy(angle);
-			if(done) increment(States.DRIVE_TO_HOPPER);
+			doneTurning = SubAuton.rotateBy(angle, Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR);
+			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
 			distance = Constants.Auton.gearThreeTurnToHopperDistance;
-			done = driveBy(distance);
-			if(done) increment(States.DONE);
+			doneDriving = SubAuton.driveBy(distance, Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
+			if(doneDriving) increment(States.DONE);
 			break;
 		}
 	}
@@ -488,83 +491,7 @@ public class Auton
 			}
 		}
 	}
-
-	/**
-	 * Drives for a specified distance with a timeout.
-	 * 
-	 * @param distance The distance to drive in meters.
-	 * @param timeout The number of seconds to try driving before timing out.
-	 * @return True once done driving or when the timeout is up.
-	 */
-	public static boolean driveBy(double distance, double timeout)
-	{
-		if(!alreadyRunning)
-		{
-			initTimeout(timeout);
-			initalLeftDistance = Sensors.getLeftDriveDistance();
-			initalRightDistance = Sensors.getRightDriveDistance();
-			initalAngle = Sensors.getAngle();
-			Console.print("Starting to drive by " + distance + "m in state " + autonState, Constants.Verbosity.Level.LOW);
-			alreadyRunning = true;
-		}
-		String currentDistance = String.format("%.2f", Sensors.getLeftDriveDistance()-initalLeftDistance);
-		Console.print(currentDistance + "m out of " + distance + "m", Constants.Verbosity.Level.HIGH);
-		double error;
-		error = DriveBase.driveStraightTo(initalLeftDistance + distance, initalAngle);
-		//Console.print("Error: " + error);
-		boolean  withinThreshold = (Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR);
 		
-		return (withinThreshold || timeoutUp(timeout));
-	}
-			
-	/**
-	 * Drives for a specified distance.
-	 * 
-	 * @param distance The distance to drive in meters.
-	 * @return True once done driving.
-	 */
-	public static boolean driveBy(double distance)
-	{
-		return driveBy(distance, 0);
-	}
-	
-	/**
-	 * Turns a specified number of degrees with a timeout.
-	 * 
-	 * @param angle The angle to turn to in degrees.
-	 * @param timeout The number of seconds to try driving before timing out.
-	 * @return True once done turning or when the timeout is up.
-	 */
-	private static boolean turnBy(double angle, double timeout)
-	{
-		if(!alreadyRunning)
-		{
-			Console.print("Starting to turn by " + angle + "° in state " + autonState, Constants.Verbosity.Level.LOW);
-			initTimeout(timeout);
-			initalAngle = Sensors.getAngle();
-			alreadyRunning = true;
-			doneTurning = new boolean[Constants.Thresholds.NUMBER_OF_TURNING_CHECKS];
-		}
-		//Console.print(Sensors.getAngle() + "° out of " + angle + "°", Constants.Verbosity.Level.HIGH);
-		boolean done = DriveBase.turnTo(angle + initalAngle, 1);
-		doneTurning[index] = done;
-		index++;
-		if(index >= doneTurning.length) index = 0;
-		
-		return (allAreTrue(doneTurning) || timeoutUp(timeout));
-	}
-	
-	/**
-	 * Turns a specified number of degrees.
-	 * 
-	 * @param angle The angle to turn to in degrees.
-	 * @return True once done turning.
-	 */
-	private static boolean turnBy(double angle)
-	{
-		return turnBy(angle, 0);
-	}
-	
 	/**
 	 * Waits for a specified number of seconds.
 	 * 

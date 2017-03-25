@@ -108,7 +108,7 @@ public class Tracking
 			break;
 		
 		case ROTATE_DRIVEBASE:
-			tracked = DriveBase.turnTo(angle, Constants.Thresholds.ACCEPTABLE_TURRET_ERROR);
+			tracked = (DriveBase.turnTo(angle) <= Constants.Thresholds.ACCEPTABLE_TURRET_ERROR);
 			SmartDashboard.putBoolean("Gear Tracked", tracked);
 			if(tracked)
 			{
