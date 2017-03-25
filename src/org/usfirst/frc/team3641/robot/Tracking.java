@@ -108,7 +108,7 @@ public class Tracking
 			break;
 		
 		case ROTATE_DRIVEBASE:
-			tracked = DriveBase.turnTo(angle) < Constants.Thresholds.AUTON_ANGLE_ACCEPTABLE_ERROR;
+			tracked = DriveBase.turnTo(angle) < Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
 			SmartDashboard.putBoolean("Gear Tracked", tracked);
 			if(tracked)
 			{

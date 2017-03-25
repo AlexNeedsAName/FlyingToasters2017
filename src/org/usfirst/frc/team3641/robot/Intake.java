@@ -87,5 +87,10 @@ public class Intake
 	{
 		setSpeed(-1);
 	}
+	
+	public static void runClimber()
+	{
+		setSpeed(.25);
+	}
 
 }

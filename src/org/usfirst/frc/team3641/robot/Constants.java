@@ -194,6 +194,11 @@ public class Constants
 		public static final double PANCAKE_SHIFT_COST = 1;
 		public static final double INTAKE_COST = 2;
 	}
+	
+	public static class PDP
+	{
+		public static final int INTAKE = 5;
+	}
 
 	public static class PID
 	{
@@ -253,12 +258,14 @@ public class Constants
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
 		public static final double SHOOTER_MAX_ERROR = 50; //RPM
 		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .1; //Get within 5cm of the target.
-		public static final double AUTON_ANGLE_ACCEPTABLE_ERROR = 1;
+		public static final double AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR = 1;
 		
 		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 		public static final double ACCEPTABLE_GEAR_ERROR = 2; //Degrees
 		
 		public static final double ANGLE_THRESHOLD = 1;
+		
+		public static final double INTAKE_STALL_CURRENT = 0;
 	}
 
 	public class Conversions

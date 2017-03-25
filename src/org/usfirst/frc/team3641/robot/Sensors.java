@@ -71,6 +71,7 @@ public class Sensors
 		SmartDashboard.putNumber("Right Drive Distance", getRightDriveDistance());
 		SmartDashboard.putNumber("Ultrasonic Distance", getUltrasonicDistance());
 		SmartDashboard.putNumber("Raw Ultrasonic Distance", ultrasonicDistances[ultrasonicIndex]);
+		SmartDashboard.putNumber("Intake Current", PDP.getCurrent(Constants.PDP.INTAKE));
 	}
 	
 	/**

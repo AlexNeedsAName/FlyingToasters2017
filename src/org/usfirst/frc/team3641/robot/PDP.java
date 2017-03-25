@@ -25,7 +25,7 @@ public class PDP
 	 * 
 	 * @return Returns voltage of the battery.
 	 */
-	public static double getVoltage()
+	public static double getBatteryVoltage()
 	{
 		return pdp.getVoltage();
 	}
@@ -35,9 +35,14 @@ public class PDP
 	 * 
 	 * @return Returns the total current draw.
 	 */
-	public static double getCurrent()
+	public static double getTotalCurrent()
 	{
 		return pdp.getTotalCurrent();
+	}
+	
+	public static double getCurrent(int channel)
+	{
+		return pdp.getCurrent(channel);
 	}
 
 }
