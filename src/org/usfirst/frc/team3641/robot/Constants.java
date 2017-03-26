@@ -187,9 +187,9 @@ public class Constants
 		public static final int SHIFTER_REVERSE = 1;
 		public static final int PTO_FORWARD = 2;
 		public static final int PTO_REVERSE = 3;
-		public static final int INTAKE = 4;
+		public static final int INTAKE = 6;
 		public static final int FLAP = 5;
-		public static final int GEAR_THINGY = 6;
+		public static final int GEAR_THINGY = 4;
 		
 		public static final double WORRY_PRESSURE = 50;
 		public static final double PANCAKE_SHIFT_COST = 1;

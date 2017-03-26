@@ -72,6 +72,7 @@ public class GearThingy
 	
 	public static void resetPlaceGear()
 	{
+		alreadyPlacingGear = false;
 		setUp();
 		stopWheels();
 	}
@@ -88,6 +89,7 @@ public class GearThingy
 	
 	public static void resetPickupGear()
 	{
+		alreadyPickingUp = false;
 		setUp();
 		stopWheels();
 	}
