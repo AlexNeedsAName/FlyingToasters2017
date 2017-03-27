@@ -9,26 +9,39 @@ public class GearThingy
 	private static Solenoid actuator;
 	private static Spark wheelSpark;
 	
-	private static boolean alreadyPlacingGear = false, alreadyPickingUp = false;
-	private static Timer placerTimer;
-	
+	private static boolean alreadyRunningState;
+	private static State currentState;
+	private static Timer stateTimer;
+		
 	public static GearThingy getInstance()
 	{
 		if(instance == null) instance = new GearThingy();
 		return instance;
 	}
 	
+	public static enum State
+	{
+		RESTING,
+		INTAKING,
+		DONE_INTAKING,
+		PLACING,
+		EJECT_GEAR,
+		BACK_AWAY;
+	}
+	
 	private GearThingy()
 	{
 		actuator = new Solenoid(Constants.Pnumatics.GEAR_THINGY);
 		wheelSpark = new Spark(Constants.PWM.Sparks.GEAR_WHEELS);
-		placerTimer = new Timer();
+		stateTimer = new Timer();
+		alreadyRunningState = false;
+		currentState = State.RESTING;
 	}
 	
 	/**
 	 * Extends the gear placer/intake with pneumatics.
 	 */
-	public static void setDown()
+	private static void setDown()
 	{
 		Console.print("Extending Gear Thingy", Constants.Verbosity.Level.LOW);
 		actuator.set(true);
@@ -37,61 +50,92 @@ public class GearThingy
 	/**
 	 * Retracts the gear placer/intake with pneumatics.
 	 */
-	public static void setUp()
+	private static void setUp()
 	{
 		Console.print("Retracting Gear Thingy", Constants.Verbosity.Level.LOW);
 		actuator.set(false);
 	}
 	
-	public static void intake()
+	private static void intake()
 	{
 		wheelSpark.set(1);
 	}
 	
-	public static void stopWheels()
+	private static void stopWheels()
 	{
 		wheelSpark.set(0);
 	}
 	
-	public static void eject()
+	private static void eject()
 	{
 		wheelSpark.set(-1);
 	}
 	
-	public static void placeGear()
+	public static State runCurrentState()
 	{
-		if(!alreadyPlacingGear)
+		switch(currentState)
 		{
-			placerTimer.reset();
-			placerTimer.start();
-			setDown();
-			alreadyPlacingGear = true;
+		case RESTING:
+			if(!alreadyRunningState)
+			{
+				setUp();
+				stopWheels();
+			}
+			break;
+			
+		case INTAKING:
+			if(!alreadyRunningState)
+			{
+				setDown();
+				intake();
+			}
+			break;
+			
+		case DONE_INTAKING:
+			if(!alreadyRunningState)
+			{
+				setUp();
+				intake();
+			}
+			if(stateTimer.get() >= 0.5) setState(State.RESTING);
+			break;
+			
+		case PLACING:
+			if(!alreadyRunningState)
+			{
+				setDown();
+				stopWheels();
+			}
+			if(stateTimer.get() >= 0.5) setState(State.EJECT_GEAR);
+			break;
+			
+		case EJECT_GEAR:
+			if(!alreadyRunningState)
+			{
+				setDown();
+				eject();
+			}
+			if(stateTimer.get() >= 0.5) setState(State.BACK_AWAY);
+			break;
+			
+		case BACK_AWAY:
+			if(!alreadyRunningState)
+			{
+				SubAuton.resetDriveBy();
+			}
+			SubAuton.driveBy(0.5);
+			break;
 		}
-		if(placerTimer.get() >= 0.5) eject();
+		return currentState;
 	}
 	
-	public static void resetPlaceGear()
+	public static void setState(State newState)
 	{
-		alreadyPlacingGear = false;
-		setUp();
-		stopWheels();
-	}
-	
-	public static void pickupGear()
-	{
-		if(!alreadyPickingUp)
-		{
-			setDown();
-			alreadyPickingUp = true;
-		}
-		intake();
-	}
-	
-	public static void resetPickupGear()
-	{
-		alreadyPickingUp = false;
-		setUp();
-		stopWheels();
+		currentState = newState;
+		alreadyRunningState = false;
+		SubAuton.resetDriveBy();
+		stateTimer.reset();
+		stateTimer.start();
 	}
 
 }

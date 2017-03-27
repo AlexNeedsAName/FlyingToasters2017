@@ -95,21 +95,11 @@ public class Teleop
 		else if(operator.isDown(E3D.Button.TRIGGER)) Hopper.autoAgitate();
 		else Hopper.stopAgitating();
 		
-		if(operator.isDown(E3D.Button.THUMB)) GearThingy.intake();
-		else if(operator.isReleased(E3D.Button.THUMB)) GearThingy.stopWheels();
-		
-		if(operator.isDown(3)) GearThingy.pickupGear();
-		else if(operator.isReleased(3)) GearThingy.resetPickupGear();
-		
-		if(operator.isDown(4)) GearThingy.placeGear();
-		else if(operator.isReleased(4)) GearThingy.resetPlaceGear();
-		
-		if(operator.isDown(6)) GearThingy.setDown();//dumpPnumatics();
-		if(operator.isReleased(6)) GearThingy.setUp();
-		
-		//Gear Thingy Stuff. (Hopefully this changes soon with our new floor pickup mechanism)
-		if(operator.isPressed(12)) GearThingy.setDown();
-		else if(operator.isReleased(12)) GearThingy.setUp();
+		if(operator.isPressed(3)) GearThingy.setState(GearThingy.State.INTAKING);
+		else if(operator.isReleased(3)) GearThingy.setState(GearThingy.State.DONE_INTAKING);
+		else if(operator.isPressed(4)) GearThingy.setState(GearThingy.State.PLACING);
+		else if(operator.isReleased(4)) GearThingy.setState(GearThingy.State.RESTING);
+		GearThingy.runCurrentState();
 	}
 
 	/**
