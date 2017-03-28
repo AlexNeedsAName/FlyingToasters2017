@@ -16,8 +16,6 @@ public class DriveBase
 	private static boolean locked;
 	private static boolean inClimbingMode;
 	private static boolean squaredRotation, squaredPower;
-
-	private static DriveMode mode;
 	
 	public static DriveBase getInstance()
 	{
@@ -25,14 +23,6 @@ public class DriveBase
 		return instance;
 	}
 
-	/**
-	 * Different drive modes.
-	 */
-	public enum DriveMode
-	{
-		NORMAL, REVERSE
-	}
-	
 	/**
 	 * A class for mechanically linked Talons.
 	 */
@@ -169,11 +159,7 @@ public class DriveBase
 		else if(Gearbox.inPTOMode()) Gearbox.setPTO(false);
 	
 		if(Gearbox.inPTOMode()) rotation = 0;
-		else
-		{
-			if(mode == DriveMode.REVERSE) rotation = -rotation;
-			if(squaredRotation && rotation != 0) rotation = rotation*rotation*Math.abs(rotation)/rotation;
-		}
+		else if(squaredRotation && rotation != 0) rotation = rotation*rotation*Math.abs(rotation)/rotation;
 		
 		if(squaredPower && power != 0) power = power*power*Math.abs(power)/power;
 				
@@ -200,12 +186,6 @@ public class DriveBase
 		{
 			leftPower/= maxPower;
 			rightPower/= maxPower;
-		}
-
-		if(mode == DriveMode.REVERSE)
-		{
-			leftPower*= -1;
-			rightPower*= -1;
 		}
 		
 		Console.print("Left Power: " + leftPower + "; Right Power: " + rightPower, Constants.Verbosity.Level.INSANITY);
@@ -299,20 +279,6 @@ public class DriveBase
 		toggleSquaredPower();
 	}
 	
-	/**
-	 * Switch between normal and reverse mode.
-	 * 
-	 * @param Mode DriveMode you want to switch to.
-	 */
-	public static void setDriveMode(DriveMode Mode)
-	{
-		if(mode != Mode)
-		{
-			mode = Mode;
-			Console.print("Switching to " + mode.toString() + " mode.");
-		}
-	}
-
 	/**
 	 * Shifts the gearbox to high or low gear.
 	 * 

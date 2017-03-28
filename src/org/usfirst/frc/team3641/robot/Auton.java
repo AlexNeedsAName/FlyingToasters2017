@@ -318,8 +318,12 @@ public class Auton
 			break;
 			
 		case PLACE_GEAR:
-			GearThingy.setDown();
+			GearThingy.setState(GearThingy.State.PLACING);
 			increment(States.DONE);
+			break;
+			
+		case DONE:
+			GearThingy.runCurrentState();
 			break;
 		}		
 	}
@@ -332,7 +336,7 @@ public class Auton
 		switch(autonState)
 		{
 		case START:
-			GearThingy.setUp();
+			//GearThingy.setUp();
 			increment(States.BACK_AWAY_FROM_GEAR);
 			break;
 			
@@ -582,6 +586,5 @@ public class Auton
 		DriveBase.resetPID();
 		initTimeout(0);
 		alreadyRunning = false;
-		Horn.setHorn(false);
 	}
 }

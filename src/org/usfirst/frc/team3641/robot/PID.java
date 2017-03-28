@@ -134,7 +134,7 @@ public class PID
 			else if(error < 0) output -= kFF;
 		}
 
-		if(output == 0) Console.print(name + " PID: { P:" + format(error * kP) + ", I:" + format(errorRefresh * kI) + ", D:" + format(lastError * kD) + "; Output: " + output + " }");
+		//if(output == 0) Console.print(name + " PID: { P:" + format(error * kP) + ", I:" + format(errorRefresh * kI) + ", D:" + format(lastError * kD) + "; Output: " + output + " }");
 
 		SmartDashboard.putNumber(name + " P", error * kP);
 		SmartDashboard.putNumber(name + " I", errorRefresh * kI);
@@ -174,9 +174,9 @@ public class PID
 		Console.print("Finished Reading Config files", Constants.Verbosity.Level.LOW);
 	}
 	
-	private static String format(double number)
+	/*private static String format(double number)
 	{
 		return String.format("%.2f", number);
-	}
+	}*/
 
 }

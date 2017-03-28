@@ -26,7 +26,10 @@ public class GearThingy
 		DONE_INTAKING,
 		PLACING,
 		EJECT_GEAR,
-		BACK_AWAY;
+		BACK_AWAY,
+		JUST_DOWN,
+		JUST_INTAKE,
+		JUST_EJECT;
 	}
 	
 	private GearThingy()
@@ -43,7 +46,6 @@ public class GearThingy
 	 */
 	private static void setDown()
 	{
-		Console.print("Extending Gear Thingy", Constants.Verbosity.Level.LOW);
 		actuator.set(true);
 	}
 	
@@ -52,7 +54,6 @@ public class GearThingy
 	 */
 	private static void setUp()
 	{
-		Console.print("Retracting Gear Thingy", Constants.Verbosity.Level.LOW);
 		actuator.set(false);
 	}
 	
@@ -78,52 +79,54 @@ public class GearThingy
 		case RESTING:
 			if(!alreadyRunningState)
 			{
-				setUp();
-				stopWheels();
+				SubAuton.resetDriveBy();
+				alreadyRunningState = true;
 			}
+			setUp();
+			stopWheels();
 			break;
 			
 		case INTAKING:
-			if(!alreadyRunningState)
-			{
-				setDown();
-				intake();
-			}
+			setDown();
+			intake();
 			break;
 			
 		case DONE_INTAKING:
-			if(!alreadyRunningState)
-			{
-				setUp();
-				intake();
-			}
-			if(stateTimer.get() >= 0.5) setState(State.RESTING);
+			setUp();
+			intake();
+			if(stateTimer.get() >= .75) setState(State.RESTING);
 			break;
 			
 		case PLACING:
-			if(!alreadyRunningState)
-			{
-				setDown();
-				stopWheels();
-			}
+			setDown();
+			stopWheels();
 			if(stateTimer.get() >= 0.5) setState(State.EJECT_GEAR);
 			break;
 			
 		case EJECT_GEAR:
-			if(!alreadyRunningState)
-			{
-				setDown();
-				eject();
-			}
-			if(stateTimer.get() >= 0.5) setState(State.BACK_AWAY);
+			setDown();
+			eject();
+			if(stateTimer.get() >= 0.25) setState(State.BACK_AWAY);
 			break;
 			
 		case BACK_AWAY:
-			if(!alreadyRunningState)
-			{
-				SubAuton.resetDriveBy();
-			}
-			SubAuton.driveBy(0.5);
+			double error = SubAuton.driveBy(0.5);
+			if(Math.abs(error) < 0.06) setState(State.RESTING);
+			break;
+			
+		case JUST_INTAKE:
+			setUp();
+			intake();
+			break;
+			
+		case JUST_EJECT:
+			setUp();
+			eject();
+			break;
+			
+		case JUST_DOWN:
+			setDown();
+			stopWheels();
 			break;
 		}
 		return currentState;
@@ -131,6 +134,8 @@ public class GearThingy
 	
 	public static void setState(State newState)
 	{
+		SubAuton.resetDriveBy();
+		Console.print("Set gear mechanism to " + newState.toString());
 		currentState = newState;
 		alreadyRunningState = false;
 		SubAuton.resetDriveBy();

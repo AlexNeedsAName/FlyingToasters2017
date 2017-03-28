@@ -8,6 +8,7 @@ public class Teleop
 	public static Harmonix guitar;
 	public static boolean arcadeMode;
 	public static boolean b = false;
+	public static double driveDirection = 1;
 
 	public static Teleop getInstance()
 	{
@@ -37,8 +38,8 @@ public class Teleop
 		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetSensors();
 						
 		//Change Settings with D-Pad
-		if(driver.isPressed(PS4.Button.DPAD_LEFT)) DriveBase.setDriveMode(DriveBase.DriveMode.NORMAL);
-		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) DriveBase.setDriveMode(DriveBase.DriveMode.REVERSE);
+		if(driver.isPressed(PS4.Button.DPAD_LEFT)) driveDirection = 1;
+		else if(driver.isPressed(PS4.Button.DPAD_RIGHT)) driveDirection = -1;
 		if(driver.isPressed(PS4.Button.DPAD_UP)) arcadeMode = true;
 		else if(driver.isPressed(PS4.Button.DPAD_DOWN)) arcadeMode = false;
 						
@@ -50,17 +51,18 @@ public class Teleop
 		if(DriveBase.isLocked()) DriveBase.runLock();
 		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
 		else if(driver.isPressed(PS4.Button.SHARE)) SubAuton.resetDriveBy();
-		else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.03); //cm
-		else
+		else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.03); //3cm
+		else if(!SubAuton.alreadyDriving)
 		{
 			if(arcadeMode)
 			{
 				if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
-				else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_X));
+				else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
 			}
 			else
 			{
-				DriveBase.driveTank(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_Y));
+				if(driveDirection == 1) DriveBase.driveTank(driver.getAxis(PS4.Axis.LEFT_Y), driver.getAxis(PS4.Axis.RIGHT_Y));
+				else DriveBase.driveTank(-driver.getAxis(PS4.Axis.RIGHT_Y), -driver.getAxis(PS4.Axis.LEFT_Y));
 			}
 		}
 		
@@ -77,7 +79,7 @@ public class Teleop
 		else if(operator.isReleased(11)) Intake.setFlapDown();
 		
 		if(Hopper.isAgitating() || operator.isDown(7)) Intake.setSpeed(1);
-		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(operator.getAxis(E3D.Axis.Y));
+		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(operator.getAxis(E3D.Axis.Y)/2);
 		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 				
 		//Move the Shooter Setpoint.

@@ -20,7 +20,7 @@ public class Constants
 		public static double gearThreeTurnAngle = -60;
 		
 		public static double gearOneDistanceAfterTurn = -1.5;
-		public static double gearTwoDistance = 0;
+		public static double gearTwoDistance = -1.8;
 		public static double gearThreeDistanceAfterTurn = -1.64;
 		
 		public static double gearThreeTurnToHopperDistance = 0;
