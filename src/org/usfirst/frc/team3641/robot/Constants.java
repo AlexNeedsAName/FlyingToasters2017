@@ -13,13 +13,13 @@ public class Constants
 
 	public static class Auton
 	{
-		public static double gearOneDistanceToTurn = -1.355;
+		public static double gearOneDistanceToTurn = -1.15;
 		public static double gearThreeDistanceToTurn = 0;
 		
 		public static double gearOneTurnAngle = 60;
 		public static double gearThreeTurnAngle = -60;
 		
-		public static double gearOneDistanceAfterTurn = -1.5;
+		public static double gearOneDistanceAfterTurn = -1.7;
 		public static double gearTwoDistance = -1.8;
 		public static double gearThreeDistanceAfterTurn = -1.64;
 		
@@ -207,16 +207,16 @@ public class Constants
 		public static final double DRIVEBASE_CORRECTION_KI = 0.0;
 		public static final double DRIVEBASE_CORRECTION_KD = 0.04;	
 
-		public static final double DRIVEBASE_ROTATION_KP = 0.005;
-		public static final double DRIVEBASE_ROTATION_KI = 2.5E-4;
-		public static final double DRIVEBASE_ROTATION_KD = 0;
-		public static final double DRIVEBASE_ROTATION_KFF = 0.14;
-		public static final double DRIVEBASE_ROTATION_DEADBAND = 30.0;
+		public static final double DRIVEBASE_ROTATION_KP = 0.009;
+		public static final double DRIVEBASE_ROTATION_KI = 8.2E-4;
+		public static final double DRIVEBASE_ROTATION_KD = 9.0E-5;
+		public static final double DRIVEBASE_ROTATION_KFF = 0;
+		public static final double DRIVEBASE_ROTATION_DEADBAND = 15.0;
 
 		public static final double DRIVEBASE_KP = 0.475;
 		public static final double DRIVEBASE_KI = 0.04;
 		public static final double DRIVEBASE_KD = 0.0;
-		public static final double DRIVEBASE_DEADBAND = 0.5;
+		public static final double DRIVEBASE_DEADBAND = 0.75;
 		
 	
 		public static final double SHOOTER_KP = 0.0001;
@@ -282,7 +282,6 @@ public class Constants
 		
 		public static final double TURRET_ENCODER_TICKS_PER_DEGREE = 4096.0 / 360.0;
 		public static final double TURRET_GEAR_RATIO = 90.0 / 18.0;
-		
 		public static final double SPEED_TO_RPM = (60 / (2*Math.PI*Shooter.WHEEL_RADIUS/2)) * 2;
 		public static final double SHOOTER_ENCODER_TICKS_PER_REV = -4096.0;
 		public static final double SECONDS_PER_MINUTE = 600;

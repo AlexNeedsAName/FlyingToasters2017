@@ -110,8 +110,14 @@ public class GearThingy
 			break;
 			
 		case BACK_AWAY:
-			double error = SubAuton.driveBy(0.5);
-			if(Math.abs(error) < 0.06) setState(State.RESTING);
+			if(!alreadyRunningState)
+			{
+				SubAuton.resetDriveBy();
+				alreadyRunningState = true;
+			}
+			double error = SubAuton.driveBy(1);
+			Console.print("Backup Error: " + error);
+			//if(Math.abs(error) < 0.06) setState(State.RESTING);
 			break;
 			
 		case JUST_INTAKE:
@@ -134,7 +140,6 @@ public class GearThingy
 	
 	public static void setState(State newState)
 	{
-		SubAuton.resetDriveBy();
 		Console.print("Set gear mechanism to " + newState.toString());
 		currentState = newState;
 		alreadyRunningState = false;

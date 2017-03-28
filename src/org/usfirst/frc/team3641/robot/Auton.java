@@ -1,5 +1,6 @@
 package org.usfirst.frc.team3641.robot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 @SuppressWarnings("unused") //I might not be using those functions now, but they're there to be building blocks for future routines.
 public class Auton
@@ -304,8 +305,11 @@ public class Auton
 			else if(gearNumber == 3) angle = Constants.Auton.gearThreeTurnAngle;
 			angle = (onRedAlliance) ? angle : -angle;
 			error = SubAuton.rotateBy(angle);
-			done = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
-			if(done) increment(States.DRIVE_TO_GEAR);
+			done = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
+			if(done && Sensors.isStill()) increment(States.DRIVE_TO_GEAR);
+			SmartDashboard.putBoolean("Done Turning", done);
+			SmartDashboard.putBoolean("Still", Sensors.isStill());
+			
 			break;
 			
 		case DRIVE_TO_GEAR:
@@ -318,6 +322,7 @@ public class Auton
 			break;
 			
 		case PLACE_GEAR:
+			DriveBase.driveArcade(0, 0);
 			GearThingy.setState(GearThingy.State.PLACING);
 			increment(States.DONE);
 			break;

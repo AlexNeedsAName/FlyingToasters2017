@@ -51,6 +51,7 @@ public class SubAuton
 			alreadyRotating = true;
 		}
 		double target = initialRotationAngle + angle;
+		SmartDashboard.putNumber("Angle Target", target);
 		double error = DriveBase.turnTo(target);
 		return error;
 	}

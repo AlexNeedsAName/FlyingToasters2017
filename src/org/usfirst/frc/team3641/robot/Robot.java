@@ -86,6 +86,7 @@ public class Robot extends IterativeRobot
 	
 	public void disabledPeriodic()
 	{
+		if(Teleop.driver.isPressed(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetSensors();
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red);
 		Auton.Routines mode = Auton.Routines.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		if(mode != lastMode || redAlliance != lastAllianceIsRed)
