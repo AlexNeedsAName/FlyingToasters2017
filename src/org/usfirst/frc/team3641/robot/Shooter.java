@@ -2,13 +2,13 @@ package org.usfirst.frc.team3641.robot;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Spark;
+//import edu.wpi.first.wpilibj.Spark;
 
 public class Shooter
 {
 	private static Shooter instance;
 	public static CANTalon left, right;
-	private static Spark elevator;
+//	private static Spark elevator;
 	private static PID flywheelPID;
 	private static double error;
 
@@ -26,7 +26,7 @@ public class Shooter
 		left = new CANTalon(Constants.CAN.Talons.SHOOTER_LEFT);
 		right = new CANTalon(Constants.CAN.Talons.SHOOTER_RIGHT);
 		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		elevator = new Spark(Constants.PWM.Sparks.SHOOTER_ELEVATOR);
+//		elevator = new Spark(Constants.PWM.Sparks.SHOOTER_ELEVATOR);
 		
 		flywheelPID = new PID("Flywheel");
 		flywheelPID.setBackupValues(Constants.PID.SHOOTER_KP, Constants.PID.SHOOTER_KI, Constants.PID.SHOOTER_KD, Constants.PID.SHOOTER_FF, PID.PROPORTIONAL, Constants.PID.SHOOTER_DEADBAND);
@@ -130,7 +130,7 @@ public class Shooter
 	public static void fire()
 	{
 		if(Math.abs(error) < Constants.Thresholds.SHOOTER_MAX_ERROR) forceFire();
-		else elevator.set(0);
+//		else elevator.set(0);
 
 	}
 	
@@ -139,7 +139,7 @@ public class Shooter
 	 */
 	public static void forceFire()
 	{
-		elevator.set(1);
+//		elevator.set(1);
 		Hopper.Agitate();
 	}
 	
@@ -151,8 +151,7 @@ public class Shooter
 	 */
 	public static void stopFiring()
 	{
-		Console.print("Stopped Firing Shooter", Constants.Verbosity.Level.MID);
-		elevator.set(0);
+//		elevator.set(0);
 		Hopper.stopAgitating();
 	}
 	

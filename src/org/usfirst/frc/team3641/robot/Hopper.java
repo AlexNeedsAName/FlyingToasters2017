@@ -1,11 +1,11 @@
 package org.usfirst.frc.team3641.robot;
 
-import edu.wpi.first.wpilibj.Spark;
+import com.ctre.CANTalon;
 
 public class Hopper
 {
 	private static Hopper instance;
-	private static Spark centerAgitator, leftAgitator, rightAgitator;
+	private static CANTalon centerAgitator;
 	private static boolean alreadyAgitating = false;
 		
 	public static Hopper getInstance()
@@ -19,9 +19,7 @@ public class Hopper
 	 */
 	private Hopper()
 	{
-		centerAgitator = new Spark(Constants.PWM.Sparks.CENTER_AGITATOR);
-		leftAgitator = new Spark(Constants.PWM.Sparks.LEFT_AGITATOR);
-		rightAgitator = new Spark(Constants.PWM.Sparks.RIGHT_AGITATOR);
+		centerAgitator = new CANTalon(Constants.CAN.Talons.CENTER_AGITATOR);
 	}
 
 	/**
@@ -35,8 +33,6 @@ public class Hopper
 			alreadyAgitating = true;
 		}
 		centerAgitator.set(Constants.Hopper.CENTER_AGITATOR_SPEED);
-		leftAgitator.set(Constants.Hopper.LEFT_AGITATOR_SPEED);
-		rightAgitator.set(Constants.Hopper.RIGHT_AGITATOR_SPEED);
 	}
 	
 	/**
@@ -51,8 +47,6 @@ public class Hopper
 	public static void runReverse()
 	{
 		centerAgitator.set(-Constants.Hopper.CENTER_AGITATOR_SPEED);
-		leftAgitator.set(-Constants.Hopper.LEFT_AGITATOR_SPEED);
-		rightAgitator.set(-Constants.Hopper.RIGHT_AGITATOR_SPEED);
 	}
 	
 	/**
@@ -66,8 +60,6 @@ public class Hopper
 			alreadyAgitating = false;
 		}
 		centerAgitator.set(0);
-		leftAgitator.set(0);
-		rightAgitator.set(0);
 	}
 	
 	public static boolean isAgitating()

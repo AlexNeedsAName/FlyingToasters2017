@@ -151,7 +151,8 @@ public class Constants
 			
 			public static final int SHOOTER_RIGHT = 9;
 			public static final int SHOOTER_LEFT= 10;
-			public static final int TURRET = 11;
+			public static final int CENTER_AGITATOR = 11;
+			public static final int TURRET = 0;
 		}
 	}
 	

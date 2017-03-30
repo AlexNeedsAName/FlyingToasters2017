@@ -42,7 +42,7 @@ public class PDP
 	
 	public static double getCurrent(int channel)
 	{
-		return 0;// pdp.getCurrent(channel);
+		return 0; //pdp.getCurrent(channel);
 	}
 
 }
