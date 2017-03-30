@@ -1,9 +1,11 @@
 package org.usfirst.frc.team3641.robot;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
 
 public class RGB
 {
 	private Relay spike;
+	private DriverStation DS = DriverStation.getInstance();
 	
 	public enum Color
 	{
@@ -31,5 +33,22 @@ public class RGB
 		if(color == Color.RED) spike.set(Relay.Value.kForward);
 		else if(color == Color.BLUE) spike.set(Relay.Value.kReverse);
 		else spike.set(Relay.Value.kOn);
+	}
+	
+	public void setAllianceColor()
+	{
+		DriverStation.Alliance alliance = DS.getAlliance();
+		switch(alliance)
+		{
+			case Red:
+				setColor(Color.RED);
+				break;
+			case Blue:
+				setColor(Color.BLUE);
+				break;
+			default:
+				setColor(Color.OFF);
+				break;
+		}
 	}
 }

@@ -38,11 +38,12 @@ public class Robot extends IterativeRobot
 		underglow = new RGB(Constants.PWM.Spikes.RGB_SPIKE);
 		lastMode = Auton.Routines.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		lastAllianceIsRed = (DS.getAlliance() == DriverStation.Alliance.Red);
-		connectedYet = false;
+		connectedYet = false;	//TODO: Find a way to get this working.
 	}
 
 	public void autonomousInit()
 	{
+		underglow.setAllianceColor();
 		Console.restartTimer();
 		DriveBase.setSquaredControls(false);
 		Constants.reloadConfig();
@@ -60,6 +61,7 @@ public class Robot extends IterativeRobot
 
 	public void teleopInit()
 	{
+		underglow.setAllianceColor();
 		DriveBase.setSquaredControls(true);
 		GearThingy.setState(GearThingy.State.RESTING);
 		Gearbox.shift(Gearbox.Gear.HIGH);
@@ -106,10 +108,6 @@ public class Robot extends IterativeRobot
 		Intake.intakeUp();
 		Intake.setFlapDown();
 		Console.print("Robot Disabled", Constants.Verbosity.Level.LOW);
-		
-//		DriverStation.Alliance alliance = DS.getAlliance();
-//		if(alliance == DriverStation.Alliance.Invalid) underglow.setColor(RGB.Color.BLUE);
-//		else underglow.setColor((alliance == DriverStation.Alliance.Red) ? RGB.Color.RED : RGB.Color.BLUE);
 	}
 
 }

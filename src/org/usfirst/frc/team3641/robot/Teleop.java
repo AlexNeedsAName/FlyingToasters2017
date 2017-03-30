@@ -35,9 +35,9 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 				
-		if(driver.isDown(PS4.Button.OPTIONS)) Robot.underglow.setColor(RGB.Color.RED);
-		else if(driver.isDown(PS4.Button.SHARE)) Robot.underglow.setColor(RGB.Color.BLUE);
-		else Robot.underglow.setColor(RGB.Color.OFF);
+//		if(driver.isDown(PS4.Button.OPTIONS)) Robot.underglow.setColor(RGB.Color.RED);
+//		else if(driver.isDown(PS4.Button.SHARE)) Robot.underglow.setColor(RGB.Color.BLUE);
+//		else Robot.underglow.setColor(RGB.Color.OFF);
 		
 		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetSensors();
 						
