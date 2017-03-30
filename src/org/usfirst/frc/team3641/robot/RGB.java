@@ -27,8 +27,8 @@ public class RGB
 	 */
 	public void setColor(Color color)
 	{
-		if(color == Color.RED) spike.setDirection(Relay.Direction.kForward);
-		else if(color == Color.BLUE) spike.setDirection(Relay.Direction.kReverse);
-		else spike.set(Relay.Value.kOff);
+		if(color == Color.RED) spike.set(Relay.Value.kForward);
+		else if(color == Color.BLUE) spike.set(Relay.Value.kReverse);
+		else spike.set(Relay.Value.kOn);
 	}
 }

@@ -254,6 +254,7 @@ public class Auton
 			Shooter.setRPM(Constants.Shooter.TARGET_RPM);
 			error = SubAuton.driveBy(Constants.Auton.hopperDistanceAfterTurn);
 			doneDriving = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
+			Console.print("Error:" + error);
 			//hitTheWall = didWeHitSomething(.5);
 			//if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
 			if(doneDriving || timeoutUp) increment(States.SCORE_RANKING_POINT);

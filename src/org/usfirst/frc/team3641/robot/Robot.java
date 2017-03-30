@@ -11,7 +11,7 @@ public class Robot extends IterativeRobot
 	Preferences Prefs = Preferences.getInstance();
 	CameraServer CS = CameraServer.getInstance();
 	Auton.Routines lastMode;
-	RGB underglow;
+	public static RGB underglow;
 	boolean lastAllianceIsRed;
 	boolean connectedYet;
 	
@@ -35,7 +35,7 @@ public class Robot extends IterativeRobot
 		Auton.getInstance();
 		SubAuton.getInstance();
 		Sensors.getInstance(); //Must be last, it uses things initialized in other classes
-		//underglow = new RGB(Constants.PWM.Spikes.RGB_SPIKE);
+		underglow = new RGB(Constants.PWM.Spikes.RGB_SPIKE);
 		lastMode = Auton.Routines.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		lastAllianceIsRed = (DS.getAlliance() == DriverStation.Alliance.Red);
 		connectedYet = false;
@@ -94,9 +94,6 @@ public class Robot extends IterativeRobot
 			Console.printWarning("Switched to Auton " + mode.toString() + " on the " + ((redAlliance) ? "Red" : "Blue") + " Alliance"); //Prints it as a warning so it is visible by default. We don't want to ever run the wrong auton.
 			lastMode = mode;
 			lastAllianceIsRed = redAlliance;
-			
-			//if(DS.getAlliance() == DriverStation.Alliance.Invalid) underglow.setColor(RGB.Color.OFF);
-			//else underglow.setColor((redAlliance) ? RGB.Color.RED : RGB.Color.BLUE);
 		}
 		
 		if(DriveBase.isLocked()) DriveBase.lockDrivebase();
@@ -108,6 +105,10 @@ public class Robot extends IterativeRobot
 		Intake.intakeUp();
 		Intake.setFlapDown();
 		Console.print("Robot Disabled", Constants.Verbosity.Level.LOW);
+		
+//		DriverStation.Alliance alliance = DS.getAlliance();
+//		if(alliance == DriverStation.Alliance.Invalid) underglow.setColor(RGB.Color.BLUE);
+//		else underglow.setColor((alliance == DriverStation.Alliance.Red) ? RGB.Color.RED : RGB.Color.BLUE);
 	}
 
 }

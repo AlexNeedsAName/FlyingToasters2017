@@ -35,6 +35,10 @@ public class Teleop
 		driver.poll();
 		operator.poll();
 				
+		if(driver.isDown(PS4.Button.OPTIONS)) Robot.underglow.setColor(RGB.Color.RED);
+		else if(driver.isDown(PS4.Button.SHARE)) Robot.underglow.setColor(RGB.Color.BLUE);
+		else Robot.underglow.setColor(RGB.Color.OFF);
+		
 		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetSensors();
 						
 		//Change Settings with D-Pad
@@ -50,8 +54,8 @@ public class Teleop
 		//Driving and stuff.
 		if(DriveBase.isLocked()) DriveBase.runLock();
 		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
-		else if(driver.isPressed(PS4.Button.SHARE)) SubAuton.resetDriveBy();
-		else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.03); //3cm
+		//else if(driver.isPressed(PS4.Button.SHARE)) SubAuton.resetDriveBy();
+		//else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.03); //3cm
 		else if(!SubAuton.alreadyDriving)
 		{
 			if(arcadeMode)

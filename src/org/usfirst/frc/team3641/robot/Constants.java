@@ -28,7 +28,7 @@ public class Constants
 		public static double baselineDistance = 0.95;
 		
 		public static double hopperDistanceToTurn = 1.9;
-		public static double hopperDistanceAfterTurn = 0;
+		public static double hopperDistanceAfterTurn = 1.0;
 		public static double hopperTurnAngle = -90.0;
 		
 		public static void reloadConfig()
@@ -177,7 +177,7 @@ public class Constants
 		
 		public static class Spikes
 		{
-			public static final int RGB_SPIKE = 5;
+			public static final int RGB_SPIKE = 0;
 		}
 	}
 	
@@ -187,9 +187,9 @@ public class Constants
 		public static final int SHIFTER_REVERSE = 1;
 		public static final int PTO_FORWARD = 2;
 		public static final int PTO_REVERSE = 3;
-		public static final int INTAKE = 6;
+		public static final int INTAKE = 4;
 		public static final int FLAP = 5;
-		public static final int GEAR_THINGY = 4;
+		public static final int GEAR_THINGY = 6;
 		
 		public static final double WORRY_PRESSURE = 50;
 		public static final double PANCAKE_SHIFT_COST = 1;
@@ -258,7 +258,7 @@ public class Constants
 		
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
 		public static final double SHOOTER_MAX_ERROR = 50; //RPM
-		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .1; //Get within 5cm of the target.
+		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
 		public static final double AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR = 1;
 		
 		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
