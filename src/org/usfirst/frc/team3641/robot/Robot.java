@@ -62,6 +62,7 @@ public class Robot extends IterativeRobot
 	{
 		DriveBase.setSquaredControls(true);
 		GearThingy.setState(GearThingy.State.RESTING);
+		Gearbox.shift(Gearbox.Gear.HIGH);
 		Constants.reloadConfig();
 		Console.print("Teleop Started", Constants.Verbosity.Level.LOW);
 		DriveBase.setBreakMode(true);

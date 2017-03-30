@@ -18,6 +18,7 @@ public class RGB
 	public RGB(int port)
 	{
 		spike = new Relay(port);
+		spike.setSafetyEnabled(false);
 	}
 	
 	/**
