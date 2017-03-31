@@ -59,7 +59,7 @@ public class GearThingy
 	
 	private static void intake()
 	{
-		wheelSpark.set(1);
+		wheelSpark.set(.625);
 	}
 	
 	private static void stopWheels()

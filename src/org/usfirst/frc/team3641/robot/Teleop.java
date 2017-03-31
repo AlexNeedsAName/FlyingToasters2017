@@ -9,6 +9,7 @@ public class Teleop
 	public static boolean arcadeMode;
 	public static boolean b = false;
 	public static double driveDirection = 1;
+	private static boolean manualShooterMode = false;
 
 	public static Teleop getInstance()
 	{
@@ -34,12 +35,18 @@ public class Teleop
 	{		
 		driver.poll();
 		operator.poll();
-				
-//		if(driver.isDown(PS4.Button.OPTIONS)) Robot.underglow.setColor(RGB.Color.RED);
-//		else if(driver.isDown(PS4.Button.SHARE)) Robot.underglow.setColor(RGB.Color.BLUE);
-//		else Robot.underglow.setColor(RGB.Color.OFF);
+						
+		if(operator.isDown(E3D.Button.THUMB_POV_UP)) Console.print("Up");
+		if(operator.isDown(E3D.Button.THUMB_POV_DOWN)) Console.print("Down");
+		if(operator.isDown(E3D.Button.THUMB_POV_LEFT)) Console.print("Left");
+		if(operator.isDown(E3D.Button.THUMB_POV_RIGHT)) Console.print("Right");
 		
+		//Debug Stuff
 		if(driver.isDown(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetSensors();
+		if(driver.isPressed(PS4.Button.SHARE)) Robot.underglow.setColor(RGB.Color.BLUE);
+		else if(driver.isPressed(PS4.Button.OPTIONS)) Robot.underglow.setColor(RGB.Color.RED);
+		else if(driver.isPressed(PS4.Button.PLAYSTATION_BUTTON)) Robot.underglow.setColor(RGB.Color.OFF);
+		else if(driver.isReleased(PS4.Button.SHARE) || driver.isReleased(PS4.Button.OPTIONS) || driver.isReleased(PS4.Button.PLAYSTATION_BUTTON)) Robot.underglow.setAllianceColor();
 						
 		//Change Settings with D-Pad
 		if(driver.isPressed(PS4.Button.DPAD_LEFT)) driveDirection = 1;
@@ -54,8 +61,6 @@ public class Teleop
 		//Driving and stuff.
 		if(DriveBase.isLocked()) DriveBase.runLock();
 		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
-		//else if(driver.isPressed(PS4.Button.SHARE)) SubAuton.resetDriveBy();
-		//else if(driver.isDown(PS4.Button.SHARE)) SubAuton.driveBy(.03); //3cm
 		else if(!SubAuton.alreadyDriving)
 		{
 			if(arcadeMode)
@@ -77,30 +82,41 @@ public class Teleop
 		if(driver.isReleased(PS4.Button.LEFT_BUMPER)) DriveBase.disableClimbingMode();
 		
 		//Intake Stuff
-		if(driver.isPressed(PS4.Button.LEFT_STICK_BUTTON)) Intake.intakeDown();
-		else if (driver.isPressed(PS4.Button.RIGHT_STICK_BUTTON)) Intake.intakeUp();
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
-		
 		if(Hopper.isAgitating() || operator.isDown(7)) Intake.setSpeed(1);
 		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(operator.getAxis(E3D.Axis.Y)/2);
 		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 				
+		
+		//Adjust Hopper Setpoint
+		if(operator.isDown(5)) Hopper.runReverse();
+		else if(operator.isDown(7)) Constants.Hopper.CENTER_AGITATOR_SPEED-=0.01;
+		else if(operator.isDown(8)) Constants.Hopper.CENTER_AGITATOR_SPEED+=0.01;
+		
 		//Move the Shooter Setpoint.
 		if(operator.isDown(10)) Constants.Shooter.TARGET_RPM += Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		if(operator.isDown(9)) Constants.Shooter.TARGET_RPM -= Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		
-		//Run the flywheel.
-		if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(10) || operator.isDown(9)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.TARGET_RPM)) + " RPM");
-		else if(operator.isDown(8)) Shooter.set(1);
-		else Shooter.set(0);
-				
-		//Run the Hopper
-		if(operator.isDown(5)) Hopper.runReverse();
-		else if(operator.isDown(7)) Hopper.Agitate();
-		else if(operator.isDown(E3D.Button.TRIGGER)) Hopper.autoAgitate();
-		else Hopper.stopAgitating();
+		if(operator.isDown(12))
+		{
+			double shooterTarget = operator.getAxis(E3D.Axis.THROTTLE);
+			Shooter.set(shooterTarget);
+			if(operator.isDown(E3D.Button.TRIGGER)) Hopper.Agitate();
+		}
+		else
+		{
+			
+			//Run the flywheel.
+			if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(10) || operator.isDown(9)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.TARGET_RPM)) + " RPM");
+			else Shooter.set(0);
+					
+			//Run the Hopper
+			if(operator.isDown(E3D.Button.TRIGGER)) Hopper.autoAgitate();
+			else Hopper.stopAgitating();
+		}
 		
+		//Gear Thingy Stuff
 		if(operator.isPressed(3)) GearThingy.setState(GearThingy.State.INTAKING);
 		else if(operator.isReleased(3)) GearThingy.setState(GearThingy.State.DONE_INTAKING);
 		else if(operator.isPressed(4)) GearThingy.setState(GearThingy.State.PLACING);

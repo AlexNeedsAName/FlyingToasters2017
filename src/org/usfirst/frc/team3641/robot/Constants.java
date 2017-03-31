@@ -60,7 +60,7 @@ public class Constants
 	
 	public static class Shooter
 	{
-		public static final double RPM_THRESHOLD = 25;
+		public static final double RPM_THRESHOLD = 100;
 		
 		public static final double GRAVITY = -9.81; // m/s/s
 		public static final double LIFT = 0;       // m/s/s
@@ -69,16 +69,14 @@ public class Constants
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
-		public static double TARGET_RPM = 3400;
+		public static double TARGET_RPM = 2600;
 		public static double BATTER_RPM = 3025;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
 	}
 	
 	public static class Hopper
 	{
-		public static double CENTER_AGITATOR_SPEED = -.85;
-		public static final double LEFT_AGITATOR_SPEED = 1;
-		public static final double RIGHT_AGITATOR_SPEED = -LEFT_AGITATOR_SPEED;
+		public static double CENTER_AGITATOR_SPEED = -1;
 	}
 	
 	public static class Gear
