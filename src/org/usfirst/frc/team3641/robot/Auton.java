@@ -9,7 +9,7 @@ public class Auton
 	private static States autonState;
 	private static Routines autonMode;
 	private static Stages autonStage;
-	private static boolean onRedAlliance;
+	private static boolean onBlueAlliance;
 	
 	private static boolean[] doneTurning;
 	private static int index;
@@ -122,7 +122,7 @@ public class Auton
 		autonState = States.START;
 		alreadyRunning = false;
 		autonMode = mode;
-		onRedAlliance = redAlliance;
+		onBlueAlliance = !redAlliance;
 		Tracking.resetState();
 		Gearbox.shift(Gearbox.Gear.LOW);
 		Intake.setFlapDown();
@@ -150,7 +150,7 @@ public class Auton
 			break;
 			
 		case LEFT_GEAR_AUTON:
-			if(onRedAlliance) gearAuton(1);
+			if(onBlueAlliance) gearAuton(1);
 			else gearAuton(3);
 			break;
 						
@@ -159,7 +159,7 @@ public class Auton
 			break;
 			
 		case RIGHT_GEAR_AUTON:
-			if(onRedAlliance) gearAuton(3);
+			if(onBlueAlliance) gearAuton(3);
 			else gearAuton(1);
 			break;
 			
@@ -241,7 +241,7 @@ public class Auton
 			break;
 
 		case TURN_TO_HOPPER:
-			angle = (onRedAlliance) ? Constants.Auton.hopperTurnAngle : -Constants.Auton.hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
+			angle = (onBlueAlliance) ? Constants.Auton.hopperTurnAngle : -Constants.Auton.hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			error = SubAuton.rotateBy(angle);
 			doneTurning = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
 			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
@@ -304,7 +304,7 @@ public class Auton
 		case TURN_TO_GEAR:
 			if(gearNumber == 1) angle = Constants.Auton.gearOneTurnAngle;
 			else if(gearNumber == 3) angle = Constants.Auton.gearThreeTurnAngle;
-			angle = (onRedAlliance) ? angle : -angle;
+			angle = (onBlueAlliance) ? angle : -angle;
 			error = SubAuton.rotateBy(angle);
 			done = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
 			if(done && Sensors.isStill()) increment(States.DRIVE_TO_GEAR);
@@ -354,7 +354,7 @@ public class Auton
 			
 		case TURN_TO_HOPPER:
 			angle = Constants.Auton.hopperTurnAngle - Constants.Auton.gearThreeTurnAngle;
-			angle = (onRedAlliance) ? angle : -angle;
+			angle = (onBlueAlliance) ? angle : -angle;
 			error = SubAuton.rotateBy(angle);
 			done = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
 			if(done) increment(States.DRIVE_TO_HOPPER);
