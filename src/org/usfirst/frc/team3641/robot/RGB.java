@@ -51,4 +51,22 @@ public class RGB
 				break;
 		}
 	}
+	
+	public void setInverseAllianceColor()
+	{
+		DriverStation.Alliance alliance = DS.getAlliance();
+		switch(alliance)
+		{
+			case Red:
+				setColor(Color.BLUE);
+				break;
+			case Blue:
+				setColor(Color.RED);
+				break;
+			default:
+				setColor(Color.OFF);
+				break;
+		}
+	}
+
 }

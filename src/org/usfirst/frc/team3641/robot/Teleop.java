@@ -9,7 +9,6 @@ public class Teleop
 	public static boolean arcadeMode;
 	public static boolean b = false;
 	public static double driveDirection = 1;
-	private static boolean manualShooterMode = false;
 
 	public static Teleop getInstance()
 	{
@@ -76,8 +75,8 @@ public class Teleop
 		}
 		
 		//Gearbox Stuff
-		if(driver.isPressed(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.LOW);
-		else if(driver.isReleased(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.HIGH);
+		if(driver.isPressed(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.HIGH);
+		else if(driver.isReleased(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.LOW);
 		if(driver.isPressed(PS4.Button.LEFT_BUMPER)) DriveBase.enableClimbingMode();
 		if(driver.isReleased(PS4.Button.LEFT_BUMPER)) DriveBase.disableClimbingMode();
 		
@@ -85,7 +84,7 @@ public class Teleop
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
 		if(Hopper.isAgitating() || operator.isDown(7)) Intake.setSpeed(1);
-		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(operator.getAxis(E3D.Axis.Y)/2);
+		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(5*operator.getAxis(E3D.Axis.Y)/8);
 		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 				
 		
@@ -108,11 +107,12 @@ public class Teleop
 		{
 			
 			//Run the flywheel.
-			if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(10) || operator.isDown(9)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.TARGET_RPM)) + " RPM");
+			if(operator.isDown(E3D.Button.TRIGGER)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.BATTER_RPM)) + " RPM");
+			else if(operator.isDown(6)) Shooter.setRPM(Constants.Shooter.TARGET_RPM);
 			else Shooter.set(0);
 					
 			//Run the Hopper
-			if(operator.isDown(E3D.Button.TRIGGER)) Hopper.autoAgitate();
+			if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(6)) Hopper.autoAgitate();
 			else Hopper.stopAgitating();
 		}
 		

@@ -2,6 +2,7 @@ package org.usfirst.frc.team3641.robot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GearThingy
 {
@@ -69,7 +70,7 @@ public class GearThingy
 	
 	private static void eject()
 	{
-		wheelSpark.set(-1);
+		wheelSpark.set(-.75);
 	}
 	
 	public static State runCurrentState()
@@ -106,7 +107,7 @@ public class GearThingy
 		case EJECT_GEAR:
 			setDown();
 			eject();
-			if(stateTimer.get() >= 0.25) setState(State.BACK_AWAY);
+			if(stateTimer.get() >= 0.25 || true) setState(State.BACK_AWAY);
 			break;
 			
 		case BACK_AWAY:
@@ -115,9 +116,9 @@ public class GearThingy
 				SubAuton.resetDriveBy();
 				alreadyRunningState = true;
 			}
-			double error = SubAuton.driveBy(1);
+			double error = SubAuton.driveBy(1.3);
 			Console.print("Backup Error: " + error);
-			//if(Math.abs(error) < 0.06) setState(State.RESTING);
+			if(Math.abs(error) < 0.1) setState(State.RESTING);
 			break;
 			
 		case JUST_INTAKE:
@@ -135,6 +136,7 @@ public class GearThingy
 			stopWheels();
 			break;
 		}
+		SmartDashboard.putString("GearState", currentState.toString());
 		return currentState;
 	}
 	

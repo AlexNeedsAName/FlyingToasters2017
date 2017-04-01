@@ -42,6 +42,7 @@ public class Auton
 		DRIVE_TO_GEAR_TURN,
 		TURN_TO_GEAR,
 		DRIVE_TO_GEAR,
+		READY_GEAR,
 		PLACE_GEAR,
 		BACK_AWAY_FROM_GEAR,
 		TURN_FROM_GEAR_TO_NORMAL,
@@ -319,17 +320,25 @@ public class Auton
 			else if (gearNumber == 3) distance = Constants.Auton.gearThreeDistanceAfterTurn;
 			
 			done = Math.abs(SubAuton.driveBy(distance)) < Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
-			if(done) increment(States.PLACE_GEAR);
+			if(done) increment(States.READY_GEAR);
+			break;
+			
+		case READY_GEAR:
+			DriveBase.driveArcade(0, 0);
+			GearThingy.setState(GearThingy.State.PLACING);
+			increment(States.PLACE_GEAR);
 			break;
 			
 		case PLACE_GEAR:
-			DriveBase.driveArcade(0, 0);
-			GearThingy.setState(GearThingy.State.PLACING);
-			increment(States.DONE);
+			if(GearThingy.runCurrentState() == GearThingy.State.RESTING)
+			{
+				increment(States.DONE);
+				GearThingy.runCurrentState();
+			}
 			break;
 			
 		case DONE:
-			GearThingy.runCurrentState();
+			DriveBase.driveArcade(0, 0);
 			break;
 		}		
 	}

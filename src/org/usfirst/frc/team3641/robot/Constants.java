@@ -25,7 +25,7 @@ public class Constants
 		
 		public static double gearThreeTurnToHopperDistance = 0;
 		
-		public static double baselineDistance = 0.95;
+		public static double baselineDistance = 1.5;
 		
 		public static double hopperDistanceToTurn = 1.9;
 		public static double hopperDistanceAfterTurn = 1.0;
@@ -69,8 +69,8 @@ public class Constants
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
-		public static double TARGET_RPM = 2600;
-		public static double BATTER_RPM = 3025;
+		public static double TARGET_RPM = 3230;
+		public static double BATTER_RPM = 2600;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
 	}
 	
@@ -222,7 +222,7 @@ public class Constants
 		public static final double SHOOTER_KI = 0.000008;
 		public static final double SHOOTER_KD = 0;
 		public static final double SHOOTER_DEADBAND = 200;
-		public static final double SHOOTER_FF = 4750;
+		public static final double SHOOTER_FF = 5000;
 	
 		public static final double TURRET_KP = 0.01;
 		public static final double TURRET_KI = 0.001;
@@ -300,5 +300,7 @@ public class Constants
 		org.usfirst.frc.team3641.robot.PID.reloadAllConfigs();
 		GUITAR_MODE = Prefs.getBoolean("Guitar Mode?", false);
 		Verbosity.CURRENT_LEVEL = Verbosity.Level.fromInt(Prefs.getInt("Verbosity", 3));
+		Shooter.TARGET_RPM = Prefs.getDouble("Target RPM", Shooter.TARGET_RPM);
+		Shooter.BATTER_RPM = Prefs.getDouble("Batter RPM", Shooter.BATTER_RPM);
 	}
 }

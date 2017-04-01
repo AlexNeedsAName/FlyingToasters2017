@@ -3,13 +3,15 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 
 public class Robot extends IterativeRobot
 {
 	DriverStation DS = DriverStation.getInstance();
 	Preferences Prefs = Preferences.getInstance();
-	CameraServer CS = CameraServer.getInstance();
+	UsbCamera Cam1 = CameraServer.getInstance().startAutomaticCapture(0);
+	UsbCamera Cam2 = CameraServer.getInstance().startAutomaticCapture(1);
 	Auton.Routines lastMode;
 	public static RGB underglow;
 	boolean lastAllianceIsRed;
@@ -17,7 +19,7 @@ public class Robot extends IterativeRobot
 	
 	public void robotInit()
 	{	
-		CS.startAutomaticCapture();
+		//NetworkTable.initialize();
 		Console.getInstance();
 		Constants.runningAleksBot = SmartDashboard.getBoolean("Running Alek's Bot?", false);
 		Constants.reloadConfig();
@@ -43,7 +45,7 @@ public class Robot extends IterativeRobot
 
 	public void autonomousInit()
 	{
-		underglow.setAllianceColor();
+		underglow.setInverseAllianceColor();
 		Console.restartTimer();
 		DriveBase.setSquaredControls(false);
 		Constants.reloadConfig();
@@ -61,10 +63,10 @@ public class Robot extends IterativeRobot
 
 	public void teleopInit()
 	{
-		underglow.setAllianceColor();
+		underglow.setInverseAllianceColor();
 		DriveBase.setSquaredControls(true);
 		GearThingy.setState(GearThingy.State.RESTING);
-		Gearbox.shift(Gearbox.Gear.HIGH);
+		Gearbox.shift(Gearbox.Gear.LOW);
 		Constants.reloadConfig();
 		Console.print("Teleop Started", Constants.Verbosity.Level.LOW);
 		DriveBase.setBreakMode(true);
@@ -89,7 +91,6 @@ public class Robot extends IterativeRobot
 	
 	public void disabledPeriodic()
 	{
-		if(Teleop.driver.isPressed(PS4.Button.TOUCHPAD_BUTTON)) Sensors.resetSensors();
 		boolean redAlliance = (DS.getAlliance() == DriverStation.Alliance.Red);
 		Auton.Routines mode = Auton.Routines.fromInt(Prefs.getInt("Auton Number", 0)); //TODO: add a dropdown that reads the modes enum
 		if(mode != lastMode || redAlliance != lastAllianceIsRed)
@@ -109,5 +110,4 @@ public class Robot extends IterativeRobot
 		Intake.setFlapDown();
 		Console.print("Robot Disabled", Constants.Verbosity.Level.LOW);
 	}
-
 }
