@@ -107,7 +107,7 @@ public class GearThingy
 		case EJECT_GEAR:
 			setDown();
 			eject();
-			if(stateTimer.get() >= 0.25 || true) setState(State.BACK_AWAY);
+			if(stateTimer.get() >= 0.25) setState(State.BACK_AWAY);
 			break;
 			
 		case BACK_AWAY:
@@ -116,9 +116,10 @@ public class GearThingy
 				SubAuton.resetDriveBy();
 				alreadyRunningState = true;
 			}
+			intake();
 			double error = SubAuton.driveBy(1.3);
 			Console.print("Backup Error: " + error);
-			if(Math.abs(error) < 0.1) setState(State.RESTING);
+			//if(Math.abs(error) < 0.1) setState(State.RESTING);
 			break;
 			
 		case JUST_INTAKE:

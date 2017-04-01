@@ -308,7 +308,7 @@ public class Auton
 			angle = (onBlueAlliance) ? angle : -angle;
 			error = SubAuton.rotateBy(angle);
 			done = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
-			if(done && Sensors.isStill()) increment(States.DRIVE_TO_GEAR);
+			if(done) increment(States.DRIVE_TO_GEAR);
 			SmartDashboard.putBoolean("Done Turning", done);
 			SmartDashboard.putBoolean("Still", Sensors.isStill());
 			
@@ -324,6 +324,7 @@ public class Auton
 			break;
 			
 		case READY_GEAR:
+			DriveBase.disableClimbingMode();
 			DriveBase.driveArcade(0, 0);
 			GearThingy.setState(GearThingy.State.PLACING);
 			increment(States.PLACE_GEAR);

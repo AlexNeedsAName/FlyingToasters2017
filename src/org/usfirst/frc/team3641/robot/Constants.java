@@ -14,7 +14,7 @@ public class Constants
 	public static class Auton
 	{
 		public static double gearOneDistanceToTurn = -1.15;
-		public static double gearThreeDistanceToTurn = 0;
+		public static double gearThreeDistanceToTurn = -2.3;
 		
 		public static double gearOneTurnAngle = 60;
 		public static double gearThreeTurnAngle = -60;
@@ -210,7 +210,7 @@ public class Constants
 		public static final double DRIVEBASE_ROTATION_KI = 8.2E-4;
 		public static final double DRIVEBASE_ROTATION_KD = 9.0E-5;
 		public static final double DRIVEBASE_ROTATION_KFF = 0;
-		public static final double DRIVEBASE_ROTATION_DEADBAND = 15.0;
+		public static final double DRIVEBASE_ROTATION_DEADBAND = 30;
 
 		public static final double DRIVEBASE_KP = 0.475;
 		public static final double DRIVEBASE_KI = 0.04;
@@ -258,7 +258,7 @@ public class Constants
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
 		public static final double SHOOTER_MAX_ERROR = 50; //RPM
 		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
-		public static final double AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR = 1;
+		public static final double AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR = 3;
 		
 		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
 		public static final double ACCEPTABLE_GEAR_ERROR = 2; //Degrees
