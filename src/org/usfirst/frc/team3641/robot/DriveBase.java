@@ -140,13 +140,7 @@ public class DriveBase
 		squaredPower = false;
 	}
 
-	/**
-	 * Drives the robot with arcade drive.
-	 * 
-	 * @param power The speed forwards/backwards
-	 * @param rotation The rotation clockwise/counterclockwise
-	 */
-	public static void driveArcade(double power, double rotation)
+	public static void driveTeleop(double power, double rotation)
 	{
 		if(inClimbingMode)
 		{
@@ -162,7 +156,19 @@ public class DriveBase
 		else if(squaredRotation && rotation != 0) rotation = rotation*rotation*Math.abs(rotation)/rotation;
 		
 		if(squaredPower && power != 0) power = power*power*Math.abs(power)/power;
-				
+		
+		driveArcade(power, rotation);
+		
+	}
+	
+	/**
+	 * Drives the robot with arcade drive.
+	 * 
+	 * @param power The speed forwards/backwards
+	 * @param rotation The rotation clockwise/counterclockwise
+	 */
+	public static void driveArcade(double power, double rotation)
+	{
 		double leftPower = power + rotation;
 		double rightPower = power - rotation;
 		

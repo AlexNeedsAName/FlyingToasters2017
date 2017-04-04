@@ -64,8 +64,8 @@ public class Teleop
 		{
 			if(arcadeMode)
 			{
-				if(Constants.runningAleksBot) DriveBase.driveArcade(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
-				else DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
+				if(Constants.runningAleksBot) DriveBase.driveTeleop(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
+				else DriveBase.driveTeleop(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
 			}
 			else
 			{
@@ -130,7 +130,7 @@ public class Teleop
 	public static void runGuitar()
 	{
 		guitar.poll();
-		DriveBase.driveArcade(guitar.getAxis(Harmonix.Axis.WHAMMY_BAR) * guitar.getAxis(Harmonix.Axis.STRUM), guitar.getAxis(Harmonix.Axis.BUTTONS));
+		DriveBase.driveTeleop(guitar.getAxis(Harmonix.Axis.WHAMMY_BAR) * guitar.getAxis(Harmonix.Axis.STRUM), guitar.getAxis(Harmonix.Axis.BUTTONS));
 	}
 	
 	public static void dumpPnumatics()
