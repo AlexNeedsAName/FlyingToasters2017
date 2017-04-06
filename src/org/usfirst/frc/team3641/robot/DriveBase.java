@@ -79,6 +79,9 @@ public class DriveBase
 			return feedbackTalon.getEncPosition();
 		}
 		
+		public CANTalon getFeedbackTalon(){
+			return feedbackTalon;
+		}
 		/**
 		 * Set the current position.
 		 * 
@@ -139,7 +142,7 @@ public class DriveBase
 		squaredRotation = false;
 		squaredPower = false;
 	}
-
+	
 	public static void driveTeleop(double power, double rotation)
 	{
 		if(inClimbingMode)
