@@ -50,12 +50,26 @@ public class Constants
 			hopperDistanceToTurn = Prefs.getDouble("hopperDistanceToTurn", hopperDistanceToTurn);
 			hopperDistanceAfterTurn = Prefs.getDouble("hopperDistanceAfterTurn", hopperDistanceAfterTurn);
 			hopperTurnAngle = Prefs.getDouble("hopperTurnAngle", hopperTurnAngle);
+			
+			Dashboard.reload();
 		}
 	}
 	
 	public static class DriveBase
 	{
 
+	}
+	
+	public static class Dashboard
+	{
+		public static double DriveTestDistance = 0;
+		public static double RotationTestDistance = 0;
+		
+		public static void reload()
+		{
+			DriveTestDistance = Prefs.getDouble("DriveTestDistance", DriveTestDistance);
+			RotationTestDistance = Prefs.getDouble("RotationTestDistance", RotationTestDistance);
+		}
 	}
 	
 	public static class Shooter

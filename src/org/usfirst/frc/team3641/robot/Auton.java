@@ -2,7 +2,6 @@ package org.usfirst.frc.team3641.robot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-@SuppressWarnings("unused") //I might not be using those functions now, but they're there to be building blocks for future routines.
 public class Auton
 {
 	private static Auton instance;
@@ -10,20 +9,13 @@ public class Auton
 	private static Routines autonMode;
 	private static Stages autonStage;
 	private static boolean onBlueAlliance;
-	
-	private static boolean[] doneTurning;
-	private static int index;
-	
-	private static double initalLeftDistance, initalRightDistance, initalAngle;
-	
+		
 	private static boolean lineFound = false;
 	private static boolean endOfLine = false;
 	
 	private static boolean alreadyRunning;
 	private static Timer timeoutTimer, autonTimer;
 	
-	private static boolean usingHorn = true;
-
 	public static UDP udp;
 
 	
@@ -34,6 +26,7 @@ public class Auton
 	{
 		START, DONE,
 		DRIVE_FORWARDS,
+		TURN,
 		DRIVE_TO_HOPPER_LINE,
 		TURN_TO_HOPPER,
 		DRIVE_TO_HOPPER,
@@ -62,7 +55,8 @@ public class Auton
 		MIDDLE_GEAR_AUTON,
 		RIGHT_GEAR_AUTON,
 		COMBO_AUTON,
-		DO_NOT_TURN,
+		TEST_DRIVE_PID,
+		TEST_ROTATION_PID,
 		LINE_ALIGN,
 		LINE_FOLLOW;
 		
@@ -168,8 +162,12 @@ public class Auton
 			comboAuton();
 			break;
 			
-		case DO_NOT_TURN:
-			dontTurn();
+		case TEST_DRIVE_PID:
+			testDrivePID();
+			break;
+			
+		case TEST_ROTATION_PID:
+			testRotationPID();
 			break;
 
 		case LINE_ALIGN:
@@ -183,7 +181,7 @@ public class Auton
 	}
 	
 	@SuppressWarnings("incomplete-switch")
-	private static void dontTurn()
+	private static void testDrivePID()
 	{
 		switch(autonState)
 		{
@@ -192,10 +190,26 @@ public class Auton
 			break;
 			
 		case DRIVE_FORWARDS:
-			SubAuton.driveBy(-2);
+			SubAuton.driveBy(Constants.Dashboard.DriveTestDistance);
 			break;
 		}
 	}
+	
+	@SuppressWarnings("incomplete-switch")
+	private static void testRotationPID()
+	{
+		switch(autonState)
+		{
+		case START:
+			increment(States.TURN);
+			break;
+			
+		case TURN:
+			SubAuton.rotateBy(Constants.Dashboard.RotationTestDistance);
+			break;
+		}
+	}
+
 	
 	/**
 	 * Second simplest auton after DO_NOTHING. Just drives across the line and stops.
@@ -228,7 +242,7 @@ public class Auton
 		Tracking.State trackingState;
 		double angle;
 		double error;
-		boolean doneDriving, doneTurning, hitTheWall;
+		boolean doneDriving, doneTurning;
 		switch(autonState)
 		{
 		case START:
