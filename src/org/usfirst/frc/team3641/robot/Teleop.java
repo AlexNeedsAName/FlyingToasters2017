@@ -9,6 +9,7 @@ public class Teleop
 	public static boolean arcadeMode;
 	public static boolean b = false;
 	public static double driveDirection = 1;
+	public static CheesyDrive cheesyDrive;
 
 	public static Teleop getInstance()
 	{
@@ -65,7 +66,10 @@ public class Teleop
 			if(arcadeMode)
 			{
 				if(Constants.runningAleksBot) DriveBase.driveTeleop(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
-				else DriveBase.driveTeleop(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
+				else{ 
+					//DriveBase.driveTeleop(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
+					cheesyDrive.chezyDrive(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X), driver.isPressed(PS4.Button.RIGHT_TRIGGER_BUTTON));
+				}
 			}
 			else
 			{
@@ -85,7 +89,7 @@ public class Teleop
 		else if(operator.isReleased(11)) Intake.setFlapDown();
 		if(Hopper.isAgitating() || operator.isDown(7)) Intake.setSpeed(1);
 		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(5*operator.getAxis(E3D.Axis.Y)/8);
-		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
+		//else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 				
 		
 		//Adjust Hopper Setpoint
