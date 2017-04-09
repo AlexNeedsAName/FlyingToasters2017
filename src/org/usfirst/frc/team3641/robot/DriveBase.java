@@ -140,6 +140,24 @@ public class DriveBase
 		squaredPower = false;
 	}
 
+	public static void driveGrilledCheese(double power, double rotation)
+	{
+		double gain = 1;
+		double limit = 0.25;
+		
+		rotation = Teleop.squareInput(rotation, 1.5);
+		double arcadePower = Teleop.squareInput(power, 1.5);
+		double arcadeRotation = rotation;
+		double cheesyRotation = rotation * gain * Math.abs(arcadePower);
+		
+		power = Math.abs(power);
+		if(power == 0) rotation = arcadeRotation;
+		else if(power <= limit) rotation = (power/limit)*cheesyRotation + (1-power/limit) * arcadeRotation;
+		else rotation = cheesyRotation;
+		
+		driveArcade(arcadePower, rotation);
+	}
+	
 	public static void driveTeleop(double power, double rotation)
 	{
 		if(inClimbingMode)
@@ -153,9 +171,9 @@ public class DriveBase
 		else if(Gearbox.inPTOMode()) Gearbox.setPTO(false);
 	
 		if(Gearbox.inPTOMode()) rotation = 0;
-		else if(squaredRotation && rotation != 0) rotation = rotation*rotation*Math.abs(rotation)/rotation;
+		else if(squaredRotation) rotation = Teleop.squareInput(rotation);
 		
-		if(squaredPower && power != 0) power = power*power*Math.abs(power)/power;
+		if(squaredPower) power = Teleop.squareInput(power);
 		
 		driveArcade(power, rotation);
 		

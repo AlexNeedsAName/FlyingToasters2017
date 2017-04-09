@@ -90,10 +90,6 @@ public class Sensors
 			shooterRPM = Shooter.right.getEncVelocity() * Constants.Conversions.SHOOTER_ENCODER_TO_RPM;
 			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TICKS_PER_DEGREE * Constants.Conversions.TURRET_GEAR_RATIO;
 
-			//DriveBase Stuff
-			angle = gyro.getAngle();
-			isStill = !gyro.isMoving();
-			
 			//ultrasonicDistance = ultrasonicSensor.getAverageVoltage() * Constants.Conversions.ULTRASONIC_VOLTAGE_TO_M;
 			if(ultrasonicIndex < ultrasonicDistances.length-1) ultrasonicIndex++;
 			else ultrasonicIndex = 0;
@@ -116,6 +112,18 @@ public class Sensors
 			{
 				currentLeftDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
 				currentRightDriveDistance *= Constants.Conversions.HIGH_GEAR_RATIO;
+			}
+			
+			//DriveBase Stuff
+			if(Constants.Dashboard.GYRO_IS_DEAD)
+			{
+				angle = (getLeftDriveDistance() - getRightDriveDistance()) * Constants.Conversions.ENCODER_TO_ANGLE;
+				isStill = true;
+			}
+			else
+			{
+				angle = gyro.getAngle();
+				isStill = !gyro.isMoving();
 			}
 	
 			//Gear Sensor

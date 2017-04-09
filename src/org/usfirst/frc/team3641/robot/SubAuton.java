@@ -59,6 +59,7 @@ public class SubAuton
 	public static void resetRotateBy()
 	{
 		alreadyRotating = false;
+		DriveBase.driveArcade(0, 0);
 		DriveBase.resetPID();
 	}
 	

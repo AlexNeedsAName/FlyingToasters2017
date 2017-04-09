@@ -17,6 +17,14 @@ public class CheesyDrive {
 		turning = handleDeadband(turning, kTurnDeadband);
 		throttle = handleDeadband(throttle, kThrottleDeadband);
 		
+		turning = Teleop.squareInput(turning, 1.5);//Math.E);
+		throttle = Teleop.squareInput(throttle, 1.5);//Math.E);
+		
+		if(throttle == 0)
+		{
+			turnInPlace = true;
+		}
+		
 		double overPower;
 		double angularPower;
 		

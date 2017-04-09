@@ -117,9 +117,9 @@ public class GearThingy
 				alreadyRunningState = true;
 			}
 			intake();
-			double error = SubAuton.driveBy(1.3);
+			double error = SubAuton.driveBy(.75);
 			Console.print("Backup Error: " + error);
-			//if(Math.abs(error) < 0.1) setState(State.RESTING);
+			if(Math.abs(error) < 0.1) setState(State.RESTING);
 			break;
 			
 		case JUST_INTAKE:

@@ -65,16 +65,19 @@ public class Constants
 		public static double DriveTestDistance = 0;
 		public static double RotationTestDistance = 0;
 		
+		public static boolean GYRO_IS_DEAD = true; //TODO: Change to false, add dashboard read
+		
 		public static void reload()
 		{
 			DriveTestDistance = Prefs.getDouble("DriveTestDistance", DriveTestDistance);
 			RotationTestDistance = Prefs.getDouble("RotationTestDistance", RotationTestDistance);
+			GYRO_IS_DEAD = Prefs.getBoolean("GYRO_IS_DEAD", GYRO_IS_DEAD);
 		}
 	}
 	
 	public static class Shooter
 	{
-		public static final double RPM_THRESHOLD = 100;
+		public static final double RPM_THRESHOLD = 50;
 		
 		public static final double GRAVITY = -9.81; // m/s/s
 		public static final double LIFT = 0;       // m/s/s
@@ -83,7 +86,7 @@ public class Constants
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
-		public static double TARGET_RPM = 3230;
+		public static double TARGET_RPM = 2875;
 		public static double BATTER_RPM = 2600;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
 	}
@@ -220,16 +223,16 @@ public class Constants
 		public static final double DRIVEBASE_CORRECTION_KI = 0.0;
 		public static final double DRIVEBASE_CORRECTION_KD = 0.04;	
 
-		public static final double DRIVEBASE_ROTATION_KP = 0.009;
-		public static final double DRIVEBASE_ROTATION_KI = 8.2E-4;
-		public static final double DRIVEBASE_ROTATION_KD = 9.0E-5;
-		public static final double DRIVEBASE_ROTATION_KFF = 0;
-		public static final double DRIVEBASE_ROTATION_DEADBAND = 30;
+		public static final double DRIVEBASE_ROTATION_KP = 0.007;
+		public static final double DRIVEBASE_ROTATION_KI = 7.0E-4;
+		public static final double DRIVEBASE_ROTATION_KD = 0.008;
+		public static final double DRIVEBASE_ROTATION_KFF = 0.1;
+		public static final double DRIVEBASE_ROTATION_DEADBAND = 5;
 
-		public static final double DRIVEBASE_KP = 0.475;
-		public static final double DRIVEBASE_KI = 0.04;
+		public static final double DRIVEBASE_KP = 0.8;
+		public static final double DRIVEBASE_KI = 0.07;
 		public static final double DRIVEBASE_KD = 0.0;
-		public static final double DRIVEBASE_DEADBAND = 0.75;
+		public static final double DRIVEBASE_DEADBAND = 0.1;
 		
 	
 		public static final double SHOOTER_KP = 0.0001;
@@ -271,10 +274,10 @@ public class Constants
 		
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
 		public static final double SHOOTER_MAX_ERROR = 50; //RPM
-		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .05; //Get within 5cm of the target.
-		public static final double AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR = 3;
+		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .0075; //Get within 75mm of the target.
+		public static final double AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR = 0.5; //Get within half a degree
 		
-		public static final double ACCEPTABLE_FUEL_ERROR = 3; //Degrees
+		public static final double ACCEPTABLE_FUEL_ERROR = 1; //Degrees
 		public static final double ACCEPTABLE_GEAR_ERROR = 2; //Degrees
 		
 		public static final double ANGLE_THRESHOLD = 1;
@@ -284,10 +287,12 @@ public class Constants
 
 	public class Conversions
 	{
+		public static final double ENCODER_TO_ANGLE = 360/3.91;
+		
 		public static final double ULTRASONIC_VOLTAGE_TO_M = 0.977; 
 		
 		public static final double DISTANCE_TO_GOAL = 3.66;
-		public static final double DRIVE_WHEEL_DIAMETER = .1;
+		public static final double DRIVE_WHEEL_DIAMETER = 0.0935;
 		public static final double DRIVE_WHEEL_CIRCUMFERENCE = Math.PI*DRIVE_WHEEL_DIAMETER;
 		public static final double DRIVE_ENCODER_TICKS_PER_TURN = -4096.0;
 		public static final double LOW_GEAR_RATIO = 20.0/50.0;

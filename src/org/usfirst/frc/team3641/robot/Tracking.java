@@ -14,7 +14,6 @@ public class Tracking
 	{
 		SEND_REQUEST,
 		GET_RESPONSE,
-		TURN_TURRET_TO_TARGET,
 		ROTATE_DRIVEBASE,
 		TRACKED_GEAR,
 		TRACKED_FUEL,
@@ -54,7 +53,7 @@ public class Tracking
 		switch(visionState)
 		{
 		case SEND_REQUEST:
-			Turret.reset();
+			SubAuton.resetRotateBy();
 			if(mode == Mode.FUEL_MODE) Serial.sendData("1");
 			else Serial.sendData("3");
 			Console.print("[Tracking] Sent Request", Constants.Verbosity.Level.MID);
@@ -76,9 +75,12 @@ public class Tracking
 					try
 					{
 						angle = Double.parseDouble(strings[0]);
-						if(mode == Mode.GEAR_MODE) angle += Sensors.getAngle();
 						Console.print("[Tracking] Angle is " + angle + "°", Constants.Verbosity.Level.MID);
-						if(mode == Mode.FUEL_MODE) visionState = State.TURN_TURRET_TO_TARGET;
+						if(mode == Mode.FUEL_MODE)
+						{
+							angle = -angle;
+							visionState = State.ROTATE_DRIVEBASE;
+						}
 						else if(mode == Mode.GEAR_MODE)
 						{
 							double separation = Double.parseDouble(strings[1]);
@@ -95,21 +97,11 @@ public class Tracking
 				}
 			}
 			break;
-
-		case TURN_TURRET_TO_TARGET:
-			tracked = Turret.turnBy(angle, Constants.Thresholds.ACCEPTABLE_FUEL_ERROR);
-			SmartDashboard.putBoolean("Turret Tracked", tracked);
-			if(tracked)
-			{
-				Console.print("[Tracking] Done turning... Verifying angle.", Constants.Verbosity.Level.LOW);
-				Turret.reset();
-				visionState = State.VERIFY_REQUEST;
-			}
-			break;
 		
 		case ROTATE_DRIVEBASE:
-			tracked = DriveBase.turnTo(angle) < Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
-			SmartDashboard.putBoolean("Gear Tracked", tracked);
+			Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+			tracked = Math.abs(SubAuton.rotateBy(angle)) < Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
+			SmartDashboard.putBoolean("DriveBase Tracked", tracked);
 			if(tracked)
 			{
 				Console.print("[Tracking] Done turning drivebase... Verifying angle.", Constants.Verbosity.Level.LOW);
@@ -120,6 +112,7 @@ public class Tracking
 
 			
 		case VERIFY_REQUEST:
+			SubAuton.resetRotateBy();
 			if(mode == Mode.FUEL_MODE) Serial.sendData("1");
 			else Serial.sendData("3");
 			visionState = State.VERIFY;
@@ -143,8 +136,10 @@ public class Tracking
 						distance = Double.parseDouble(strings[1]);
 						if(mode == Mode.FUEL_MODE)
 						{
+							angle = -angle;
 							if(Math.abs(angle) < Constants.Thresholds.ACCEPTABLE_FUEL_ERROR)
 							{
+								Console.print("[Tracking] Final Error: " + angle);
 								Console.print("[Tracking] Tracked. FIRE!", Constants.Verbosity.Level.LOW);
 								visionState = State.TRACKED_FUEL;
 							}
@@ -172,8 +167,9 @@ public class Tracking
 		case TRACKED_FUEL:
 			if(autoFire)
 			{
-				Shooter.setDistance(distance);
-				Shooter.fire();
+				SubAuton.resetRotateBy();
+				Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+				Hopper.autoAgitate();
 			}
 			break;
 			
@@ -195,14 +191,21 @@ public class Tracking
 	{
 		return target(mode, true);
 	}
+	
+	public static State getState()
+	{
+		return visionState;
+	}
 
 	/**
 	 * Reset tracking back to its inital state.
 	 */
 	public static void resetState()
 	{
+		SubAuton.resetRotateBy();
 		visionState = State.SEND_REQUEST;
 		Turret.reset();
-		Shooter.stopFiring();
+		Shooter.set(0);
+		Hopper.stopAgitating();
 	}	
 }

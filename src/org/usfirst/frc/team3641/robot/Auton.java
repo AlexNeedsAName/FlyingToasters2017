@@ -31,6 +31,7 @@ public class Auton
 		TURN_TO_HOPPER,
 		DRIVE_TO_HOPPER,
 		TARGET_BOILER,
+		BACK_AWAY_FROM_HOPPER,
 		SCORE_RANKING_POINT,
 		DRIVE_TO_GEAR_TURN,
 		TURN_TO_GEAR,
@@ -131,6 +132,7 @@ public class Auton
 	 */
 	public static void run()
 	{
+		SmartDashboard.putString("Auton State", autonState.toString());
 		switch(autonMode)
 		{
 		case DO_NOTHING:
@@ -190,7 +192,9 @@ public class Auton
 			break;
 			
 		case DRIVE_FORWARDS:
-			SubAuton.driveBy(Constants.Dashboard.DriveTestDistance);
+			double error = SubAuton.driveBy(Constants.Dashboard.DriveTestDistance);
+			SmartDashboard.putNumber("Drive Test Error:", error);
+			if(Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR) increment(States.DONE);
 			break;
 		}
 	}
@@ -205,7 +209,10 @@ public class Auton
 			break;
 			
 		case TURN:
-			SubAuton.rotateBy(Constants.Dashboard.RotationTestDistance);
+			Console.print("Rotation Target: " + Constants.Dashboard.RotationTestDistance);
+			double error = SubAuton.rotateBy(Constants.Dashboard.RotationTestDistance);
+			SmartDashboard.putNumber("Rotation Test Error:", error);
+			if(Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR) increment(States.DONE);
 			break;
 		}
 	}
@@ -266,15 +273,20 @@ public class Auton
 			
 			boolean timeoutUp = waitFor(1);
 			Intake.setFlapUp();
-			Shooter.setRPM(Constants.Shooter.TARGET_RPM);
 			error = SubAuton.driveBy(Constants.Auton.hopperDistanceAfterTurn);
 			doneDriving = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
 			Console.print("Error:" + error);
 			//hitTheWall = didWeHitSomething(.5);
 			//if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
-			if(doneDriving || timeoutUp) increment(States.SCORE_RANKING_POINT);
+			if(doneDriving || timeoutUp) increment(States.BACK_AWAY_FROM_HOPPER);
 			break;
 
+		case BACK_AWAY_FROM_HOPPER:
+			error = SubAuton.driveBy(-.1);
+			doneDriving = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
+			if(doneDriving) increment(States.TARGET_BOILER);
+			break;
+			
 		case TARGET_BOILER:
 			trackingState = Tracking.target(Tracking.Mode.FUEL_MODE);
 			if(trackingState == Tracking.State.TRACKED_FUEL) increment(States.SCORE_RANKING_POINT);

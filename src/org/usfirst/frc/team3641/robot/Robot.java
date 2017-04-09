@@ -10,8 +10,8 @@ public class Robot extends IterativeRobot
 {
 	DriverStation DS = DriverStation.getInstance();
 	Preferences Prefs = Preferences.getInstance();
-	UsbCamera Cam1 = CameraServer.getInstance().startAutomaticCapture(0);
-	UsbCamera Cam2 = CameraServer.getInstance().startAutomaticCapture(1);
+//	UsbCamera Cam1 = CameraServer.getInstance().startAutomaticCapture(0);
+//	UsbCamera Cam2 = CameraServer.getInstance().startAutomaticCapture(1);
 	Auton.Routines lastMode;
 	public static RGB underglow;
 	boolean lastAllianceIsRed;
@@ -63,6 +63,7 @@ public class Robot extends IterativeRobot
 
 	public void teleopInit()
 	{
+		Tracking.resetState();
 		underglow.setInverseAllianceColor();
 		DriveBase.setSquaredControls(true);
 		GearThingy.setState(GearThingy.State.RESTING);

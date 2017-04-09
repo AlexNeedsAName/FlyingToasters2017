@@ -7,7 +7,6 @@ public class Teleop
 	public static E3D operator;
 	public static Harmonix guitar;
 	public static boolean arcadeMode;
-	public static boolean b = false;
 	public static double driveDirection = 1;
 	public static CheesyDrive cheesyDrive;
 
@@ -25,6 +24,7 @@ public class Teleop
 		driver = new PS4(Constants.Controllers.DRIVER);
 		operator = new E3D(Constants.Controllers.OPERATOR);
 		guitar = new Harmonix(Constants.Controllers.GUITAR);
+		cheesyDrive = new CheesyDrive();
 		arcadeMode = true;
 	}
 
@@ -60,15 +60,18 @@ public class Teleop
 		
 		//Driving and stuff.
 		if(DriveBase.isLocked()) DriveBase.runLock();
-		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
+		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.FUEL_MODE);
+		//else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
 		else if(!SubAuton.alreadyDriving)
 		{
 			if(arcadeMode)
 			{
 				if(Constants.runningAleksBot) DriveBase.driveTeleop(operator.getAxis(E3D.Axis.Y), operator.getAxis(E3D.Axis.Z));
-				else{ 
+				else
+				{ 
 					//DriveBase.driveTeleop(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
-					cheesyDrive.chezyDrive(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X), driver.isPressed(PS4.Button.RIGHT_TRIGGER_BUTTON));
+					//cheesyDrive.chezyDrive(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X), driver.isPressed(PS4.Button.RIGHT_TRIGGER_BUTTON));
+					DriveBase.driveGrilledCheese(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
 				}
 			}
 			else
@@ -77,6 +80,7 @@ public class Teleop
 				else DriveBase.driveTank(-driver.getAxis(PS4.Axis.RIGHT_Y), -driver.getAxis(PS4.Axis.LEFT_Y));
 			}
 		}
+		if(driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();
 		
 		//Gearbox Stuff
 		if(driver.isPressed(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.HIGH);
@@ -101,31 +105,45 @@ public class Teleop
 		if(operator.isDown(10)) Constants.Shooter.TARGET_RPM += Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		if(operator.isDown(9)) Constants.Shooter.TARGET_RPM -= Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		
-		if(operator.isDown(12))
-		{
-			double shooterTarget = operator.getAxis(E3D.Axis.THROTTLE);
-			Shooter.set(shooterTarget);
-			if(operator.isDown(E3D.Button.TRIGGER)) Hopper.Agitate();
-		}
-		else
-		{
-			
-			//Run the flywheel.
-			if(operator.isDown(E3D.Button.TRIGGER)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.BATTER_RPM)) + " RPM");
-			else if(operator.isDown(6)) Shooter.setRPM(Constants.Shooter.TARGET_RPM);
-			else Shooter.set(0);
-					
-			//Run the Hopper
-			if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(6)) Hopper.autoAgitate();
-			else Hopper.stopAgitating();
-		}
+//			if(operator.isDown(12))
+//			{
+//				double shooterTarget = operator.getAxis(E3D.Axis.THROTTLE);
+//				Shooter.set(shooterTarget);
+//				if(operator.isDown(E3D.Button.TRIGGER)) Hopper.Agitate();
+//			}
+//			else
+//			{
+//				
+//				//Run the flywheel.
+//				if(operator.isDown(E3D.Button.TRIGGER)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.BATTER_RPM)) + " RPM");
+//				else if(operator.isDown(6)) Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+//				else Shooter.set(0);
+//						
+//				//Run the Hopper
+//				if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(6)) Hopper.autoAgitate();
+//				else Hopper.stopAgitating();
+//			}
 		
 		//Gear Thingy Stuff
 		if(operator.isPressed(3)) GearThingy.setState(GearThingy.State.INTAKING);
 		else if(operator.isReleased(3)) GearThingy.setState(GearThingy.State.DONE_INTAKING);
-		else if(operator.isPressed(4)) GearThingy.setState(GearThingy.State.PLACING);
-		else if(operator.isReleased(4)) GearThingy.setState(GearThingy.State.RESTING);
+//		else if(operator.isPressed(4)) GearThingy.setState(GearThingy.State.PLACING);
+//		else if(operator.isReleased(4)) GearThingy.setState(GearThingy.State.RESTING);
 		GearThingy.runCurrentState();
+		
+		if(operator.isPressed(4))
+		{
+			String data = "1";
+			Serial.sendData(data);
+			Console.print("Sent " + data + " over serial.");
+			
+		}
+		else if(operator.isDown(4))
+		{
+			String data = Serial.getData();
+			if(data != null) Console.print("Got " + data + " from serial.");
+		}
+
 	}
 
 	/**
@@ -137,22 +155,14 @@ public class Teleop
 		DriveBase.driveTeleop(guitar.getAxis(Harmonix.Axis.WHAMMY_BAR) * guitar.getAxis(Harmonix.Axis.STRUM), guitar.getAxis(Harmonix.Axis.BUTTONS));
 	}
 	
-	public static void dumpPnumatics()
+	public static double squareInput(double input)
 	{
-		b = !b;
-		if(b)
-		{
-			Gearbox.shift(Gearbox.Gear.HIGH);
-			Intake.setFlapUp();
-			Intake.intakeUp();
-		}
-		else
-		{
-			Gearbox.shift(Gearbox.Gear.LOW);
-			Intake.setFlapDown();
-			Intake.intakeDown();
-		}
-		Gearbox.setPTO(b);
+		return squareInput(input, 2);
+	}
+	
+	public static double squareInput(double input, double power)
+	{
+		return (input < 0) ? -Math.pow(Math.abs(input), power) : Math.pow(input, power); 
 	}
 	
 	public static void runTest()
