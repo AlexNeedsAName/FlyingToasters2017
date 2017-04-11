@@ -60,7 +60,8 @@ public class Teleop
 		
 		//Driving and stuff.
 		if(DriveBase.isLocked()) DriveBase.runLock();
-		else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.FUEL_MODE);
+		else if(operator.isDown(E3D.Button.TRIGGER)) Tracking.target(Tracking.Mode.FUEL_MODE);
+		
 		//else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
 		else if(!SubAuton.alreadyDriving)
 		{
@@ -80,7 +81,7 @@ public class Teleop
 				else DriveBase.driveTank(-driver.getAxis(PS4.Axis.RIGHT_Y), -driver.getAxis(PS4.Axis.LEFT_Y));
 			}
 		}
-		if(driver.isReleased(PS4.Button.CIRCLE)) Tracking.resetState();
+		if(operator.isReleased(E3D.Button.TRIGGER)) Tracking.resetState();
 		
 		//Gearbox Stuff
 		if(driver.isPressed(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.HIGH);
@@ -93,7 +94,7 @@ public class Teleop
 		else if(operator.isReleased(11)) Intake.setFlapDown();
 		if(Hopper.isAgitating() || operator.isDown(7)) Intake.setSpeed(1);
 		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(5*operator.getAxis(E3D.Axis.Y)/8);
-		//else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
+		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 				
 		
 		//Adjust Hopper Setpoint
@@ -115,7 +116,7 @@ public class Teleop
 //			{
 //				
 //				//Run the flywheel.
-//				if(operator.isDown(E3D.Button.TRIGGER)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.BATTER_RPM)) + " RPM");
+//				if(operator.isDown(E3D.Button.TRIGGER)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.TARGET_RPM)) + " RPM");
 //				else if(operator.isDown(6)) Shooter.setRPM(Constants.Shooter.TARGET_RPM);
 //				else Shooter.set(0);
 //						

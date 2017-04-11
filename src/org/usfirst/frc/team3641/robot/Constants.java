@@ -77,7 +77,7 @@ public class Constants
 	
 	public static class Shooter
 	{
-		public static final double RPM_THRESHOLD = 50;
+		public static double RPM_THRESHOLD = 500;
 		
 		public static final double GRAVITY = -9.81; // m/s/s
 		public static final double LIFT = 0;       // m/s/s
@@ -87,7 +87,6 @@ public class Constants
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
 		public static double TARGET_RPM = 2875;
-		public static double BATTER_RPM = 2600;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
 	}
 	
@@ -235,9 +234,9 @@ public class Constants
 		public static final double DRIVEBASE_DEADBAND = 0.1;
 		
 	
-		public static final double SHOOTER_KP = 0.0001;
-		public static final double SHOOTER_KI = 0.000008;
-		public static final double SHOOTER_KD = 0;
+		public static final double SHOOTER_KP = 0.001;
+		public static final double SHOOTER_KI = 0.00001;
+		public static final double SHOOTER_KD = 0.00001;
 		public static final double SHOOTER_DEADBAND = 200;
 		public static final double SHOOTER_FF = 5000;
 	
@@ -273,7 +272,7 @@ public class Constants
 		public static final int NUMBER_OF_ENCODER_STILL_CHECKS = 10;
 		
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
-		public static final double SHOOTER_MAX_ERROR = 50; //RPM
+		public static final double SHOOTER_MAX_ERROR = 50000; //RPM
 		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .0075; //Get within 75mm of the target.
 		public static final double AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR = 0.5; //Get within half a degree
 		
@@ -320,6 +319,7 @@ public class Constants
 		GUITAR_MODE = Prefs.getBoolean("Guitar Mode?", false);
 		Verbosity.CURRENT_LEVEL = Verbosity.Level.fromInt(Prefs.getInt("Verbosity", 3));
 		Shooter.TARGET_RPM = Prefs.getDouble("Target RPM", Shooter.TARGET_RPM);
-		Shooter.BATTER_RPM = Prefs.getDouble("Batter RPM", Shooter.BATTER_RPM);
+//		Shooter.BATTER_RPM = Prefs.getDouble("Batter RPM", Shooter.BATTER_RPM);
+		Shooter.RPM_THRESHOLD = Prefs.getDouble("Flywheel Threshold", Shooter.RPM_THRESHOLD);
 	}
 }

@@ -87,7 +87,7 @@ public class Sensors
 		else
 		{
 			//Shooter Stuff
-			shooterRPM = Shooter.right.getEncVelocity() * Constants.Conversions.SHOOTER_ENCODER_TO_RPM;
+			shooterRPM = Shooter.left.getEncVelocity() * Constants.Conversions.SHOOTER_ENCODER_TO_RPM;
 			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TICKS_PER_DEGREE * Constants.Conversions.TURRET_GEAR_RATIO;
 
 			//ultrasonicDistance = ultrasonicSensor.getAverageVoltage() * Constants.Conversions.ULTRASONIC_VOLTAGE_TO_M;

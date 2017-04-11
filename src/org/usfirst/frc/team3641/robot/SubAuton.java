@@ -84,6 +84,12 @@ public class SubAuton
 		SmartDashboard.putBoolean("Latched", latched);
 	}
 	
+	public static void placeGear() 
+	{
+		Serial.sendData("3");
+		
+	}
+	
 	public static void resetLatch()
 	{
 		SmartDashboard.putBoolean("Latched", false);

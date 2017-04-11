@@ -25,7 +25,7 @@ public class Shooter
 	{
 		left = new CANTalon(Constants.CAN.Talons.SHOOTER_LEFT);
 		right = new CANTalon(Constants.CAN.Talons.SHOOTER_RIGHT);
-		right.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 //		elevator = new Spark(Constants.PWM.Sparks.SHOOTER_ELEVATOR);
 		
 		flywheelPID = new PID("Flywheel");
