@@ -34,16 +34,7 @@ public class Hopper
 		}
 		centerAgitator.set(Constants.Hopper.CENTER_AGITATOR_SPEED);
 	}
-	
-	/**
-	 * Runs the hopper if the shooter is at the correct speed.
-	 */
-	public static void autoAgitate()
-	{
-		if(Shooter.atTarget()) Agitate();
-		else stopAgitating();
-	}
-	
+		
 	public static void runReverse()
 	{
 		centerAgitator.set(-Constants.Hopper.CENTER_AGITATOR_SPEED);

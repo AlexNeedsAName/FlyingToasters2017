@@ -62,16 +62,15 @@ public class Sensors
 	 */
 	public static void printAll()
 	{
-		SmartDashboard.putBoolean("Does We Has Gear?", doesWeHasGear());
+//		SmartDashboard.putBoolean("Does We Has Gear?", doesWeHasGear());
 		SmartDashboard.putBoolean("Enough Pressure?", doesWeHasEnoughPressure());
 		SmartDashboard.putNumber("Current Pressure", getPressure());
 		SmartDashboard.putNumber("Angle", getAngle());
-		SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
 		SmartDashboard.putNumber("Left Drive Distance", getLeftDriveDistance());
 		SmartDashboard.putNumber("Right Drive Distance", getRightDriveDistance());
-		SmartDashboard.putNumber("Ultrasonic Distance", getUltrasonicDistance());
-		SmartDashboard.putNumber("Raw Ultrasonic Distance", ultrasonicDistances[ultrasonicIndex]);
-		SmartDashboard.putNumber("Intake Current", PDP.getCurrent(Constants.PDP.INTAKE));
+//		SmartDashboard.putNumber("Ultrasonic Distance", getUltrasonicDistance());
+//		SmartDashboard.putNumber("Raw Ultrasonic Distance", ultrasonicDistances[ultrasonicIndex]);
+//		SmartDashboard.putNumber("Intake Current", PDP.getCurrent(Constants.PDP.INTAKE));
 	}
 	
 	/**

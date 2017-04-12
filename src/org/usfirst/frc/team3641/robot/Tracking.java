@@ -7,7 +7,7 @@ public class Tracking
 	
 	public enum Mode
 	{
-		FUEL_MODE, GEAR_MODE;
+		FUEL_MODE, GEAR_MODE, JUST_DISTANCE;
 	}
 	
 	public enum State
@@ -54,9 +54,9 @@ public class Tracking
 		{
 		case SEND_REQUEST:
 			SubAuton.resetRotateBy();
-			if(mode == Mode.FUEL_MODE) Serial.sendData("1");
-			else Serial.sendData("3");
-			Console.print("[Tracking] Sent Request", Constants.Verbosity.Level.MID);
+			if(mode == Mode.GEAR_MODE) Serial.sendData("3");
+			else Serial.sendData("1");
+			Console.print("[Tracking] Sent Request for " + mode.toString().toLowerCase(), Constants.Verbosity.Level.MID);
 			visionState = State.GET_RESPONSE;
 			break;
 
@@ -67,6 +67,7 @@ public class Tracking
 				if(response.contains("None"))
 				{
 					Console.print("[Tracking] Target not found", Constants.Verbosity.Level.MID);
+					SmartDashboard.putString("Distance To Boiler", "Target Not Found");
 					visionState = State.SEND_REQUEST;
 				}
 				else
@@ -75,11 +76,15 @@ public class Tracking
 					try
 					{
 						angle = Double.parseDouble(strings[0]);
+						distance = Double.parseDouble(strings[1]);
+						
 						Console.print("[Tracking] Angle is " + angle + "°", Constants.Verbosity.Level.MID);
+						Console.print("[Tracking] Distance is " + distance + "m", Constants.Verbosity.Level.MID);
 						if(mode == Mode.FUEL_MODE)
 						{
 							angle = -angle;
 							visionState = State.ROTATE_DRIVEBASE;
+							SmartDashboard.putString("Distance To Boiler", distance + "m");
 						}
 						else if(mode == Mode.GEAR_MODE)
 						{
@@ -87,6 +92,11 @@ public class Tracking
 							double dist = 0.1055 * Math.sin(Math.toRadians(180 - angle - Sensors.getAngle()))/Math.sin(Math.toRadians(separation));
 							angle = Math.asin(dist * Math.sin(Math.toRadians(angle))) / Math.sqrt(Math.pow(0.3937,2) + Math.pow(dist, 2) - 2.0 * dist * 0.3937 * Math.cos(Math.toRadians(angle + 90)));
 							visionState = State.ROTATE_DRIVEBASE;
+						}
+						else
+						{
+							SmartDashboard.putString("Distance To Boiler", distance + "m");
+							visionState = State.SEND_REQUEST;
 						}
 					}
 					catch(NumberFormatException e)
@@ -101,7 +111,6 @@ public class Tracking
 		case ROTATE_DRIVEBASE:
 			Shooter.setRPM(Constants.Shooter.TARGET_RPM);
 			tracked = Math.abs(SubAuton.rotateBy(angle)) < Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
-			SmartDashboard.putBoolean("DriveBase Tracked", tracked);
 			if(tracked)
 			{
 				Console.print("[Tracking] Done turning drivebase... Verifying angle.", Constants.Verbosity.Level.LOW);
@@ -168,8 +177,7 @@ public class Tracking
 			if(autoFire)
 			{
 				SubAuton.resetRotateBy();
-				Shooter.setRPM(Constants.Shooter.TARGET_RPM);
-				Hopper.autoAgitate();
+				Shooter.fire(Constants.Shooter.TARGET_RPM);
 			}
 			break;
 			
@@ -177,6 +185,7 @@ public class Tracking
 			break;
 		}
 
+		SmartDashboard.putString("Tracking State:", visionState.toString());
 		return visionState;
 
 	}
@@ -207,5 +216,6 @@ public class Tracking
 		Turret.reset();
 		Shooter.set(0);
 		Hopper.stopAgitating();
+		SmartDashboard.putString("Tracking State:", "DISABLED");
 	}	
 }

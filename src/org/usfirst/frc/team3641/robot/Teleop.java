@@ -60,9 +60,7 @@ public class Teleop
 		
 		//Driving and stuff.
 		if(DriveBase.isLocked()) DriveBase.runLock();
-		else if(operator.isDown(E3D.Button.TRIGGER)) Tracking.target(Tracking.Mode.FUEL_MODE);
-		
-		//else if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.GEAR_MODE);
+		else if(operator.isDown(E3D.Button.TRIGGER) && !operator.isDown(6)) Tracking.target(Tracking.Mode.FUEL_MODE);
 		else if(!SubAuton.alreadyDriving)
 		{
 			if(arcadeMode)
@@ -95,7 +93,6 @@ public class Teleop
 		if(Hopper.isAgitating() || operator.isDown(7)) Intake.setSpeed(1);
 		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(5*operator.getAxis(E3D.Axis.Y)/8);
 		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
-				
 		
 		//Adjust Hopper Setpoint
 		if(operator.isDown(5)) Hopper.runReverse();
@@ -106,47 +103,25 @@ public class Teleop
 		if(operator.isDown(10)) Constants.Shooter.TARGET_RPM += Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		if(operator.isDown(9)) Constants.Shooter.TARGET_RPM -= Constants.Shooter.ADJUSTMENT_MULTIPLIER;
 		
-//			if(operator.isDown(12))
-//			{
-//				double shooterTarget = operator.getAxis(E3D.Axis.THROTTLE);
-//				Shooter.set(shooterTarget);
-//				if(operator.isDown(E3D.Button.TRIGGER)) Hopper.Agitate();
-//			}
-//			else
-//			{
-//				
-//				//Run the flywheel.
-//				if(operator.isDown(E3D.Button.TRIGGER)) Console.print("Shooter Error: " + String.format("%.2f", Shooter.setRPM(Constants.Shooter.TARGET_RPM)) + " RPM");
-//				else if(operator.isDown(6)) Shooter.setRPM(Constants.Shooter.TARGET_RPM);
-//				else Shooter.set(0);
-//						
-//				//Run the Hopper
-//				if(operator.isDown(E3D.Button.TRIGGER) || operator.isDown(6)) Hopper.autoAgitate();
-//				else Hopper.stopAgitating();
-//			}
+		//Run the flywheel.
+		if(operator.isDown(E3D.Button.TRIGGER)) Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+		else Shooter.set(0);
+		
+		//Run the Hopper
+		if(operator.isDown(E3D.Button.TRIGGER) && operator.isDown(6)) Shooter.fire();
+		else if(operator.isReleased(E3D.Button.TRIGGER)) Shooter.stopFiring();
 		
 		//Gear Thingy Stuff
 		if(operator.isPressed(3)) GearThingy.setState(GearThingy.State.INTAKING);
 		else if(operator.isReleased(3)) GearThingy.setState(GearThingy.State.DONE_INTAKING);
-//		else if(operator.isPressed(4)) GearThingy.setState(GearThingy.State.PLACING);
-//		else if(operator.isReleased(4)) GearThingy.setState(GearThingy.State.RESTING);
+		else if(operator.isPressed(4)) GearThingy.setState(GearThingy.State.PLACING);
+		else if(operator.isReleased(4)) GearThingy.setState(GearThingy.State.RESTING);
 		GearThingy.runCurrentState();
 		
-		if(operator.isPressed(4))
-		{
-			String data = "1";
-			Serial.sendData(data);
-			Console.print("Sent " + data + " over serial.");
-			
-		}
-		else if(operator.isDown(4))
-		{
-			String data = Serial.getData();
-			if(data != null) Console.print("Got " + data + " from serial.");
-		}
-
+		if(driver.isPressed(PS4.Button.CIRCLE)) Tracking.resetState();
+		if(driver.isDown(PS4.Button.CIRCLE)) Tracking.target(Tracking.Mode.JUST_DISTANCE);
 	}
-
+	
 	/**
 	 * Runs the teleop code for driving with the Guitar as a controller.
 	 */

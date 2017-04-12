@@ -77,7 +77,8 @@ public class Constants
 	
 	public static class Shooter
 	{
-		public static double RPM_THRESHOLD = 500;
+		public static double RPM_EXIT_THRESHOLD = 500;
+		public static double RPM_ENTRY_THRESHOLD = 50;
 		
 		public static final double GRAVITY = -9.81; // m/s/s
 		public static final double LIFT = 0;       // m/s/s
@@ -272,8 +273,7 @@ public class Constants
 		public static final int NUMBER_OF_ENCODER_STILL_CHECKS = 10;
 		
 		public static final double ACCEPTABLE_TURRET_ERROR = 1;
-		public static final double SHOOTER_MAX_ERROR = 50000; //RPM
-		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .0075; //Get within 75mm of the target.
+		public static final double AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR = .01; //Get within 1cm of the target.
 		public static final double AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR = 0.5; //Get within half a degree
 		
 		public static final double ACCEPTABLE_FUEL_ERROR = 1; //Degrees
@@ -319,7 +319,6 @@ public class Constants
 		GUITAR_MODE = Prefs.getBoolean("Guitar Mode?", false);
 		Verbosity.CURRENT_LEVEL = Verbosity.Level.fromInt(Prefs.getInt("Verbosity", 3));
 		Shooter.TARGET_RPM = Prefs.getDouble("Target RPM", Shooter.TARGET_RPM);
-//		Shooter.BATTER_RPM = Prefs.getDouble("Batter RPM", Shooter.BATTER_RPM);
-		Shooter.RPM_THRESHOLD = Prefs.getDouble("Flywheel Threshold", Shooter.RPM_THRESHOLD);
+		Shooter.RPM_EXIT_THRESHOLD = Prefs.getDouble("Flywheel Threshold", Shooter.RPM_EXIT_THRESHOLD);
 	}
 }

@@ -136,9 +136,9 @@ public class PID
 
 		//if(output == 0) Console.print(name + " PID: { P:" + format(error * kP) + ", I:" + format(errorRefresh * kI) + ", D:" + format(lastError * kD) + "; Output: " + output + " }");
 
-		SmartDashboard.putNumber(name + " P", error * kP);
-		SmartDashboard.putNumber(name + " I", errorRefresh * kI);
-		SmartDashboard.putNumber(name + " D", lastError * kD);
+//		SmartDashboard.putNumber(name + " P", error * kP);
+//		SmartDashboard.putNumber(name + " I", errorRefresh * kI);
+//		SmartDashboard.putNumber(name + " D", lastError * kD);
 		
 		return output;
 	}

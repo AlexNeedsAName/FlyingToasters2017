@@ -11,6 +11,7 @@ public class Shooter
 //	private static Spark elevator;
 	private static PID flywheelPID;
 	private static double error;
+	private static boolean isAtTarget = false;
 
 	public static Shooter getInstance()
 	{
@@ -106,7 +107,6 @@ public class Shooter
 		if(power > 1) power = 1;
 		SmartDashboard.putNumber("Power Out", power);
 		SmartDashboard.putNumber("RPM", Sensors.getShooterRPM());
-		SmartDashboard.putNumber("RPM over Time", Sensors.getShooterRPM());
 		Console.print("Set Shooter to " + power, Constants.Verbosity.Level.INSANITY);
 		right.set(power);
 		left.set(-power);
@@ -122,6 +122,7 @@ public class Shooter
 		set(0);
 		error = 0;
 		flywheelPID.reset();
+		isAtTarget = false;
 	}
 
 	/**
@@ -129,17 +130,25 @@ public class Shooter
 	 */
 	public static void fire()
 	{
-		if(Math.abs(error) < Constants.Thresholds.SHOOTER_MAX_ERROR) forceFire();
-//		else elevator.set(0);
-
+		if(atTarget()) Hopper.Agitate();
+		else Hopper.stopAgitating();
 	}
+	
+	/**
+	 * If the flywheel speed is with the error threshold, shoot.
+	 */
+	public static void fire(double RPM)
+	{
+		setRPM(RPM);
+		fire();
+	}
+
 	
 	/**
 	 * Shoot regardless of the current flywheel speed.
 	 */
 	public static void forceFire()
 	{
-//		elevator.set(1);
 		Hopper.Agitate();
 	}
 	
@@ -151,7 +160,6 @@ public class Shooter
 	 */
 	public static void stopFiring()
 	{
-//		elevator.set(0);
 		Hopper.stopAgitating();
 	}
 	
@@ -162,6 +170,8 @@ public class Shooter
 	 */
 	public static boolean atTarget()
 	{
-		 return (Math.abs(error) < Constants.Shooter.RPM_THRESHOLD);
+		if(error <= 0) isAtTarget = true;
+		else if(Math.abs(error) >= Constants.Shooter.RPM_EXIT_THRESHOLD) isAtTarget = false;
+		return isAtTarget;
 	}
 }

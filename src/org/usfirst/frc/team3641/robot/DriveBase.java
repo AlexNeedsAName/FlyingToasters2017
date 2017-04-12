@@ -1,10 +1,8 @@
 package org.usfirst.frc.team3641.robot;
 import org.usfirst.frc.team3641.robot.Constants.PWM;
-
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveBase
 {
@@ -247,7 +245,6 @@ public class DriveBase
 	public static void setSquaredRotation(boolean on)
 	{
 		squaredRotation = on;
-		SmartDashboard.putBoolean("Squared Rotation", on);
 	}
 			
 	/**
@@ -258,7 +255,6 @@ public class DriveBase
 	public static void setSquaredPower(boolean on)
 	{
 		squaredPower = on;
-		SmartDashboard.putBoolean("Squared Power", on);
 	}
 	
 	/**
