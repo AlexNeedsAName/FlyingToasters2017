@@ -7,8 +7,7 @@ public class Teleop
 	public static E3D operator;
 	public static Harmonix guitar;
 	public static boolean arcadeMode;
-	public static double driveDirection = 1;
-	public static CheesyDrive cheesyDrive;
+	public static double driveDirection = -1;
 
 	public static Teleop getInstance()
 	{
@@ -24,7 +23,6 @@ public class Teleop
 		driver = new PS4(Constants.Controllers.DRIVER);
 		operator = new E3D(Constants.Controllers.OPERATOR);
 		guitar = new Harmonix(Constants.Controllers.GUITAR);
-		cheesyDrive = new CheesyDrive();
 		arcadeMode = true;
 	}
 
@@ -84,14 +82,14 @@ public class Teleop
 		//Gearbox Stuff
 		if(driver.isPressed(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.HIGH);
 		else if(driver.isReleased(PS4.Button.RIGHT_BUMPER)) Gearbox.shift(Gearbox.Gear.LOW);
-		if(driver.isPressed(PS4.Button.LEFT_BUMPER)) DriveBase.enableClimbingMode();
-		if(driver.isReleased(PS4.Button.LEFT_BUMPER)) DriveBase.disableClimbingMode();
+		if(driver.isDown(PS4.Button.LEFT_BUMPER)) DriveBase.enableClimbingMode();
+		else if(driver.isReleased(PS4.Button.LEFT_BUMPER)) DriveBase.disableClimbingMode();
 		
 		//Intake Stuff
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
 		if(Hopper.isAgitating() || operator.isDown(7)) Intake.setSpeed(1);
-		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(5*operator.getAxis(E3D.Axis.Y)/8);
+		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(operator.getAxis(E3D.Axis.Y));
 		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
 		
 		//Adjust Hopper Setpoint

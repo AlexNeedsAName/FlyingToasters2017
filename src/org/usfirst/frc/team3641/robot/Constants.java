@@ -9,17 +9,17 @@ public class Constants
 	
 	public static boolean GUITAR_MODE;
 		
-	public static final boolean disableAutonTimeouts = true;
+	public static final boolean disableAutonTimeouts = false;
 
 	public static class Auton
 	{
-		public static double gearOneDistanceToTurn = -1.15;
-		public static double gearThreeDistanceToTurn = -2.3;
+		public static double gearOneDistanceToTurn = -1.8;
+		public static double gearThreeDistanceToTurn = -1.8;
 		
 		public static double gearOneTurnAngle = 60;
 		public static double gearThreeTurnAngle = -60;
 		
-		public static double gearOneDistanceAfterTurn = -1.7;
+		public static double gearOneDistanceAfterTurn = -1.64;
 		public static double gearTwoDistance = -1.8;
 		public static double gearThreeDistanceAfterTurn = -1.64;
 		
@@ -27,8 +27,8 @@ public class Constants
 		
 		public static double baselineDistance = 1.5;
 		
-		public static double hopperDistanceToTurn = 1.9;
-		public static double hopperDistanceAfterTurn = 1.0;
+		public static double hopperDistanceToTurn = 1.8;
+		public static double hopperDistanceAfterTurn = 0.8;
 		public static double hopperTurnAngle = -90.0;
 		
 		public static void reloadConfig()
@@ -65,7 +65,7 @@ public class Constants
 		public static double DriveTestDistance = 0;
 		public static double RotationTestDistance = 0;
 		
-		public static boolean GYRO_IS_DEAD = true; //TODO: Change to false, add dashboard read
+		public static boolean GYRO_IS_DEAD = false; //TODO: Change to false, add dashboard read
 		
 		public static void reload()
 		{
@@ -77,7 +77,7 @@ public class Constants
 	
 	public static class Shooter
 	{
-		public static double RPM_EXIT_THRESHOLD = 500;
+		public static double RPM_EXIT_THRESHOLD = 700;
 		public static double RPM_ENTRY_THRESHOLD = 50;
 		
 		public static final double GRAVITY = -9.81; // m/s/s
@@ -87,7 +87,7 @@ public class Constants
 		public static final double WHEEL_RADIUS = 0.053; //Meters
 		public static final double TARGET_HEIGHT = 2.46; //Meters
 		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
-		public static double TARGET_RPM = 2875;
+		public static double TARGET_RPM = 2550;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
 	}
 	
@@ -223,11 +223,11 @@ public class Constants
 		public static final double DRIVEBASE_CORRECTION_KI = 0.0;
 		public static final double DRIVEBASE_CORRECTION_KD = 0.04;	
 
-		public static final double DRIVEBASE_ROTATION_KP = 0.007;
+		public static final double DRIVEBASE_ROTATION_KP = 0.0075;
 		public static final double DRIVEBASE_ROTATION_KI = 7.0E-4;
 		public static final double DRIVEBASE_ROTATION_KD = 0.008;
 		public static final double DRIVEBASE_ROTATION_KFF = 0.1;
-		public static final double DRIVEBASE_ROTATION_DEADBAND = 5;
+		public static final double DRIVEBASE_ROTATION_DEADBAND = 7.5;
 
 		public static final double DRIVEBASE_KP = 0.8;
 		public static final double DRIVEBASE_KI = 0.07;

@@ -259,30 +259,28 @@ public class Auton
 		case DRIVE_TO_HOPPER_LINE:
 			error = SubAuton.driveBy(Constants.Auton.hopperDistanceToTurn);
 			doneDriving = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
-			if(doneDriving) increment(States.TURN_TO_HOPPER);
+			if(doneDriving || timeoutUp(4)) increment(States.TURN_TO_HOPPER);
 			break;
 
 		case TURN_TO_HOPPER:
 			angle = (onBlueAlliance) ? Constants.Auton.hopperTurnAngle : -Constants.Auton.hopperTurnAngle; //If on red alliance, turn right. If on blue, turn left.
 			error = SubAuton.rotateBy(angle);
 			doneTurning = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
-			if(doneTurning) increment(States.DRIVE_TO_HOPPER);
+			if(doneTurning || timeoutUp(3)) increment(States.DRIVE_TO_HOPPER);
 			break;
 			
 		case DRIVE_TO_HOPPER:
-			
-			boolean timeoutUp = waitFor(1);
 			Intake.setFlapUp();
 			error = SubAuton.driveBy(Constants.Auton.hopperDistanceAfterTurn);
 			doneDriving = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
 			Console.print("Error:" + error);
 			//hitTheWall = didWeHitSomething(.5);
 			//if(hitTheWall) Console.print("Ouch!", Constants.Verbosity.Level.LOW);
-			if(doneDriving || timeoutUp) increment(States.BACK_AWAY_FROM_HOPPER);
+			if(doneDriving || timeoutUp(1)) increment(States.BACK_AWAY_FROM_HOPPER);
 			break;
 
 		case BACK_AWAY_FROM_HOPPER:
-			error = SubAuton.driveBy(-.1);
+			error = SubAuton.driveBy(-.03);
 			doneDriving = Math.abs(error) <= Constants.Thresholds.AUTON_DRIVE_DISTANCE_ACCEPTABLE_ERROR;
 			if(doneDriving) increment(States.TARGET_BOILER);
 			break;

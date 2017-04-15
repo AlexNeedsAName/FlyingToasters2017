@@ -143,6 +143,18 @@ public class DriveBase
 		double gain = 1;
 		double limit = 0.25;
 		
+		if(inClimbingMode)
+		{
+			if(Gearbox.inPTOMode())
+			{
+				if(Math.abs(rotation) >= .25 && Math.abs(power) <= .25) Gearbox.setPTO(false);
+			}
+			else if(Math.abs(power) >= .25) Gearbox.setPTO(true);
+		}
+		else if(Gearbox.inPTOMode()) Gearbox.setPTO(false);
+	
+		if(Gearbox.inPTOMode()) rotation = 0;
+		
 		rotation = Teleop.squareInput(rotation, 1.5);
 		double arcadePower = Teleop.squareInput(power, 1.5);
 		double arcadeRotation = rotation;
