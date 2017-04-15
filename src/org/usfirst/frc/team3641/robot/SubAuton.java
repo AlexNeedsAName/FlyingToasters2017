@@ -73,17 +73,7 @@ public class SubAuton
 	{
 		resetDriveBy();
 	}
-	
-	public static void latchClimber()
-	{
-		if(!latched)
-		{
-			Intake.runClimber();
-			latched = (PDP.getCurrent(Constants.PDP.INTAKE) >= Constants.Thresholds.INTAKE_STALL_CURRENT);
-		}
-		SmartDashboard.putBoolean("Latched", latched);
-	}
-	
+		
 	public static void placeGear() 
 	{
 		Serial.sendData("3");

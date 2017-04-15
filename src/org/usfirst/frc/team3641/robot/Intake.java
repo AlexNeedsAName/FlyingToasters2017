@@ -5,9 +5,8 @@ import edu.wpi.first.wpilibj.Spark;
 public class Intake
 {
 	private static Intake instance;
-	private static Solenoid intakeSolenoid, flapSolenoid;
-	private static Spark intakeSpark;
-	private static boolean up = true;
+	private static Solenoid flapSolenoid;
+	private static Spark leftSpark, rightSpark;
 	
 	public static Intake getInstance()
 	{
@@ -20,43 +19,11 @@ public class Intake
 	 */
 	private Intake()
 	{
-		intakeSolenoid = new Solenoid(Constants.Pnumatics.INTAKE);
 		flapSolenoid = new Solenoid(Constants.Pnumatics.FLAP);
-		intakeSpark = new Spark(Constants.PWM.Sparks.INTAKE);
+		leftSpark = new Spark(Constants.PWM.Sparks.INTAKE_LEFT);
+		rightSpark = new Spark(Constants.PWM.Sparks.INTAKE_RIGHT);
 	}
-	
-	/**
-	 * Raise the intake.
-	 */
-	public static void intakeUp()
-	{
-		if(!up)
-		{
-			Console.print("Intake up", Constants.Verbosity.Level.LOW);
-			up = true;
-		}
-		intakeSolenoid.set(false);
-	}
-	
-	/**
-	 * Lower the intake.
-	 */
-	public static void intakeDown()
-	{
-		if(up)
-		{
-			Console.print("Intake down", Constants.Verbosity.Level.LOW);
-			up = false;
-		}
-		intakeSolenoid.set(true);
-	}
-	
-	public static void toggleIntake()
-	{
-		if(up) intakeDown();
-		else intakeUp();
-	}
-	
+		
 	/**
 	 * Put down.
 	 */
@@ -79,8 +46,11 @@ public class Intake
 	 */
 	public static void setSpeed(double speed)
 	{
-		if(Gearbox.inPTOMode()) speed = 0;
-		intakeSpark.set(speed);
+		if(PDP.getCurrent(Constants.PDP.INTAKE_LEFT) > Constants.Intake.MAX_CURRENT_DRAW || PDP.getCurrent(Constants.PDP.INTAKE_RIGHT) > Constants.Intake.MAX_CURRENT_DRAW) speed = 0;
+		else if(Gearbox.inPTOMode()) speed = 0;
+		leftSpark.set(speed);
+		rightSpark.set(speed);
+		
 	}
 	
 	public static void eject()

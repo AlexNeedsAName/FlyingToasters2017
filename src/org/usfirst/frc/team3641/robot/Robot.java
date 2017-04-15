@@ -107,7 +107,6 @@ public class Robot extends IterativeRobot
 	public void disabledInit() //It runs this once the robot connects to the DriverStation too.
 	{
 		GearThingy.setState(GearThingy.State.RESTING);
-		Intake.intakeUp();
 		Intake.setFlapDown();
 		Console.print("Robot Disabled", Constants.Verbosity.Level.LOW);
 	}

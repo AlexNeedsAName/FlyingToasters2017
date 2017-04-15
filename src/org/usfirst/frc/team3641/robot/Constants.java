@@ -55,6 +55,11 @@ public class Constants
 		}
 	}
 	
+	public static class Intake
+	{
+		public static final double MAX_CURRENT_DRAW = 30;
+	}
+	
 	public static class DriveBase
 	{
 
@@ -175,12 +180,12 @@ public class Constants
 	{
 		public static class Sparks
 		{
-			public static final int INTAKE = 8;
+			public static final int INTAKE_RIGHT = 9;
+			public static final int INTAKE_LEFT = 8;
 			public static final int CENTER_AGITATOR = 7;
 			public static final int LEFT_AGITATOR = 6;
 			public static final int RIGHT_AGITATOR = 5;
 			public static final int GEAR_WHEELS = 4;
-			public static final int SHOOTER_ELEVATOR = 9;
 		}
 		
 		public static class Victors
@@ -214,7 +219,8 @@ public class Constants
 	
 	public static class PDP
 	{
-		public static final int INTAKE = 5;
+		public static final int INTAKE_LEFT = 0;
+		public static final int INTAKE_RIGHT = 15;
 	}
 
 	public static class PID
