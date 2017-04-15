@@ -6,7 +6,7 @@ public class Intake
 {
 	private static Intake instance;
 	private static Solenoid flapSolenoid;
-	private static Spark leftSpark, rightSpark;
+	private static Spark intakeSpark;
 	
 	public static Intake getInstance()
 	{
@@ -20,8 +20,7 @@ public class Intake
 	private Intake()
 	{
 		flapSolenoid = new Solenoid(Constants.Pnumatics.FLAP);
-		leftSpark = new Spark(Constants.PWM.Sparks.INTAKE_LEFT);
-		rightSpark = new Spark(Constants.PWM.Sparks.INTAKE_RIGHT);
+		intakeSpark = new Spark(Constants.PWM.Sparks.INTAKE);
 	}
 		
 	/**
@@ -46,11 +45,8 @@ public class Intake
 	 */
 	public static void setSpeed(double speed)
 	{
-		if(PDP.getCurrent(Constants.PDP.INTAKE_LEFT) > Constants.Intake.MAX_CURRENT_DRAW || PDP.getCurrent(Constants.PDP.INTAKE_RIGHT) > Constants.Intake.MAX_CURRENT_DRAW) speed = 0;
-		else if(Gearbox.inPTOMode()) speed = 0;
-		leftSpark.set(speed);
-		rightSpark.set(speed);
-		
+		if(Gearbox.inPTOMode()) speed = 0;
+		intakeSpark.set(speed);		
 	}
 	
 	public static void eject()

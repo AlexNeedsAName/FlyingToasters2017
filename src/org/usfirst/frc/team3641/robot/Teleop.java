@@ -89,8 +89,11 @@ public class Teleop
 		if(operator.isPressed(11)) Intake.setFlapUp();
 		else if(operator.isReleased(11)) Intake.setFlapDown();
 		if(Hopper.isAgitating() || operator.isDown(7)) Intake.setSpeed(1);
-		else if(operator.isDown(E3D.Button.THUMB)) Intake.setSpeed(operator.getAxis(E3D.Axis.Y));
 		else Intake.setSpeed(-driver.getAxis(PS4.Axis.LEFT_TRIGGER) + driver.getAxis(PS4.Axis.RIGHT_TRIGGER));
+		
+		//Climber
+		if(operator.isDown(E3D.Button.THUMB)) Climber.runClimber(operator.getAxis(E3D.Axis.Y));
+		else if(operator.isReleased(E3D.Button.THUMB)) Climber.runClimber(0);
 		
 		//Adjust Hopper Setpoint
 		if(operator.isDown(5)) Hopper.runReverse();

@@ -55,7 +55,7 @@ public class Constants
 		}
 	}
 	
-	public static class Intake
+	public static class Climber
 	{
 		public static final double MAX_CURRENT_DRAW = 30;
 	}
@@ -180,12 +180,10 @@ public class Constants
 	{
 		public static class Sparks
 		{
-			public static final int INTAKE_RIGHT = 9;
-			public static final int INTAKE_LEFT = 8;
-			public static final int CENTER_AGITATOR = 7;
-			public static final int LEFT_AGITATOR = 6;
-			public static final int RIGHT_AGITATOR = 5;
-			public static final int GEAR_WHEELS = 4;
+			public static final int INTAKE = 8;
+			public static final int CLIMBER_LEFT = 7;
+			public static final int CLIMBER_RIGHT = 6;
+			public static final int GEAR_WHEELS = 5;
 		}
 		
 		public static class Victors
