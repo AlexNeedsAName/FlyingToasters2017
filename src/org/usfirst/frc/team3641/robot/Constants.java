@@ -1,4 +1,7 @@
 package org.usfirst.frc.team3641.robot;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj.Preferences;
 
 public class Constants
@@ -94,6 +97,9 @@ public class Constants
 		public static final double MAX_RPM = 4500; //TODO: Run at full speed and measure value.
 		public static double TARGET_RPM = 2550;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
+		
+		public static ArrayList<Double> distanceSetpoints = new ArrayList<>(Arrays.asList(0.0,10.0));
+		public static ArrayList<Double> speedSetpoints = new ArrayList<>(Arrays.asList(0.0,3000.0));
 	}
 	
 	public static class Hopper
@@ -324,5 +330,46 @@ public class Constants
 		Verbosity.CURRENT_LEVEL = Verbosity.Level.fromInt(Prefs.getInt("Verbosity", 3));
 		Shooter.TARGET_RPM = Prefs.getDouble("Target RPM", Shooter.TARGET_RPM);
 		Shooter.RPM_EXIT_THRESHOLD = Prefs.getDouble("Flywheel Threshold", Shooter.RPM_EXIT_THRESHOLD);
+		
+		if(Prefs.getDouble("distSS0", -1) != -1){
+			
+			Shooter.distanceSetpoints.clear();//clear the setpoints
+			Shooter.speedSetpoints.clear();
+			int setpointNum = 0;
+			while(true){
+				double distSetpoint = Prefs.getDouble("distSS" + setpointNum, -1);
+				double speedSetpoint = Prefs.getDouble("speedSS" + setpointNum, -1);
+				if(distSetpoint == -1 || speedSetpoint == 0) break;
+				Shooter.distanceSetpoints.add(distSetpoint);
+				Shooter.speedSetpoints.add(speedSetpoint);
+				setpointNum++;
+			}
+			sortLists();
+			Console.print(Shooter.distanceSetpoints.toString());
+			Console.print(Shooter.speedSetpoints.toString());
+		}
+	}
+	private static void sortLists(){//quick little bubblesort implementation I wrote for this purpose.
+		boolean isSorted = false;
+		while(!isSorted){
+			isSorted = true;
+			for(int i = 0; i < Shooter.distanceSetpoints.size() - 1; i++){
+				double ds1 = Shooter.distanceSetpoints.get(i);
+				double ds2 = Shooter.distanceSetpoints.get(i + 1);
+				
+				double ss1 = Shooter.speedSetpoints.get(i);
+				double ss2 = Shooter.speedSetpoints.get(i + 1);
+				
+				if(ds1 > ds2){
+					isSorted = false;
+					Shooter.distanceSetpoints.set(i, ds2);
+					Shooter.distanceSetpoints.set(i + 1, ds1);
+					
+					Shooter.speedSetpoints.set(i,  ss2);
+					Shooter.speedSetpoints.set(i + 1,  ss1);
+					
+				}
+			}
+		}
 	}
 }

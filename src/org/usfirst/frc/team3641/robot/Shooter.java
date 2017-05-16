@@ -44,9 +44,9 @@ public class Shooter
 	{
 		double x = distance;
 		double y = Constants.Shooter.TARGET_HEIGHT-Constants.Shooter.HEIGHT;
-		double theta_ALEXDONTUSEUNICODEPLEASE = Constants.Shooter.ANGLE;
+		double theta = Constants.Shooter.ANGLE;
 		double g = Constants.Shooter.GRAVITY + Constants.Shooter.LIFT;
-		double v = calcVelocity(x,y,theta_ALEXDONTUSEUNICODEPLEASE,g);
+		double v = calcVelocity(x,y,theta,g);
 		return setSpeed(v);
 	}
 	
@@ -55,19 +55,24 @@ public class Shooter
 	 * 
 	 * @param x The distance to the target.
 	 * @param y The height to the target.
-	 * @param theta_ALEXDONTUSEUNICODEPLEASE The launch angle.
+	 * @param theta The launch angle.
 	 * @param g The y acceleration. Normally gravity, but any lift from the backspin would be added here too.
 	 * @return The ideal velocity to hit the target.
 	 */
-	public static double calcVelocity(double x, double y, double theta_ALEXDONTUSEUNICODEPLEASE, double g)
+	public static double calcVelocity(double x, double y, double theta, double g)
 	{
-		theta_ALEXDONTUSEUNICODEPLEASE = Math.toRadians(theta_ALEXDONTUSEUNICODEPLEASE);
-		return Math.sqrt( (g*x*x) / (2*Math.cos(theta_ALEXDONTUSEUNICODEPLEASE)*Math.cos(theta_ALEXDONTUSEUNICODEPLEASE) * (y-(x*Math.tan(theta_ALEXDONTUSEUNICODEPLEASE))) ) );
+		theta = Math.toRadians(theta);
+		return Math.sqrt( (g*x*x) / (2*Math.cos(theta)*Math.cos(theta) * (y-(x*Math.tan(theta))) ) );
 		/*
 		 * https://www.desmos.com/calculator/zzrzc66pur
 		 * This took way too long. It's derived from the kinematic equations. We solved
 		 * x for time, then plugged it into the y equation and solved for velocity.
 		 */
+	}
+	
+	public static double calcVelocityFromSetpoints(double distance){
+		
+		return Double.NaN;
 	}
 	
 	/**
