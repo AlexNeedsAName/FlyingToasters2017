@@ -50,7 +50,7 @@ public class DriveBase
 		 */
 		public void set(double power)
 		{
-			for(CANTalon talon : talons) talon.set(power);
+			for(CANTalon talon : talons) talon.set(-power);
 		}
 		
 		/**

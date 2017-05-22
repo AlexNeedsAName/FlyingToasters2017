@@ -20,11 +20,11 @@ public class Climber
 	
 	public static void runClimber(double speed)
 	{
-		if(speed < 0) speed = 0;
-		else if(PDP.getCurrent(Constants.PDP.INTAKE_LEFT) >= Constants.Climber.MAX_CURRENT_DRAW || PDP.getCurrent(Constants.PDP.INTAKE_RIGHT) >= Constants.Climber.MAX_CURRENT_DRAW) speed = 0;
+		//if(speed < 0) speed = 0;
+//		else if(PDP.getCurrent(Constants.PDP.INTAKE_LEFT) >= Constants.Climber.MAX_CURRENT_DRAW || PDP.getCurrent(Constants.PDP.INTAKE_RIGHT) >= Constants.Climber.MAX_CURRENT_DRAW) speed = 0;
 		
 		leftSpark.set(speed);
-		rightSpark.set(speed);
+		rightSpark.set(-speed);
 	}
 	
 }
