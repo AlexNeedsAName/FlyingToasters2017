@@ -109,7 +109,8 @@ public class Tracking
 			break;
 		
 		case ROTATE_DRIVEBASE:
-			Shooter.setRPM(Constants.Shooter.TARGET_RPM);
+			if(Constants.Shooter.AUTO_DISTANCE) Shooter.setRPM(distance);
+			else Shooter.setRPM(Constants.Shooter.TARGET_RPM);
 			tracked = Math.abs(SubAuton.rotateBy(angle)) < Constants.Thresholds.AUTON_DRIVE_ANGLE_ACCEPTABLE_ERROR;
 			if(tracked)
 			{

@@ -98,8 +98,36 @@ public class Constants
 		public static double TARGET_RPM = 2550;
 		public static final double ADJUSTMENT_MULTIPLIER = 2;
 		
+		public static final boolean AUTO_DISTANCE = false;
+		
 		public static ArrayList<Double> distanceSetpoints = new ArrayList<>(Arrays.asList(0.0,10.0));
 		public static ArrayList<Double> speedSetpoints = new ArrayList<>(Arrays.asList(0.0,3000.0));
+		
+		public static double getSpeedFromDistance(double distance){
+			if(distance < distanceSetpoints.get(0)) return 0;//if the speed is too low return 0
+			
+			for(int i = 1; i < distanceSetpoints.size(); i++){//loop through the distances until the distance is greater than the target
+				if(distance > distanceSetpoints.get(i)){
+					double dist1 = distanceSetpoints.get(i - 1);
+					double dist2 = distanceSetpoints.get(i);
+					
+					double speed1 = speedSetpoints.get(i - 1);
+					double speed2 = speedSetpoints.get(i);
+					
+					double distRange = dist2 - dist1;
+					double speedRange = speed2 - speed1;
+					
+					double alpha = (distance - dist1) / distRange;
+					
+					return alpha * speedRange + speed1;
+					
+				}else if(distance == distanceSetpoints.get(i)){//if the distance is exact (lol this never happens)
+					return speedSetpoints.get(i);
+				}
+			}
+			
+			return 0;
+		}
 	}
 	
 	public static class Hopper
