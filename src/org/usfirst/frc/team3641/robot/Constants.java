@@ -194,7 +194,7 @@ public class Constants
 		public static class Talons
 		{			
 			public static final int DRIVEBASE_LEFT_1 = 12;
-			public static final int DRIVEBASE_LEFT_2 = 13;
+			public static final int DRIVEBASE_LEFT_2 = 14;
 			public static final int LEFT_ENCODER_TALON = DRIVEBASE_LEFT_2;
 			
 			public static final int DRIVEBASE_RIGHT_1 = 1;
@@ -327,11 +327,11 @@ public class Constants
 		public static final double ULTRASONIC_VOLTAGE_TO_M = 0.977; 
 		
 		public static final double DISTANCE_TO_GOAL = 3.66;
-		public static final double DRIVE_WHEEL_DIAMETER = 0.0935;
+		public static final double DRIVE_WHEEL_DIAMETER = 0.0996; //99.6 mm
 		public static final double DRIVE_WHEEL_CIRCUMFERENCE = Math.PI*DRIVE_WHEEL_DIAMETER;
 		public static final double DRIVE_ENCODER_TICKS_PER_TURN = -4096.0;
-		public static final double LOW_GEAR_RATIO = 20.0/50.0;
-		public static final double HIGH_GEAR_RATIO = 30.0/40.0;
+		public static final double LOW_GEAR_RATIO = 30.0/54.0;
+		public static final double HIGH_GEAR_RATIO = 30.0/54.0;
 		
 		public static final double TURRET_ENCODER_TICKS_PER_DEGREE = 4096.0 / 360.0;
 		public static final double TURRET_GEAR_RATIO = 90.0 / 18.0;
