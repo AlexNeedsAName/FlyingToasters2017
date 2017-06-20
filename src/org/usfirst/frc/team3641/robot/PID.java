@@ -1,7 +1,6 @@
 package org.usfirst.frc.team3641.robot;
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PID
 {
