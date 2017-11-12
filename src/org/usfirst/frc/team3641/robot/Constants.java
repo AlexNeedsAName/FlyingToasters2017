@@ -193,12 +193,19 @@ public class Constants
 	{
 		public static class Talons
 		{			
-			public static final int DRIVEBASE_LEFT_1 = 12;
-			public static final int DRIVEBASE_LEFT_2 = 14;
+			public static final int DRIVEBASE_LEFT_1 = 8;
+			public static final int DRIVEBASE_LEFT_2 = 9;
+			public static final int DRIVEBASE_LEFT_3 = 10;
+			public static final int DRIVEBASE_LEFT_4 = 11;
+			
+			
 			public static final int LEFT_ENCODER_TALON = DRIVEBASE_LEFT_2;
 			
-			public static final int DRIVEBASE_RIGHT_1 = 1;
-			public static final int DRIVEBASE_RIGHT_2 = 2;
+			public static final int DRIVEBASE_RIGHT_1 = 5;
+			public static final int DRIVEBASE_RIGHT_2 = 1;
+			public static final int DRIVEBASE_RIGHT_3 = 2;
+			public static final int DRIVEBASE_RIGHT_4 = 3;
+			
 			public static final int RIGHT_ENCODER_TALON = DRIVEBASE_RIGHT_2;
 			
 			public static final int SHOOTER_RIGHT = 9;
@@ -240,7 +247,7 @@ public class Constants
 		public static final int PTO_REVERSE = 3;
 		public static final int INTAKE = 4;
 		public static final int FLAP = 5;
-		public static final int GEAR_THINGY = 6;
+		public static final int GEAR_THINGY = 1;
 		
 		public static final double WORRY_PRESSURE = 50;
 		public static final double PANCAKE_SHIFT_COST = 1;

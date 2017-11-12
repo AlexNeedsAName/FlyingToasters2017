@@ -68,7 +68,7 @@ public class Teleop
 				{ 
 					//DriveBase.driveTeleop(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
 					//cheesyDrive.chezyDrive(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X), driver.isPressed(PS4.Button.RIGHT_TRIGGER_BUTTON));
-					DriveBase.driveGrilledCheese(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
+					DriveBase.driveArcade(driver.getAxis(PS4.Axis.LEFT_Y) * driveDirection, driver.getAxis(PS4.Axis.RIGHT_X));
 				}
 			}
 			else

@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 public class Gearbox
 {
 	private static Gearbox instance;
-	private static DoubleSolenoid shifter, PTO;
+	//private static DoubleSolenoid shifter, PTO;
 	private static Gear currentGear;
 	private static boolean inPTOMode;
 
@@ -29,8 +29,8 @@ public class Gearbox
 	{
 		if(!Constants.runningAleksBot)
 		{
-			shifter = new DoubleSolenoid(Constants.Pnumatics.SHIFTER_FORWARD, Constants.Pnumatics.SHIFTER_REVERSE);
-			PTO = new DoubleSolenoid(Constants.Pnumatics.PTO_FORWARD, Constants.Pnumatics.PTO_REVERSE);
+			//shifter = new DoubleSolenoid(Constants.Pnumatics.SHIFTER_FORWARD, Constants.Pnumatics.SHIFTER_REVERSE);
+			//PTO = new DoubleSolenoid(Constants.Pnumatics.PTO_FORWARD, Constants.Pnumatics.PTO_REVERSE);
 		}
 		shift(Gear.LOW);
 		setPTO(false);
@@ -43,13 +43,13 @@ public class Gearbox
 	 */
 	public static void shift(Gear gear)
 	{
-		if(gear != currentGear)
+		/*if(gear != currentGear)
 		{
 			Console.print("Shifting to " + gear.toString() + " gear.", Constants.Verbosity.Level.LOW);
 			if(!Constants.runningAleksBot) shifter.set((gear == Gear.LOW) ? (DoubleSolenoid.Value.kReverse) : (DoubleSolenoid.Value.kForward));
 			currentGear = gear;
 			Sensors.shiftEncoderGear();
-		}
+		}*/
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class Gearbox
 	{
 		inPTOMode = on;
 		Console.print(((inPTOMode) ? "Engaging" : "Disengaging") + " PTO", Constants.Verbosity.Level.LOW);
-		PTO.set(inPTOMode ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+		//PTO.set(inPTOMode ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
