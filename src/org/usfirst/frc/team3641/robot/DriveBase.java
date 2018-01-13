@@ -1,7 +1,9 @@
 package org.usfirst.frc.team3641.robot;
 import org.usfirst.frc.team3641.robot.Constants.PWM;
-import com.ctre.CANTalon;
-import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Victor;
 
 public class DriveBase
@@ -27,8 +29,8 @@ public class DriveBase
 	public class LinkedTalons
 	{
 		private int numberOfTalons;
-		private CANTalon[] talons;
-		private CANTalon feedbackTalon = null;
+		private TalonSRX[] talons;
+		private TalonSRX feedbackTalon = null;
 		
 		/**
 		 * Creates a new set of linked talons.
@@ -38,9 +40,9 @@ public class DriveBase
 		public LinkedTalons(int... talonIDs)
 		{
 			numberOfTalons = talonIDs.length;
-			talons = new CANTalon[numberOfTalons];
+			talons = new TalonSRX[numberOfTalons];
 
-			for(int i = 0; i<numberOfTalons; i++) talons[i] = new CANTalon(talonIDs[i]);
+			for(int i = 0; i<numberOfTalons; i++) talons[i] = new TalonSRX(talonIDs[i]);
 		}
 		
 		/**
@@ -50,7 +52,7 @@ public class DriveBase
 		 */
 		public void set(double power)
 		{
-			for(CANTalon talon : talons) talon.set(-power);
+			for(TalonSRX talon : talons) talon.set(ControlMode.PercentOutput, -power);
 		}
 		
 		/**
@@ -62,9 +64,9 @@ public class DriveBase
 		public void setFeedbackDevice(int TalonID, FeedbackDevice device)
 		{
 			feedbackTalon = null;
-			for(CANTalon talon : talons) if(talon.getDeviceID() == TalonID) feedbackTalon = talon;
+			for(TalonSRX talon : talons) if(talon.getDeviceID() == TalonID) feedbackTalon = talon;
 			if(feedbackTalon == null) throw new IllegalArgumentException("There is not Talon with an ID of " + TalonID + " in this object.");
-			else feedbackTalon.setFeedbackDevice(device);
+			else feedbackTalon.configSelectedFeedbackSensor(device, 0, 0);
 		}
 		
 		/**
@@ -74,7 +76,7 @@ public class DriveBase
 		 */
 		public int getEncPosition()
 		{
-			return feedbackTalon.getEncPosition();
+			return feedbackTalon.getSelectedSensorPosition(0);
 		}
 		
 		/**
@@ -84,7 +86,7 @@ public class DriveBase
 		 */
 		public void setEncPosition(int position)
 		{
-			feedbackTalon.setEncPosition(position);
+			feedbackTalon.setSelectedSensorPosition(position,0,0);
 		}
 		
 		/**
@@ -94,7 +96,7 @@ public class DriveBase
 		 */
 		public void setBreakMode(boolean on)
 		{
-			for(CANTalon talon : talons) talon.enableBrakeMode(on);
+			for(TalonSRX talon : talons) talon.setNeutralMode(NeutralMode.Brake);
 		}
 	}
 		
@@ -114,10 +116,10 @@ public class DriveBase
 		}
 		
 		left = new LinkedTalons(Constants.CAN.Talons.DRIVEBASE_LEFT_1, Constants.CAN.Talons.DRIVEBASE_LEFT_2);
-		left.setFeedbackDevice(Constants.CAN.Talons.LEFT_ENCODER_TALON, FeedbackDevice.CtreMagEncoder_Absolute);
+		left.setFeedbackDevice(Constants.CAN.Talons.LEFT_ENCODER_TALON, FeedbackDevice.CTRE_MagEncoder_Absolute);
 		
 		right = new LinkedTalons(Constants.CAN.Talons.DRIVEBASE_RIGHT_1, Constants.CAN.Talons.DRIVEBASE_RIGHT_2);
-		right.setFeedbackDevice(Constants.CAN.Talons.RIGHT_ENCODER_TALON, FeedbackDevice.CtreMagEncoder_Absolute);
+		right.setFeedbackDevice(Constants.CAN.Talons.RIGHT_ENCODER_TALON, FeedbackDevice.CTRE_MagEncoder_Absolute);
 
 		encoderCorrectionPID = new PID("DriveBase Correction");
 		encoderCorrectionPID.setBackupValues(Constants.PID.DRIVEBASE_CORRECTION_KP, Constants.PID.DRIVEBASE_CORRECTION_KI, Constants.PID.DRIVEBASE_CORRECTION_KD);

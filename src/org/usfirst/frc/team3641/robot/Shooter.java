@@ -1,13 +1,15 @@
 package org.usfirst.frc.team3641.robot;
-import com.ctre.CANTalon;
-import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Spark;
 
 public class Shooter
 {
 	private static Shooter instance;
-	public static CANTalon left, right;
+	public static TalonSRX left, right;
 //	private static Spark elevator;
 	private static PID flywheelPID;
 	private static double error;
@@ -24,9 +26,9 @@ public class Shooter
 	 */
 	public Shooter()
 	{
-		left = new CANTalon(Constants.CAN.Talons.SHOOTER_LEFT);
-		right = new CANTalon(Constants.CAN.Talons.SHOOTER_RIGHT);
-		left.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		left = new TalonSRX(Constants.CAN.Talons.SHOOTER_LEFT);
+		right = new TalonSRX(Constants.CAN.Talons.SHOOTER_RIGHT);
+		left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,0,0);
 //		elevator = new Spark(Constants.PWM.Sparks.SHOOTER_ELEVATOR);
 		
 		flywheelPID = new PID("Flywheel");
@@ -113,8 +115,8 @@ public class Shooter
 		SmartDashboard.putNumber("Power Out", power);
 		SmartDashboard.putNumber("RPM", Sensors.getShooterRPM());
 		Console.print("Set Shooter to " + power, Constants.Verbosity.Level.INSANITY);
-		right.set(power);
-		left.set(-power);
+		right.set(ControlMode.PercentOutput, power);
+		left.set(ControlMode.PercentOutput, -power);
 	}
 
 	/**

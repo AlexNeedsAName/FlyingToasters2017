@@ -1,11 +1,12 @@
 package org.usfirst.frc.team3641.robot;
 
-import com.ctre.CANTalon;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Hopper
 {
 	private static Hopper instance;
-	private static CANTalon centerAgitator;
+	private static TalonSRX centerAgitator;
 	private static boolean alreadyAgitating = false;
 		
 	public static Hopper getInstance()
@@ -19,7 +20,7 @@ public class Hopper
 	 */
 	private Hopper()
 	{
-		centerAgitator = new CANTalon(Constants.CAN.Talons.CENTER_AGITATOR);
+		centerAgitator = new TalonSRX(Constants.CAN.Talons.CENTER_AGITATOR);
 	}
 
 	/**
@@ -32,12 +33,12 @@ public class Hopper
 			Console.print("Now agitating hopper", Constants.Verbosity.Level.MID);
 			alreadyAgitating = true;
 		}
-		centerAgitator.set(Constants.Hopper.CENTER_AGITATOR_SPEED);
+		centerAgitator.set(ControlMode.PercentOutput, Constants.Hopper.CENTER_AGITATOR_SPEED);
 	}
 		
 	public static void runReverse()
 	{
-		centerAgitator.set(-Constants.Hopper.CENTER_AGITATOR_SPEED);
+		centerAgitator.set(ControlMode.PercentOutput, -Constants.Hopper.CENTER_AGITATOR_SPEED);
 	}
 	
 	/**
@@ -50,7 +51,7 @@ public class Hopper
 			Console.print("No longer agitating hopper", Constants.Verbosity.Level.MID);
 			alreadyAgitating = false;
 		}
-		centerAgitator.set(0);
+		centerAgitator.set(ControlMode.PercentOutput, 0);
 	}
 	
 	public static boolean isAgitating()

@@ -193,12 +193,12 @@ public class Constants
 	{
 		public static class Talons
 		{			
-			public static final int DRIVEBASE_LEFT_1 = 12;
-			public static final int DRIVEBASE_LEFT_2 = 14;
+			public static final int DRIVEBASE_LEFT_1 = 1;
+			public static final int DRIVEBASE_LEFT_2 = 2;
 			public static final int LEFT_ENCODER_TALON = DRIVEBASE_LEFT_2;
 			
-			public static final int DRIVEBASE_RIGHT_1 = 1;
-			public static final int DRIVEBASE_RIGHT_2 = 2;
+			public static final int DRIVEBASE_RIGHT_1 = 3;
+			public static final int DRIVEBASE_RIGHT_2 = 4;
 			public static final int RIGHT_ENCODER_TALON = DRIVEBASE_RIGHT_2;
 			
 			public static final int SHOOTER_RIGHT = 9;

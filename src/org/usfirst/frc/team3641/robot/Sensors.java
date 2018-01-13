@@ -5,9 +5,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import java.util.Arrays;
-
 import com.kauailabs.navx.frc.AHRS;
 
 public class Sensors
@@ -86,8 +84,8 @@ public class Sensors
 		else
 		{
 			//Shooter Stuff
-			shooterRPM = Shooter.left.getEncVelocity() * Constants.Conversions.SHOOTER_ENCODER_TO_RPM;
-			turretAngle = Turret.turretTalon.getEncPosition() * Constants.Conversions.TURRET_ENCODER_TICKS_PER_DEGREE * Constants.Conversions.TURRET_GEAR_RATIO;
+			shooterRPM = Shooter.left.getSelectedSensorVelocity(0) * Constants.Conversions.SHOOTER_ENCODER_TO_RPM;
+			turretAngle = Turret.turretTalon.getSelectedSensorPosition(0) * Constants.Conversions.TURRET_ENCODER_TICKS_PER_DEGREE * Constants.Conversions.TURRET_GEAR_RATIO;
 
 			//ultrasonicDistance = ultrasonicSensor.getAverageVoltage() * Constants.Conversions.ULTRASONIC_VOLTAGE_TO_M;
 			if(ultrasonicIndex < ultrasonicDistances.length-1) ultrasonicIndex++;
